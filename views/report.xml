@@ -13,5 +13,16 @@
             attachment="(object.state in ('open','paid')) and ('INV'+(object.number or '').replace('/','')+'.pdf')"
         />
 
+        <report 
+            id="check_voucher"
+            model="account.payment"
+            string="Print Check Voucher"
+            report_type="qweb-pdf"
+            name="globpak.report_check_voucher"
+            file="globpak.report_check_voucher"
+            attachment_use="True"
+            attachment="(object.state in ('posted','sent')) and ('CHK'+(object.name or '').replace('/','')+'.pdf')"
+        />
+
     </data>
 </odoo>

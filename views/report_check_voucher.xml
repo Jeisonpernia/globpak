@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<data>
+<template id="report_check_voucher_document">
+    <t t-call="report.external_layout">
+        <t t-set="o" t-value="o.with_context({'lang':o.partner_id.lang})"/>
+        <div class="page">
+            <div class="row">
+                <div class="text-center">
+                    <h3>
+                        <span>Accounts Payable Voucher</span>
+                    </h3>
+                </div>
+            </div>
+                
+        </div>
+    </t>
+</template>
+
+<template id="report_check_voucher">
+    <t t-call="report.html_container">
+        <t t-foreach="docs" t-as="o">
+            <!--<t t-call="globpak.report_check_voucher_document" t-lang="o.partner_id.lang"/>-->
+            <!--<t t-call="l10n_us_check_printing.ckus_check" />-->
+            <t t-call="l10n_us_check_printing.ckus_stub"><t t-set="stub_num" t-value="1"/></t>
+            <t t-call="l10n_us_check_printing.ckus_stub"><t t-set="stub_num" t-value="2"/></t>
+            <!--<div t-foreach="pages(o)" t-as="page" class="page ckus_page ckus_top_page" t-attf-style="top: {{ o.company_id.us_check_margin_top }}in; left: {{ o.company_id.us_check_margin_left }}in;">
+                <t t-call="l10n_us_check_printing.ckus_check" />
+                <t t-call="l10n_us_check_printing.ckus_stub"><t t-set="stub_num" t-value="1"/></t>
+                <t t-call="l10n_us_check_printing.ckus_stub"><t t-set="stub_num" t-value="2"/></t>
+            </div>-->
+        </t>
+    </t>
+</template>
+
+</data>
+</odoo>

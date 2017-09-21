@@ -20,7 +20,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'hr_expense'],
+    'depends': ['base', 'hr_expense', 'l10n_us_check_printing'],
 
     # always loaded
     'data': [
@@ -29,6 +29,7 @@
         # 'views/templates.xml',
         'views/report_expense_sheet.xml',
         'views/report_account_payable_voucher.xml',
+        'views/report_check_voucher.xml',
         'views/report.xml',
     ],
     # only loaded in demonstration mode
