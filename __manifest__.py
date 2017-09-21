@@ -6,6 +6,7 @@
         Globpak Customizations""",
 
     'description': """
+        - Expense Report
         - Account Payable Voucher
     """,
 

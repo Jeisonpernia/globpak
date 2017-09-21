@@ -63,26 +63,26 @@
 					<div class="row">
 						<div class="col-xs-4 pull-right">
 							<table class="table table-condensed">
-								<!-- <tr class="border-black">
-                            		<td><strong>Subtotal</strong></td>
+								<tr class="border-black">
+									<td><strong>Subtotal</strong></td>
                             		<td class="text-right">
                                 		<span t-field="o.untaxed_amount"/>
                             		</td>
-                        		</tr> -->
-                        		<t t-foreach="o._get_tax_amount_by_group()" t-as="amount_by_group">
+								</tr> 
+                        		<t t-foreach="o.myfunction()" t-as="amount_by_group">
                             		<tr>
                                 		<td>
-                                			<span t-esc="amount_by_group[0] if len(o.expense_line_ids.tax_ids) &gt; 1 else (o.expense_line_ids.tax_ids.tax_id.description or o.expense_line_ids.tax_ids.tax_id.name)"/>
+                                			<span t-esc="amount_by_group[0] if len(o.expense_line_ids.tax_ids) &gt; 1 else (o.expense_line_ids.tax_ids.description or o.expense_line_ids.tax_ids.name)"/>
                                 		</td>
                                 		<td class="text-right">
-                                    		<span t-esc="amount_by_group[1]"/>
+                                    		<span t-esc="'%.2f'%(amount_by_group[1])"/>
                                 		</td>
                             		</tr>
                         		</t>
 								<tr class="border-black">
 									<td><strong>Total</strong></td>
 									<td class="text-right">
-										<span t-field="o.total_amount" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+										<span t-field="o.total_amount"/>
 									</td>
 								</tr>
 							</table>

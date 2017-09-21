@@ -5,7 +5,7 @@
         <report 
             id="account_payable_voucher"
             model="account.invoice"
-            string="Account Payable Voucher"
+            string="Accounts Payable Voucher"
             report_type="qweb-pdf"
             name="globpak.report_account_payable_voucher"
             file="globpak.report_account_payable_voucher"

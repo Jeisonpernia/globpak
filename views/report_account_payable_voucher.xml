@@ -8,7 +8,7 @@
             <div class="row">
                 <div class="text-center">
                     <h3>
-                        <span t-if="o.type == 'in_invoice'">Account Payable Voucher</span>
+                        <span t-if="o.type == 'in_invoice'">Accounts Payable Voucher</span>
                     </h3>
                 </div>
             </div>
@@ -52,11 +52,15 @@
                     </tr>
                 </thead>
                 <tbody class="invoice_tbody">
+                    <t t-set='debit_total' t-value='0'/>
+                    <t t-set='credit_total' t-value='0'/>
                     <tr t-foreach="o.move_id.line_ids" t-as="l">
                         <td><span t-field="l.account_id.code"/></td>
                         <td><span t-field="l.account_id.name"/></td>
                         <td class="text-right"><span t-field="l.debit"/></td>
                         <td class="text-right"><span t-field="l.credit"/></td>
+                        <t t-set='debit_total' t-value='debit_total + l.debit'/>
+                        <t t-set='credit_total' t-value='credit_total + l.credit'/>
                     </tr>
                 </tbody>
             </table>
@@ -64,27 +68,34 @@
             <div class="row">
                 <div class="col-xs-4 pull-right">
                     <table class="table table-condensed">
-                        <tr class="border-black">
+                        <!--<tr class="border-black">
                             <td><strong>Subtotal</strong></td>
                             <td class="text-right">
                                 <span t-field="o.amount_untaxed" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}"/>
-                                <!--<span t-field="o.amount_untaxed"/>-->
                             </td>
-                        </tr>
-                        <t t-foreach="o._get_tax_amount_by_group()" t-as="amount_by_group">
+                        </tr>-->
+                        <!--<t t-foreach="o._get_tax_amount_by_group()" t-as="amount_by_group">
                             <tr>
                                 <td><span t-esc="amount_by_group[0] if len(o.tax_line_ids) &gt; 1 else (o.tax_line_ids.tax_id.description or o.tax_line_ids.tax_id.name)"/></td>
                                 <td class="text-right">
                                     <span t-esc="amount_by_group[1]" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}"/>
-                                    <!--<span t-esc="amount_by_group[1]"/>-->
                                 </td>
                             </tr>
-                        </t>
+                        </t>-->
                         <tr class="border-black">
                             <td><strong>Total</strong></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Debit</td>
                             <td class="text-right">
-                                 <span t-field="o.amount_total" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}"/>
-                                 <!--<span t-field="o.amount_total"/>-->
+                                <span t-esc="debit_total" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Credit</td>
+                            <td class="text-right">
+                                 <span t-esc="credit_total" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}"/>
                             </td>
                         </tr>
                     </table>
