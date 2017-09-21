@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<data>
+<template id="report_account_payable_voucher_document">
+    <t t-call="report.external_layout">
+        <t t-set="o" t-value="o.with_context({'lang':o.partner_id.lang})"/>
+        <div class="page">
+            <div class="row">
+                <div class="text-center">
+                    <h3>
+                        <span t-if="o.type == 'in_invoice'">Account Payable Voucher</span>
+                    </h3>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-xs-12 text-right" t-if="o.type == 'in_invoice'">
+                    <h5><strong>No: </strong><span t-field="o.number"/></h5>
+                </div>
+                
+                <div class="col-xs-12 text-right" t-if="o.date_invoice and o.type == 'in_invoice'">
+                    <h5><strong>Date: </strong><span t-field="o.date_invoice"/></h5>
+                </div>
+                
+                <div name="invoice_address" class="col-xs-5" style="font-size: 14px">
+                    <address t-field="o.partner_id" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;], &quot;no_marker&quot;: True}"/>
+                    <span t-if="o.partner_id.vat">VAT: <span t-field="o.partner_id.vat"/></span>
+                    <span t-if="o.partner_id.x_tin">TIN: <span t-field="o.partner_id.x_tin"/></span>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-xs-10 pull-right" t-if="o.type == 'in_invoice'" style="font-size: 14px">
+                    <strong>Description:</strong>
+                    <p t-field="o.x_description"/>
+                </div>
+            </div>
+            
+            <br/>
+
+            <!-- Is there a discount on at least one line? -->
+            <t t-set="display_discount" t-value="any([l.discount for l in o.invoice_line_ids])"/>
+            
+            <!-- ACCOUNT PAYABLE VOUCHER -->
+            <table class="table table-condensed" t-if="o.move_id and o.type == 'in_invoice'" style="font-size: 12px">
+                <thead>
+                    <tr>
+                        <th>Account Code</th>
+                        <th>Account Name</th>
+                        <th class="text-right">Debit</th>
+                        <th class="text-right">Credit</th>
+                    </tr>
+                </thead>
+                <tbody class="invoice_tbody">
+                    <tr t-foreach="o.move_id.line_ids" t-as="l">
+                        <td><span t-field="l.account_id.code"/></td>
+                        <td><span t-field="l.account_id.name"/></td>
+                        <td class="text-right"><span t-field="l.debit"/></td>
+                        <td class="text-right"><span t-field="l.credit"/></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="row">
+                <div class="col-xs-4 pull-right">
+                    <table class="table table-condensed">
+                        <tr class="border-black">
+                            <td><strong>Subtotal</strong></td>
+                            <td class="text-right">
+                                <span t-field="o.amount_untaxed" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}"/>
+                                <!--<span t-field="o.amount_untaxed"/>-->
+                            </td>
+                        </tr>
+                        <t t-foreach="o._get_tax_amount_by_group()" t-as="amount_by_group">
+                            <tr>
+                                <td><span t-esc="amount_by_group[0] if len(o.tax_line_ids) &gt; 1 else (o.tax_line_ids.tax_id.description or o.tax_line_ids.tax_id.name)"/></td>
+                                <td class="text-right">
+                                    <span t-esc="amount_by_group[1]" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}"/>
+                                    <!--<span t-esc="amount_by_group[1]"/>-->
+                                </td>
+                            </tr>
+                        </t>
+                        <tr class="border-black">
+                            <td><strong>Total</strong></td>
+                            <td class="text-right">
+                                 <span t-field="o.amount_total" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}"/>
+                                 <!--<span t-field="o.amount_total"/>-->
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            
+            <br/>
+            
+            <div class="row">
+                <div class="col-xs-6">
+                    <strong>Prepared By: </strong><span t-field="o.user_id"/>    
+                </div>
+                <div class="col-xs-6 pull-right">
+                    <strong>Checked By: </strong><spann t-field="o.x_checked_by"/>
+                </div>
+            </div>
+        </div>
+    </t>
+</template>
+
+<template id="report_account_payable_voucher">
+    <t t-call="report.html_container">
+        <t t-foreach="docs" t-as="o">
+            <t t-call="globpak.report_account_payable_voucher_document" t-lang="o.partner_id.lang"/>
+        </t>
+    </t>
+</template>
+
+</data>
+</odoo>

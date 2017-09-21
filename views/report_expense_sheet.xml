@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+		<template id="report_expense_sheet_extend" inherit_id="hr_expense.report_expense_sheet">
+			<xpath expr="//div[@class='page']" position="replace">
+				<div class="page">
+					<div class="text-center">
+						<h3>Expenses Report</h3>
+					</div>
+
+					<div class="col-xs-12 text-right">
+                    	<h5><strong>Date: </strong><span t-field="o.accounting_date"/></h5>
+                	</div>
+
+					<div class="row mt32 mb32">
+
+						<div class="col-xs-12">
+							<strong>Description:</strong>
+							<p t-field="o.name"/>
+						</div>
+
+					</div>
+
+					<table class="table table-condensed" style="font-size: 12px">
+						<thead>
+							<tr>
+								<th>Date</th>
+								<th>Ref.</th>
+								<th>Payee</th>
+								<th>Particulars</th>
+								<th>Account Code</th>
+								<th>Taxes</th>
+								<th class="text-right">Price</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr t-foreach="o.expense_line_ids" t-as="line">
+								<td><span t-field="line.date"/></td>
+								<td><span t-field="line.reference"/></td>
+								 <td><span t-field="line.x_vendor"/></td>
+								<td>
+                                    <span t-field="line.name"/>
+                                    <span t-field="line.description"/>
+                                    <br/>
+                                    <span t-field="line.analytic_account_id.name"/>
+                                </td>
+                                 <td><span t-field="line.account_id"/></td>
+								<td>
+									<t t-foreach="line.tax_ids" t-as="tax">
+										<t t-if="tax.description">
+											<span t-field="tax.description"/>
+										</t>
+										<t t-if="not tax.description">
+											<span t-field="tax.name"/>
+										</t>
+									</t>
+								</td>
+								<td class="text-right"><span t-field="line.total_amount"/></td>
+							</tr>
+						</tbody>
+					</table>
+
+					<div class="row">
+						<div class="col-xs-4 pull-right">
+							<table class="table table-condensed">
+								<!-- <tr class="border-black">
+                            		<td><strong>Subtotal</strong></td>
+                            		<td class="text-right">
+                                		<span t-field="o.untaxed_amount"/>
+                            		</td>
+                        		</tr> -->
+                        		<t t-foreach="o._get_tax_amount_by_group()" t-as="amount_by_group">
+                            		<tr>
+                                		<td>
+                                			<span t-esc="amount_by_group[0] if len(o.expense_line_ids.tax_ids) &gt; 1 else (o.expense_line_ids.tax_ids.tax_id.description or o.expense_line_ids.tax_ids.tax_id.name)"/>
+                                		</td>
+                                		<td class="text-right">
+                                    		<span t-esc="amount_by_group[1]"/>
+                                		</td>
+                            		</tr>
+                        		</t>
+								<tr class="border-black">
+									<td><strong>Total</strong></td>
+									<td class="text-right">
+										<span t-field="o.total_amount" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+									</td>
+								</tr>
+							</table>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-xs-6">
+							<strong>Prepared By: </strong><span t-field="o.employee_id.name"/>
+						</div>
+						<div class="col-xs-6">
+							<strong>Checked By: </strong><span t-field="o.responsible_id.name"/>
+						</div>
+					</div>
+				</div>
+			</xpath>
+		</template>
+	</data>
+</odoo>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- QWeb Reports -->
+        <report 
+            id="account_payable_voucher"
+            model="account.invoice"
+            string="Account Payable Voucher"
+            report_type="qweb-pdf"
+            name="globpak.report_account_payable_voucher"
+            file="globpak.report_account_payable_voucher"
+            attachment_use="True"
+            attachment="(object.state in ('open','paid')) and ('INV'+(object.number or '').replace('/','')+'.pdf')"
+        />
+
+    </data>
+</odoo>
