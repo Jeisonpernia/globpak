@@ -8,6 +8,9 @@
     'description': """
         - Expense Report
         - Account Payable Voucher
+        - Check Print
+        - Check Voucher
+        - Sales Invoice
     """,
 
     'author': "Excode Innovations Inc.",
@@ -20,16 +23,20 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'hr_expense', 'l10n_us_check_printing'],
+    'depends': ['base', 'hr_expense', 'report', 'l10n_us_check_printing'],
 
     # always loaded
     'data': [
         # 'security/ir.model.access.csv',
         # 'views/views.xml',
         # 'views/templates.xml',
+        'data/us_check_printing.xml',
         'views/report_expense_sheet.xml',
         'views/report_account_payable_voucher.xml',
-        'views/report_check_voucher.xml',
+        'views/report_invoice.xml',
+        'report/print_check.xml',
+        'report/report_check_voucher.xml',
+        'report/print_check_top.xml',
         'views/report.xml',
     ],
     # only loaded in demonstration mode

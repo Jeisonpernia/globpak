@@ -10,10 +10,10 @@
             name="globpak.report_account_payable_voucher"
             file="globpak.report_account_payable_voucher"
             attachment_use="True"
-            attachment="(object.state in ('open','paid')) and ('INV'+(object.number or '').replace('/','')+'.pdf')"
+            attachment="(object.state in ('open','paid')) and ('APV'+(object.number or '').replace('/','')+'.pdf')"
         />
 
-        <report 
+        <!--<report 
             id="check_voucher"
             model="account.payment"
             string="Print Check Voucher"
@@ -22,7 +22,7 @@
             file="globpak.report_check_voucher"
             attachment_use="True"
             attachment="(object.state in ('posted','sent')) and ('CHK'+(object.name or '').replace('/','')+'.pdf')"
-        />
+        />-->
 
     </data>
 </odoo>
