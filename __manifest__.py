@@ -31,6 +31,7 @@
         # 'views/views.xml',
         # 'views/templates.xml',
         'data/us_check_printing.xml',
+        'views/account_invoice_view.xml',
         'views/report_expense_sheet.xml',
         'views/report_account_payable_voucher.xml',
         'views/report_invoice.xml',
