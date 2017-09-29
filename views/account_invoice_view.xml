@@ -14,7 +14,21 @@
                 </xpath>
 
             </field>
+        </record> 
+
+        <record id="invoice_supplier_form_extend" model="ir.ui.view">
+            <field name="name">account.invoice.supplier.form.extend</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_supplier_form" />
+            <field name="arch" type="xml">
+
+                <xpath expr="//notebook/page[2]/group/group[1]" position="inside">
+                    <field name="x_approved_by" />
+                </xpath>
+
+            </field>
         </record>
 
+        
     </data>
 </odoo>

@@ -2,64 +2,21 @@
 <odoo>
 <data>
 
-<template id="globpak_check">
-    <div class="ckus_check">
-        <div class="sequence_number" t-if="page['sequence_number']" t-esc="page['sequence_number']" />
-        <div class="ckus_date" t-esc="formatLang(page['payment_date'], date=True)"/>
-        <div class="ckus_payee_name" t-esc="page['partner_name']"/>
-        <div class="ckus_amount">
-            <t t-if="isinstance(page['amount'], float)"><t t-esc="formatLang(page['amount'])"/></t>
-            <t t-if="isinstance(page['amount'], str)"><t t-esc="page['amount']"/></t>
-        </div>
-        <div class="ckus_amount_in_word" t-esc="page['amount_in_word']"/>
-        <div class="ckus_memo" t-esc="page['memo']"/>
-    </div>
-</template>
-
-<template id="globpak_check_voucher">
-    <div t-attf-class="ckus_stub ckus_stub_{{ stub_num }}">
-        <div class="sequence_number" t-if="page['sequence_number']" t-esc="page['sequence_number']" />
-        <div class="row summary_line">
-            <div class="col-xs-6 text-left">
-                <span t-esc="page['partner_name']"/>
+<template id="ckus_check_extend" inherit_id="l10n_us_check_printing.ckus_check">
+    <xpath expr="//div[@class='ckus_check']" position="replace">
+        <div class="ckus_check">
+            <div class="sequence_number" t-if="page['sequence_number']" t-esc="page['sequence_number']" />
+            <div class="ckus_date" t-esc="formatLang(page['payment_date'], date=True)" style="top: 0.37in;left: 6.13in;" />
+            <div class="ckus_amount" style="top: 0.60in;left: 6.35in;">
+                <t t-if="isinstance(page['amount'], float)"><t t-esc="formatLang(page['amount'])"/></t>
+                <t t-if="isinstance(page['amount'], str)"><t t-esc="page['amount']"/></t>
             </div>
-            <div class="col-xs-6 text-right">
-                <span t-esc="formatLang(page['payment_date'], date=True)"/>
-            </div>
+            <div class="ckus_payee_name" t-esc="page['partner_name']" style="top: 0.70in; left: 1.30in;" />
+            <div class="ckus_amount_in_word" t-esc="page['amount_in_word']" style="top: 0.95in; left: 1.15in;"/>
+            <!--<div class="ckus_memo" t-esc="page['memo']"/>-->
         </div>
-
-        <table class="table table-bordered table-condensed stub_lines" t-if="page['stub_lines']">
-            <thead><tr>
-                <th class="text-left">Due Date</th>
-                <th class="text-left">Description</th>
-                <th class="text-right">Invoice Amount</th>
-                <th class="text-right">Balance Due</th>
-                <th class="text-right">Payment</th>
-            </tr></thead>
-            <tbody>
-                <t t-foreach="page['stub_lines']" t-as="stub_line">
-                    <t t-if="stub_line.get('header')">
-                        <tr><th colspan="6"><t t-esc="stub_line['name']"/></th></tr>
-                    </t>
-                    <t t-if="not stub_line.get('header')"><tr>
-                        <td class="text-left"><t t-if="stub_line['due_date']" t-esc="formatLang(stub_line['due_date'], date=True)"/></td>
-                        <td class="text-left"><t t-esc="stub_line['number']"/></td>
-                        <td class="text-right"><t t-esc="formatLang(stub_line['amount_total'], monetary=True, currency_obj=stub_line['currency'])"/></td>
-                        <td class="text-right">
-                            <t t-if="int(stub_line['amount_residual']*10**4) != 0"><t t-esc="formatLang(stub_line['amount_residual'], monetary=True, currency_obj=stub_line['currency'])"/></t>
-                            <t t-if="int(stub_line['amount_residual']*10**4) == 0">-</t>
-                        </td>
-                        <td class="text-right"><t t-esc="formatLang(stub_line['amount_paid'], monetary=True, currency_obj=stub_line['currency'])"/></td>
-                    </tr></t>
-                </t>
-                <tr t-if="page['stub_cropped']"><td colspan="6" class="text-right">...</td></tr>
-            </tbody>
-        </table>
-        <div class="stub_total_amount">Check Amount:
-            <t t-if="isinstance(page['amount'], float)"><t t-esc="formatLang(page['amount'], monetary=True, currency_obj=page['currency'])"/></t>
-            <t t-if="isinstance(page['amount'], str)"><t t-esc="page['amount']"/></t>
-        </div>
-    </div>
+    </xpath>
+    
 </template>
 
 </data>

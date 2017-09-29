@@ -4,6 +4,8 @@ import odoo.addons.decimal_precision as dp
 class HrExpenseSheet(models.Model):
 	_inherit = 'hr.expense.sheet'
 
+	x_checked_by = fields.Many2one('res.partner', string="Checked By")
+	x_approved_by = fields.Many2one('res.partner', string="Approved By")
 	untaxed_amount = fields.Float(string='Subtotal', store=True, compute='_compute_amount_untaxed', digits=dp.get_precision('Account'))
 
 	@api.one
