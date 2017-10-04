@@ -22,13 +22,24 @@ class AccountInvoice(models.Model):
             else:
                 # Vat Exempt Sales
                 vat_exempt += line.price_subtotal
+
+        sign = self.type in ['in_refund', 'out_refund'] and -1 or 1
+
         self.vat_sales = vat_sales
         self.vat_exempt_sales = vat_exempt
         self.zero_rated_sales = zero_rated
 
+        self.vat_sales_signed = vat_sales * sign
+        self.vat_exempt_sales_signed = vat_exempt * sign
+        self.zero_rated_sales_signed = zero_rated * sign
+
     vat_sales = fields.Monetary(string='Vatable Sales', store=True, readonly=True, compute='_compute_amount_sales', track_visibility='always')
     vat_exempt_sales = fields.Monetary(string='Vat Exempt Sales', store=True, readonly=True, compute='_compute_amount_sales', track_visibility='always')
-    zero_rated_sales = fields.Monetary(string='Vat Exempt Sales', store=True, readonly=True, compute='_compute_amount_sales', track_visibility='always')
+    zero_rated_sales = fields.Monetary(string='Zero Rated Sales', store=True, readonly=True, compute='_compute_amount_sales', track_visibility='always')
+
+    vat_sales_signed = fields.Monetary(string='Vatable Sales Signed', store=True, readonly=True, compute='_compute_amount_sales', track_visibility='always')
+    vat_exempt_sales_signed = fields.Monetary(string='Vat Exempt Sales Signed', store=True, readonly=True, compute='_compute_amount_sales', track_visibility='always')
+    zero_rated_sales_signed = fields.Monetary(string='Zero Rated Sales Signed', store=True, readonly=True, compute='_compute_amount_sales', track_visibility='always')
 
     po_no = fields.Char(string='PO No.')
     dr_no = fields.Char(string='DR No.')

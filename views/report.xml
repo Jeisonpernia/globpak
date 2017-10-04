@@ -21,7 +21,40 @@
             name="globpak.report_account_collection_receipt"
             file="globpak.report_account_collection_receipt"
             attachment_use="True"
-            attachment="(object.state in ('open','paid')) and ('APV'+(object.number or '').replace('/','')+'.pdf')"
+            attachment="(object.state in ('open','paid')) and ('CR'+(object.number or '').replace('/','')+'.pdf')"
+        />
+
+        <report 
+            id="account_journal_voucher"
+            model="account.move"
+            string="Journal Voucher"
+            report_type="qweb-pdf"
+            name="globpak.report_journal_voucher"
+            file="globpak.report_journal_voucher"
+            attachment_use="True"
+            attachment="(object.state in ('draft','posted')) and ('JV'+(object.name or '').replace('/','')+'.pdf')"
+        />
+
+        <report 
+            id="account_credit_memo"
+            model="account.invoice"
+            string="Credit Memo"
+            report_type="qweb-pdf"
+            name="globpak.report_credit_memo"
+            file="globpak.report_credit_memo"
+            attachment_use="True"
+            attachment="(object.state in ('open','paid')) and ('CM'+(object.number or '').replace('/','')+'.pdf')"
+        />
+
+        <report 
+            id="account_debit_memo"
+            model="account.invoice"
+            string="Debit Memo"
+            report_type="qweb-pdf"
+            name="globpak.report_debit_memo"
+            file="globpak.report_debit_memo"
+            attachment_use="True"
+            attachment="(object.state in ('open','paid')) and ('DM'+(object.number or '').replace('/','')+'.pdf')"
         />        
 
     </data>
