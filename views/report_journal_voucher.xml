@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 <data>
@@ -96,6 +97,8 @@
 </data>
 </odoo>
 =======
+=======
+>>>>>>> 38d76b6e2eecc31ac32a4e9d1250e6a4f64b8912
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 <data>
@@ -192,4 +195,7 @@
 
 </data>
 </odoo>
+<<<<<<< HEAD
+>>>>>>> 38d76b6e2eecc31ac32a4e9d1250e6a4f64b8912
+=======
 >>>>>>> 38d76b6e2eecc31ac32a4e9d1250e6a4f64b8912
