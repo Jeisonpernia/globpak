@@ -41,6 +41,9 @@
         'report/print_check_top.xml',
         'report/print_check_bottom.xml',
         'views/report_collection_receipt.xml',
+        'views/report_journal_voucher.xml',
+        'views/report_credit_memo.xml',
+        'views/report_debit_memo.xml',
         'views/report.xml',
     ],
     # only loaded in demonstration mode
