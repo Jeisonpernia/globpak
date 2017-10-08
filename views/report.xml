@@ -55,5 +55,6 @@
             file="globpak.report_debit_memo"
             attachment_use="True"
             attachment="(object.state in ('open','paid')) and ('DM'+(object.number or '').replace('/','')+'.pdf')"
-        />        
+        />  
+</data>      
 </odoo>
