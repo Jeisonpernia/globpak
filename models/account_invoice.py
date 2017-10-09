@@ -33,6 +33,7 @@ class AccountInvoice(models.Model):
         self.vat_exempt_sales_signed = vat_exempt * sign
         self.zero_rated_sales_signed = zero_rated * sign
 
+    # NEW FIELDS
     vat_sales = fields.Monetary(string='Vatable Sales', store=True, readonly=True, compute='_compute_amount_sales', track_visibility='always')
     vat_exempt_sales = fields.Monetary(string='Vat Exempt Sales', store=True, readonly=True, compute='_compute_amount_sales', track_visibility='always')
     zero_rated_sales = fields.Monetary(string='Zero Rated Sales', store=True, readonly=True, compute='_compute_amount_sales', track_visibility='always')
@@ -47,5 +48,19 @@ class AccountInvoice(models.Model):
 
     x_approved_by = fields.Many2one('res.partner', 'Approved By')
 
+    collection_receipt_id = fields.Many2one('account.collection.receipt', string='Collection Receipt')
+
     # OVERRIDE FIELDS
     comment = fields.Text(default="All accounts are payable on the terms stated above. Interest of 36% per annum will be charged on all overdue counts. All claims of corrections to invoice must be made within two days of receipt of goods. Parties  expressly submit to the jurisdiction of the courts of Paranaque City on any legal action arrising from this transaction and an additional sum equal to twenty-five 25 percent of the amount due will be charge for attorney's fees and other costs.")
+
+    @api.multi
+    def action_generate_collection_receipt(self):
+        for record in self:
+            cr_id = self.env['account.collection.receipt'].create({
+                'invoicec_id': record.id
+            })
+            record.collection_receipt_id = cr_id.id
+
+    @api.multi
+    def action_print_collection_receipt(self):
+        return self.env['report'].get_action(self, 'globpak.report_account_collection_receipt')

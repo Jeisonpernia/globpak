@@ -6,11 +6,16 @@
             <field name="model">account.invoice</field>
             <field name="inherit_id" ref="account.invoice_form" />
             <field name="arch" type="xml">
+                <xpath expr="//header" position="inside">
+                    <button name="action_generate_collection_receipt" string="Generate Collection Receipt" type="object" groups="account.group_account_invoice" attrs="{'invisible':['|',('state', '!=', 'paid'),('collection_receipt_id','!=',False)]}" />
+                    <button name="action_print_collection_receipt" string="Print Collection Receipt" type="object" groups="account.group_account_invoice" attrs="{'invisible':['|',('state', '!=', 'paid'),('collection_receipt_id','=',False)]}" />
+                </xpath>
 
                 <xpath expr="//div[@groups='base.group_multi_currency']" position="after">
                     <field name="po_no" />
                     <field name="dr_no" />
-                    <field name="dr_date" /> 
+                    <field name="dr_date" />
+                    <field name="collection_receipt_id" /> 
                 </xpath>
 
             </field>

@@ -2,3 +2,4 @@
 
 from . import hr_expense
 from . import account_invoice
+from . import collection_receipt

@@ -44,7 +44,7 @@
 </template>
 
 <template id="external_layout_accounting_footer">
-    <div class="footer">
+    <div class="footer" style="font-size: 12px">
         <div class="text-center" style="border-top: 1px solid black;">
             <ul t-if="not company.custom_footer" class="list-inline">
                 <t t-set="company" t-value="company.sudo()"/>
