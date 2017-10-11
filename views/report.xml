@@ -55,7 +55,27 @@
             file="globpak.report_debit_memo"
             attachment_use="True"
             attachment="(object.state in ('open','paid')) and ('DM'+(object.number or '').replace('/','')+'.pdf')"
-        />        
+        />
+
+        <report 
+            id="account_acknowledgement_receipt"
+            model="account.payment"
+            string="Acknowledgement Receipt"
+            report_type="qweb-pdf"
+            name="globpak.report_account_acknowledgement_receipt"
+            file="globpak.report_account_acknowledgement_receipt"
+            attachment_use="True"
+            attachment="(object.state in ('draft','posted')) and ('AR'+(object.name or '').replace('/','')+'.pdf')"
+        />
+
+        <report 
+            id="action_report_account_payable_summary"
+            model="account.report.payable.summary"
+            string="Accounts Payable Summary"
+            report_type="qweb-pdf"
+            name="globpak.report_account_payable_summary"
+            file="globpak.report_account_payable_summary"
+            />        
 
     </data>
 </odoo>

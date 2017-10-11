@@ -9,11 +9,13 @@
                 <xpath expr="//header" position="inside">
                     <button name="action_generate_collection_receipt" string="Generate Collection Receipt" type="object" groups="account.group_account_invoice" attrs="{'invisible':['|','|',('state', '!=', 'posted'),('collection_receipt_id','!=',False),('payment_type','!=','inbound')]}" />
                     <button name="action_print_collection_receipt" string="Print Collection Receipt" type="object" groups="account.group_account_invoice" attrs="{'invisible':['|','|',('state', '!=', 'posted'),('collection_receipt_id','=',False),('payment_type','!=','inbound')]}" />
+                    <button name="action_generate_acknowledgement_receipt" string="Generate Acknowledgement Receipt" type="object" groups="account.group_account_invoice" attrs="{'invisible':['|','|',('state', '!=', 'posted'),('acknowledgement_receipt_id','!=',False),('payment_type','!=','inbound')]}" />
+                    <button name="action_print_acknowledgement_receipt" string="Print Acknowledgement Receipt" type="object" groups="account.group_account_invoice" attrs="{'invisible':['|','|',('state', '!=', 'posted'),('acknowledgement_receipt_id','=',False),('payment_type','!=','inbound')]}" />
                 </xpath>
 
                 <xpath expr="//field[@name='payment_date']" position="after">
                     <field name="collection_receipt_id" attrs="{'invisible':['|','|',('state', '!=', 'posted'),('collection_receipt_id','=',False),('payment_type','!=','inbound')]}" readonly="1"/> 
-                    <!-- <field name="collection_receipt_id" readonly="1"/> -->
+                    <field name="acknowledgement_receipt_id" attrs="{'invisible':['|','|',('state', '!=', 'posted'),('acknowledgement_receipt_id','=',False),('payment_type','!=','inbound')]}" readonly="1"/>
                 </xpath>
                 
             </field>

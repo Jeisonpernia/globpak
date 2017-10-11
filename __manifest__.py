@@ -33,6 +33,7 @@
         'security/ir.model.access.csv',
         'data/ir_sequence_data.xml',
         'data/us_check_printing.xml',
+        'data/account_tax_rate_data.xml',
         'views/layout_templates.xml',
         'views/account_invoice_view.xml',
         'views/account_payment_view.xml',
@@ -43,11 +44,14 @@
         'report/print_check.xml',
         'report/print_check_top.xml',
         'report/print_check_bottom.xml',
+        'views/report_acknowledgement_receipt.xml',
         'views/report_collection_receipt.xml',
         'views/report_journal_voucher.xml',
         'views/report_credit_memo.xml',
         'views/report_debit_memo.xml',
         'views/report.xml',
+        'wizard/account_report_payable_summary_view.xml',
+        'views/report_account_payable_summary.xml',
     ],
     # only loaded in demonstration mode
     'demo': [

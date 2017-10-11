@@ -2,3 +2,4 @@ id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_account_invoice_group_invoice_cr,account.collection.receipt group invoice,model_account_collection_receipt,account.group_account_invoice,1,1,1,1
 access_account_invoice_group_invoice_dm,account.debit.memo group invoice,model_account_debit_memo,account.group_account_invoice,1,1,1,1
 access_account_invoice_group_invoice_cm,account.credit.memo group invoice,model_account_credit_memo,account.group_account_invoice,1,1,1,1
+access_account_invoice_group_invoice_ar,account.acknowledgement.receipt group invoice,model_account_acknowledgement_receipt,account.group_account_invoice,1,1,1,1
