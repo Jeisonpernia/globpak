@@ -1,4 +1,4 @@
-from odoo import models, fields, api
+from odoo import models, fields, api, _
 
 class AccountInvoice(models.Model):
     _inherit = 'account.invoice'
@@ -48,19 +48,42 @@ class AccountInvoice(models.Model):
 
     x_approved_by = fields.Many2one('res.partner', 'Approved By')
 
-    collection_receipt_id = fields.Many2one('account.collection.receipt', string='Collection Receipt')
+    # REPORTS
+    # collection_receipt_id = fields.Many2one('account.collection.receipt', string='Collection Receipt')
+    debit_memo_id = fields.Many2one('account.debit.memo', string='Debit Memo')
+    credit_memo_id = fields.Many2one('account.credit.memo', string='Credit Memo')
 
     # OVERRIDE FIELDS
     comment = fields.Text(default="All accounts are payable on the terms stated above. Interest of 36% per annum will be charged on all overdue counts. All claims of corrections to invoice must be made within two days of receipt of goods. Parties  expressly submit to the jurisdiction of the courts of Paranaque City on any legal action arrising from this transaction and an additional sum equal to twenty-five 25 percent of the amount due will be charge for attorney's fees and other costs.")
 
-    @api.multi
-    def action_generate_collection_receipt(self):
-        for record in self:
-            cr_id = self.env['account.collection.receipt'].create({
-                'invoicec_id': record.id
-            })
-            record.collection_receipt_id = cr_id.id
+    # @api.multi
+    # def action_generate_collection_receipt(self):
+    #     for record in self:
+    #         cr_id = self.env['account.collection.receipt'].create({
+    #             'invoice_id': record.id
+    #         })
+    #         record.collection_receipt_id = cr_id.id
+
+    # @api.multi
+    # def action_print_collection_receipt(self):
+    #     return self.env['report'].get_action(self, 'globpak.report_account_collection_receipt')
 
     @api.multi
-    def action_print_collection_receipt(self):
-        return self.env['report'].get_action(self, 'globpak.report_account_collection_receipt')
+    def action_generate_debit_memo(self):
+        for record in self:
+            dm_id = self.env['account.debit.memo'].create({})
+            record.debit_memo_id = dm_id.id
+
+    @api.multi
+    def action_print_debit_memo(self):
+        return self.env['report'].get_action(self, 'globpak.report_debit_memo')
+
+    @api.multi
+    def action_generate_credit_memo(self):
+        for record in self:
+            cm_id = self.env['account.credit.memo'].create({})
+            record.credit_memo_id = cm_id.id
+
+    @api.multi
+    def action_print_credit_memo(self):
+        return self.env['report'].get_action(self, 'globpak.report_credit_memo')

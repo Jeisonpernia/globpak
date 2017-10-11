@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data noupdate="1">
+    <data noupdate="0">
         <!-- QWeb Reports -->
         <report 
             id="account_payable_voucher"
@@ -12,10 +12,10 @@
             attachment_use="True"
             attachment="(object.state in ('open','paid')) and ('APV'+(object.number or '').replace('/','')+'.pdf')"
         />
-
+        
         <report 
             id="account_collection_receipt"
-            model="account.invoice"
+            model="account.payment"
             string="Collection Receipt"
             report_type="qweb-pdf"
             name="globpak.report_account_collection_receipt"

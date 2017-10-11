@@ -7,16 +7,26 @@
             <field name="inherit_id" ref="account.invoice_form" />
             <field name="arch" type="xml">
                 <xpath expr="//header" position="inside">
-                    <button name="action_generate_collection_receipt" string="Generate Collection Receipt" type="object" groups="account.group_account_invoice" attrs="{'invisible':['|',('state', '!=', 'paid'),('collection_receipt_id','!=',False)]}" />
-                    <button name="action_print_collection_receipt" string="Print Collection Receipt" type="object" groups="account.group_account_invoice" attrs="{'invisible':['|',('state', '!=', 'paid'),('collection_receipt_id','=',False)]}" />
+                    <!-- <button name="action_generate_collection_receipt" string="Generate Collection Receipt" type="object" groups="account.group_account_invoice" attrs="{'invisible':['|',('state', '!=', 'paid'),('collection_receipt_id','!=',False)]}" /> -->
+                    <!-- <button name="action_print_collection_receipt" string="Print Collection Receipt" type="object" groups="account.group_account_invoice" attrs="{'invisible':['|',('state', '!=', 'paid'),('collection_receipt_id','=',False)]}" /> -->
+                    <button name="action_generate_credit_memo" string="Generate Credit Memo" type="object" groups="account.group_account_invoice" attrs="{'invisible':['|',('type', '!=', 'out_refund'),('credit_memo_id','!=',False)]}" />
+                    <button name="action_print_credit_memo" string="Print Credit Memo" type="object" groups="account.group_account_invoice" attrs="{'invisible':['|',('type', '!=', 'out_refund'),('credit_memo_id','=',False)]}" />
+                    <!-- <button name="action_generate_credit_memo" string="Generate Credit Memo" type="object" groups="account.group_account_invoice" attrs="{'invisible':['|',('type', '!=', 'out_refund')]}" />
+                    <button name="action_print_credit_memo" string="Print Credit Memo" type="object" groups="account.group_account_invoice" attrs="{'invisible':['|',('type', '!=', 'out_refund')]}" /> -->
                 </xpath>
 
                 <xpath expr="//div[@groups='base.group_multi_currency']" position="after">
                     <field name="po_no" />
                     <field name="dr_no" />
                     <field name="dr_date" />
-                    <field name="collection_receipt_id" /> 
+                    <!-- <field name="collection_receipt_id" attrs="{'invisible':['|',('state', '!=', 'paid'),('collection_receipt_id','=',False)]}" readonly="1"/>  -->
+                    <field name="credit_memo_id" attrs="{'invisible':['|',('type', '!=', 'out_refund'),('credit_memo_id','=',False)]}" readonly="1"/>
                 </xpath>
+
+                <!-- <xpath expr="//field[@name='name']" position="after">
+                    <field name="x_checked_by" />
+                    <field name="x_approved_by" />
+                </xpath> -->
 
             </field>
         </record> 
@@ -26,6 +36,15 @@
             <field name="model">account.invoice</field>
             <field name="inherit_id" ref="account.invoice_supplier_form" />
             <field name="arch" type="xml">
+
+                <xpath expr="//header" position="inside">
+                    <button name="action_generate_debit_memo" string="Generate Debit Memo" type="object" groups="account.group_account_invoice" attrs="{'invisible':['|',('type', '!=', 'in_refund'),('debit_memo_id','!=',False)]}" />
+                    <button name="action_print_debit_memo" string="Print Debit Memo" type="object" groups="account.group_account_invoice" attrs="{'invisible':['|',('type', '!=', 'in_refund'),('debit_memo_id','=',False)]}" />
+                </xpath>
+
+                <xpath expr="//field[@name='currency_id']" position="after">
+                    <field name="debit_memo_id" attrs="{'invisible':[('type', '!=', 'in_refund')]}" readonly="1" /> 
+                </xpath>
 
                 <xpath expr="//notebook/page[2]/group/group[1]" position="inside">
                     <field name="x_approved_by" />

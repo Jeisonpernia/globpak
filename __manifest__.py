@@ -11,6 +11,9 @@
         - Check Print
         - Check Voucher
         - Sales Invoice
+        - Collection Receipt
+        - Credit Memo
+        - Debit Memo
     """,
 
     'author': "Excode Innovations Inc.",
@@ -32,6 +35,7 @@
         'data/us_check_printing.xml',
         'views/layout_templates.xml',
         'views/account_invoice_view.xml',
+        'views/account_payment_view.xml',
         'views/hr_expense_view.xml',
         'views/report_expense_sheet.xml',
         'views/report_account_payable_voucher.xml',

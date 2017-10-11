@@ -8,40 +8,51 @@
             <div class="row">
                 <div class="text-center">
                     <h3>
-                        <span t-if="o.type == 'out_invoice' and o.state == 'paid'">Collection Receipt</span>
+                        <span t-if="o.payment_type == 'inbound' and o.state == 'posted'">Collection Receipt</span>
                     </h3>
                 </div>
             </div>
             
             <div class="row">
-                <div class="col-xs-12 text-right" t-if="o.type == 'out_invoice' and o.state == 'paid'">
+                <div class="col-xs-12 text-right" t-if="o.payment_type == 'inbound' and o.state == 'posted'">
                     <h5><strong>No: </strong><span t-field="o.collection_receipt_id.name"/></h5>
                 </div>
                 
-                <div class="col-xs-12 text-right" t-if="o.type == 'out_invoice' and o.state == 'paid'">
-                    <h5><strong>Date: </strong><span t-field="o.date_invoice"/></h5>
+                <div class="col-xs-12 text-right" t-if="o.payment_type == 'inbound' and o.state == 'posted'">
+                    <h5><strong>Date: </strong><span t-field="o.payment_date"/></h5>
                 </div>              
             </div>
                         
             <br/>
 
-            <!-- COMPUTE TOTAL PAYMENT -->
-            <t t-set='payment_amount' t-value='0'/>
-            <!-- <t t-set='payment_in_words' t-value=''> -->
-            <t t-foreach="o.payment_ids" t-as="payment">
-                <!-- <t t-set='payment_amount' t-value='payment_amount + payment.amount '/> -->
-                <!-- <t t-set='payment_in_words' t-value="payment.amount_to_text_en.amount_to_text(math.floor(payment_amount), lang='en', currency=''" /> -->
-                <p t-if="o.type == 'out_invoice' and o.state == 'paid'">
-                    Received from <strong> <span t-field="o.partner_id.name" /> </strong> with TIN <strong> <span t-field="o.partner_id.x_tin" /> </strong> and address at <strong> <span t-esc="o.partner_id.contact_address" /> </strong>, the sum of <strong> <span t-field="payment.check_amount_in_words" /> </strong> (<strong> <span t-esc="payment.amount" t-options='{"widget": "monetary", "display_currency": o.currency_id}' /> </strong>) in partial/full payment of our Invoice/Statement as indicated.
-                </p>
-            </t>
+            <p t-if="o.payment_type == 'inbound' and o.state == 'posted'">
+                Received from <strong> <span t-field="o.partner_id.name" /> </strong> with TIN <strong> <span t-field="o.partner_id.x_tin" /> </strong> and address at <strong> <span t-esc="o.partner_id.contact_address" /> </strong>, the sum of <strong> <span t-field="o.check_amount_in_words" /> </strong> (<strong> <span t-esc="o.amount" t-options='{"widget": "monetary", "display_currency": o.currency_id}' /> </strong>) in partial/full payment of our Invoice/Statement as indicated.
+            </p>
+            
+            <br/>
 
-            <!-- <p t-if="o.type == 'out_invoice' and o.state == 'paid'">
-                Received from <strong> <span t-field="o.partner_id.name" /> </strong> with TIN <strong> <span t-field="o.partner_id.x_tin" /> </strong> and address at <strong> <span t-esc="o.partner_id.contact_address" /> </strong>, the sum of <strong> <span t-esc="payment_amount" t-options='{"widget": "monetary", "display_currency": o.currency_id}' /> </strong> in partial/full payment of our Invoice/Statement as indicated.
-            </p> -->
+            <!-- INVOICE DETAILS -->
+            <table class="table table-condensed" t-if="o.payment_type == 'inbound' and o.state == 'posted'" style="font-size: 12px">
+                <thead>
+                    <tr>
+                        <th>IN SETTLEMENT OF THE FOLLOWING</th>
+                        <th></th>
+                    </tr>
+                    <tr>
+                        <th>Invoice No.</th>
+                        <th>Amount</th>
+                    </tr>
+                </thead>
+                <tbody class="invoice_tbody">
+                    <tr t-foreach="o.invoice_ids" t-as="invoice">
+                        <td><span t-field="invoice.number"/></td>
+                        <td><span t-field="invoice.amount_total"/></td>
+                    </tr>
+                </tbody>
+            </table>
 
             <!-- Payment Form -->
-            <!-- <table class="table table-condensed" t-if="o.type == 'out_invoice' and o.state == 'paid'" style="font-size: 12px">
+            <table class="table table-condensed" t-if="o.payment_type == 'inbound' and o.state == 'posted'" style="font-size: 12px">
                 <thead>
                     <tr>
                         <th>FORM OF PAYMENT</th>
@@ -49,21 +60,18 @@
                     </tr>
                 </thead>
                 <tbody class="invoice_tbody">
-                    <tr t-foreach="o.payment_ids" t-as="payment">
-                        <td><span t-field="payment.journal_id.name"/></td>
-                        <td><span t-field="payment.amount"/></td>
+                    <tr>
+                        <td><span t-field="o.journal_id.name"/></td>
+                        <td><span t-field="o.amount"/></td>
                     </tr>
-                    <tr class="border-black">
+                    <tr>
                         <td>TOTAL</td>
-                        <td><span t-esc="payment_amount" /></td>
+                        <td><span t-field="o.amount" /></td>
                     </tr>
                 </tbody>
-            </table> -->
+            </table>
             
-            <div style="position: absolute; top: 800px; width: 100%" t-if="o.type == 'out_invoice' and o.state == 'paid'">
-                <!-- <div class="col-xs-6">
-                    <strong>Prepared By: </strong><span t-field="o.user_id"/>    
-                </div> -->
+            <div style="position: absolute; top: 800px; width: 100%" t-if="o.payment_type == 'inbound' and o.state == 'posted'">
                 <div class="col-xs-6 pull-right">
                     <strong>By: </strong>
                     <!-- <span t-field="o.x_checked_by"/>                     -->

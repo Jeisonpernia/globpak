@@ -10,5 +10,19 @@
             <field name="padding">3</field>
         </record>
 
+        <record id="seq_account_debit_memo" model="ir.sequence">
+            <field name="name">Debit Memo</field>
+            <field name="code">account.debit.memo</field>
+            <field name="prefix">DM</field>
+            <field name="padding">3</field>
+        </record>
+
+        <record id="seq_account_credit_memo" model="ir.sequence">
+            <field name="name">Credit Memo</field>
+            <field name="code">account.credit.memo</field>
+            <field name="prefix">CM</field>
+            <field name="padding">3</field>
+        </record>
+
     </data>
 </odoo>
