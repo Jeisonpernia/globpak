@@ -41,17 +41,21 @@
         'views/report_expense_sheet.xml',
         'views/report_account_payable_voucher.xml',
         'views/report_invoice.xml',
-        'report/print_check.xml',
-        'report/print_check_top.xml',
-        'report/print_check_bottom.xml',
         'views/report_acknowledgement_receipt.xml',
         'views/report_collection_receipt.xml',
         'views/report_journal_voucher.xml',
         'views/report_credit_memo.xml',
         'views/report_debit_memo.xml',
+        'report/print_check.xml',
+        'report/print_check_top.xml',
+        'report/print_check_bottom.xml',
+        # 'report/account_receivable_summary_report_views.xml', # END OF ACCOUNTING
+        'report/report_deliveryslip.xml', # START OF PURCHASING AND INVENTORY
         'views/report.xml',
         'wizard/account_report_payable_summary_view.xml',
-        'views/report_account_payable_summary.xml',
+        'wizard/account_report_receivable_summary_view.xml',
+        # 'views/report_account_payable_summary.xml',
+        'views/custom_report_menu.xml',
     ],
     # only loaded in demonstration mode
     'demo': [

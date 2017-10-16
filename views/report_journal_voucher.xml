@@ -39,10 +39,10 @@
                         <td><span t-field="l.account_id.code"/></td>
                         <td><span t-field="l.account_id.name"/></td>
                         <td><span t-field="l.ref"/></td>
-                        <!--<td class="text-right"><span t-field="l.debit" t-field-options="{&quot;widget&quot;: &quot;False&quot;}"/></td>
-                        <td class="text-right"><span t-field="l.credit" t-field-options="{&quot;widget&quot;: &quot;False&quot;}"/></td>-->
-                        <td class="text-right"><span t-esc="'%.2f'%(l.debit)" /></td>
-                        <td class="text-right"><span t-esc="'%.2f'%(l.credit)" /></td>
+                        <!-- <td class="text-right"><span t-esc="'%.2f'%(l.debit)" /></td> -->
+                        <!-- <td class="text-right"><span t-esc="'%.2f'%(l.credit)" /></td> -->
+                        <td class="text-right"><span t-esc="l.debit" t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"/></td>
+                        <td class="text-right"><span t-esc="l.credit" t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"/></td>
                         <t t-set='debit_total' t-value='debit_total + l.debit'/>
                         <t t-set='credit_total' t-value='credit_total + l.credit'/>
                     </tr>
@@ -50,8 +50,10 @@
                         <td></td>
                         <td></td>
                         <td class="text-right"><strong>Total</strong></td>
-                        <td class="text-right"><span t-esc="'%.2f'%(debit_total)" /></td>
-                        <td class="text-right"><span t-esc="'%.2f'%(credit_total)" /></td>
+                        <!-- <td class="text-right"><span t-esc="'%.2f'%(debit_total)" /></td> -->
+                        <!-- <td class="text-right"><span t-esc="'%.2f'%(credit_total)" /></td> -->
+                        <td class="text-right"><span t-esc="debit_total" t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"/></td>
+                        <td class="text-right"><span t-esc="credit_total" t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"/></td>
                     </tr>
                 </tbody>
             </table>

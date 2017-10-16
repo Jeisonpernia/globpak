@@ -5,31 +5,22 @@ from xlsxwriter.workbook import Workbook
 from cStringIO import StringIO
 import base64
 
-class AccountReportPayableSummary(models.TransientModel):
-    _name = 'account.report.payable.summary'
-    _description = 'Accounts Payable Summary Report (Monthly)'
-    # _inherit = 'account.common.account.report'
-
-    # journal_ids = fields.Many2many('account.journal', 'account_report_payable_summary_journal_rel', 'account_id', 'journal_id', string='Journals', required=True)
-
-    # def _print_report(self, data):
-    #     data = self.pre_print_report(data)
-    #     records = self.env[data['model']].browse(data.get('ids', []))
-    #     return self.env['report'].with_context(landscape=True).get_action(records, 'globpak.report_account_payable_summary', data=data)
+class AccountReportReceivableSummary(models.TransientModel):
+    _name = 'account.report.receivable.summary'
+    _description = 'Accounts Receivable Summary Report (Monthly)'
 
     def _default_journal_id(self):
-        journal_id = self.env['account.account'].search([('name','=','Account Payable')], limit=1)
+        journal_id = self.env['account.account'].search([('name','=','Account Receivable')], limit=1)
         return journal_id
 
     company_id = fields.Many2one('res.company', string='Company', readonly=True, default=lambda self: self.env.user.company_id)
     date_from = fields.Date(string='Start Date', required=True)
     date_to = fields.Date(string='End Date', required=True)
     account_id = fields.Many2one('account.account', string='Account', required=True, default=lambda self: self._default_journal_id())
-    # account_moves_ids = fields.Many2many('account.move', string='Account Moves', required=True, default=lambda self: self.env['account.move'].search([]))
 
     def _print_report(self, data):
-        filename = 'account_payable_summary_report.xls'
-        title = 'SUMMARY OF ACCOUNTS PAYABLE'
+        filename = 'account_receivable_summary_report.xls'
+        title = 'ACCOUNTS RECEIVABLE SUMMARY'
         company_id = data['company_id']['company_id'][0]
         date_from = data['date_from']['date_from']
         date_to = data['date_to']['date_to']
@@ -37,7 +28,7 @@ class AccountReportPayableSummary(models.TransientModel):
         
         return {
             'type' : 'ir.actions.act_url',
-            'url': '/web/export_xls/account_payable?filename=%s&title=%s&company_id=%s&date_from=%s&date_to=%s&account_id=%s'%(filename,title,company_id,date_from,date_to,account_id),
+            'url': '/web/export_xls/account_receivable?filename=%s&title=%s&company_id=%s&date_from=%s&date_to=%s&account_id=%s'%(filename,title,company_id,date_from,date_to,account_id),
             'target': 'self',
         }                     
 

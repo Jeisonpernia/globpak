@@ -1,1 +1,2 @@
 from . import account_report_payable_summary
+from . import account_report_receivable_summary

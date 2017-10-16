@@ -7,3 +7,4 @@ from . import acknowledgement_receipt
 from . import collection_receipt
 from . import debit_memo
 from . import credit_memo
+from . import custom_report_xls
