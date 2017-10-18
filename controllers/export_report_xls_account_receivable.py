@@ -59,27 +59,31 @@ class ExportReportXlsAccountReceivable(http.Controller):
         worksheet.write_merge(7, 8, 0, 0, 'REFERENCE DATE', style_table_header_bold) # HEADER
         worksheet.write_merge(7, 8, 1, 1, 'JOURNAL TYPE', style_table_header_bold) # HEADER
         worksheet.write_merge(7, 8, 2, 2, 'REFERENCE NO.', style_table_header_bold) # HEADER
-        worksheet.write_merge(7, 8, 3, 3, 'SUPPLIER NAME', style_table_header_bold) # HEADER
+        worksheet.write_merge(7, 8, 3, 3, 'CUSTOMER', style_table_header_bold) # HEADER
         worksheet.write_merge(7, 8, 4, 4, 'REGISTERED ADDRESS', style_table_header_bold) # HEADER
         worksheet.write_merge(7, 8, 5, 5, 'TIN', style_table_header_bold) # HEADER
 
         worksheet.write_merge(7, 7, 6, 7, 'SOURCE DOCUMENT', style_table_header_bold) # HEADER
         worksheet.write(8, 6, 'TYPE', style_table_header_bold) # HEADER
         worksheet.write(8, 7, 'NUMBER', style_table_header_bold) # HEADER
-        worksheet.write_merge(7, 8, 8, 8, 'GROSS AMOUNT', style_table_header_bold) # HEADER
-        worksheet.write_merge(7, 8, 9, 9, 'NON-VAT / EXEMPT', style_table_header_bold) # HEADER
+        worksheet.write_merge(7, 8, 8, 8, 'GOODS', style_table_header_bold) # HEADER
+        worksheet.write_merge(7, 8, 9, 9, 'SERVICES', style_table_header_bold) # HEADER
 
-        worksheet.write_merge(7, 8, 10, 10, 'NET OF VAT', style_table_header_bold) # HEADER
-        worksheet.write_merge(7, 8, 11, 11, 'INPUT TAX (12%)', style_table_header_bold) # HEADER
-        worksheet.write_merge(7, 8, 12, 12, 'INPUT TAX ALLOWED', style_table_header_bold) # HEADER
-        worksheet.write_merge(7, 8, 13, 13, 'PARTICULARS', style_table_header_bold) # HEADER
-        worksheet.write_merge(7, 8, 14, 14, 'AP AMOUNT', style_table_header_bold) # HEADER
+        worksheet.write_merge(7, 8, 10, 10, 'SALES TO GOVERNMENT', style_table_header_bold) # HEADER
+        worksheet.write_merge(7, 8, 11, 11, 'ZERO RATED', style_table_header_bold) # HEADER
+        worksheet.write_merge(7, 8, 12, 12, 'EXEMPT', style_table_header_bold) # HEADER
+        worksheet.write_merge(7, 8, 13, 13, 'VATABLE', style_table_header_bold) # HEADER
+        worksheet.write_merge(7, 8, 14, 14, 'INPUT TAX (12%)', style_table_header_bold) # HEADER
 
-        worksheet.write_merge(7, 7, 15, 17, 'EXPANDED WITHOLDING TAX', style_table_header_bold) # HEADER
-        worksheet.write(8, 15, 'ATC', style_table_header_bold) # HEADER
-        worksheet.write(8, 16, 'EWT RATE', style_table_header_bold) # HEADER
-        worksheet.write(8, 17, 'AMOUNT', style_table_header_bold) # HEADER
-        worksheet.write_merge(7, 8, 18, 18, 'EWT ABSORBED BY COMPANY', style_table_header_bold) # HEADER
+        worksheet.write_merge(7, 8, 15, 15, 'TOTAL', style_table_header_bold) # HEADER
+        worksheet.write_merge(7, 8, 16, 16, 'PARTIALLY COLLECTED', style_table_header_bold) # HEADER
+        worksheet.write_merge(7, 8, 17, 17, 'ACCOUNTS RECEIVABLE', style_table_header_bold) # HEADER
+        worksheet.write_merge(7, 8, 18, 18, 'REMARKS', style_table_header_bold) # HEADER
+        worksheet.write_merge(7, 7, 19, 22, 'CREDITABLEL WITHHOLDING TAX', style_table_header_bold) # HEADER
+        worksheet.write(8, 19, '2306', style_table_header_bold) # HEADER
+        worksheet.write(8, 20, 'DATE', style_table_header_bold) # HEADER
+        worksheet.write(8, 21, '2307', style_table_header_bold) # HEADER
+        worksheet.write(8, 22, 'DATE', style_table_header_bold) # HEADER
 
         # TABLE ROW LINES
         # table_row_start = 9
@@ -95,19 +99,26 @@ class ExportReportXlsAccountReceivable(http.Controller):
             
             worksheet.write(row_count, 6, '', style_table_row)
             worksheet.write(row_count, 7, account.origin or '', style_table_row)
-            worksheet.write(row_count, 8, account.amount_untaxed, style_table_row_amount)
-            worksheet.write(row_count, 9, account.vat_exempt_sales, style_table_row_amount) 
+            worksheet.write(row_count, 8, '-', style_table_row_amount)
+            worksheet.write(row_count, 9, '-', style_table_row_amount) 
 
             worksheet.write(row_count, 10, '', style_table_row)
-            worksheet.write(row_count, 11, account.amount_tax, style_table_row_amount) 
-            worksheet.write(row_count, 12, '', style_table_row)
-            worksheet.write(row_count, 13, '', style_table_row)
-            worksheet.write(row_count, 14, account.amount_total, style_table_row_amount) 
+            worksheet.write(row_count, 11, account.zero_rated_sales, style_table_row_amount) 
+            worksheet.write(row_count, 12, account.vat_exempt_sales, style_table_row)
+            worksheet.write(row_count, 13, account.amount_untaxed, style_table_row)
+            worksheet.write(row_count, 14, account.amount_tax, style_table_row_amount) 
 
-            worksheet.write(row_count, 15, '', style_table_row)
+            worksheet.write(row_count, 15, account.amount_total, style_table_row)
             worksheet.write(row_count, 16, '', style_table_row)
-            worksheet.write(row_count, 17, '', style_table_row)
+            worksheet.write(row_count, 17, account.amount_total, style_table_row)
             worksheet.write(row_count, 18, '', style_table_row)
+
+            worksheet.write(row_count, 19, '', style_table_row)
+            worksheet.write(row_count, 20, '', style_table_row)
+            worksheet.write(row_count, 21, '', style_table_row)
+            worksheet.write(row_count, 22, '', style_table_row)
+
+            
 
             row_count +=1
             transaction_count +=1
@@ -128,10 +139,14 @@ class ExportReportXlsAccountReceivable(http.Controller):
         worksheet.write(table_total_start, 16, '', style_table_total_value)
         worksheet.write(table_total_start, 17, '-', style_table_total_value)
         worksheet.write(table_total_start, 18, '-', style_table_total_value)
+        worksheet.write(table_total_start, 19, '-', style_table_total_value)
+        worksheet.write(table_total_start, 20, '-', style_table_total_value)
+        worksheet.write(table_total_start, 21, '-', style_table_total_value)
+        worksheet.write(table_total_start, 22, '-', style_table_total_value)
 
-        worksheet.write(0, 18, 'No. of Transaction: %s'%(transaction_count), style_header_right)
-        worksheet.write(1, 18, 'Date Processed: %s'%(date_processed), style_header_right)
-        worksheet.write(2, 18, 'Processed By: %s'%(user_id), style_header_right)
+        worksheet.write(0, 20, 'No. of Transaction: %s'%(transaction_count), style_header_right)
+        worksheet.write(1, 21, 'Date Processed: %s'%(date_processed), style_header_right)
+        worksheet.write(2, 22, 'Processed By: %s'%(user_id), style_header_right)
         # worksheet.write(3, 18, '%s'%(account_invoice_payable), style_header_right)
 
         response = request.make_response(None,

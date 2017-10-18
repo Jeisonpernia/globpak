@@ -2,11 +2,15 @@
 <odoo>
 <data>
 
-    <menuitem id="menu_account_custom_report_root" name="Custom Reports" parent="account.menu_finance_reports" groups="account.group_account_manager,account.group_account_user" sequence="100" />
+    <menuitem id="menu_account_alphalist_payee" name="Alphabetical List of Payees from whom Taxes are Withheld" parent="account.menu_finance_reports" action="action_account_report_alphalist_payee_menu" groups="account.group_account_manager,account.group_account_user" sequence="97" />
+    <menuitem id="menu_account_sales_transaction" name="Sales Transaction" parent="account.menu_finance_reports" action="action_account_sales_transaction_summary_menu" groups="account.group_account_manager,account.group_account_user" sequence="98" />
+    <menuitem id="menu_account_purchase_transaction" name="Purchase Trasnaction" parent="account.menu_finance_reports" action="action_account_purchase_transaction_summary_menu" groups="account.group_account_manager,account.group_account_user" sequence="99" />
 
+
+    <menuitem id="menu_account_bir_complilation_report_root" name="BIR Compilation" parent="account.menu_finance_reports" groups="account.group_account_manager,account.group_account_user" sequence="100" />
     <!-- <menuitem id="menu_action_account_receiveable_summary_report_all" name="Account Receiveable Summary" parent="globpak.menu_account_custom_report_root" action="action_account_receiveable_summary_report_all" groups="account.group_account_manager,account.group_account_user" sequence="10"/> -->
-    <menuitem id="menu_account_payable_summary" name="Accounts Payable Summary" parent="globpak.menu_account_custom_report_root" action="action_account_payable_summary_menu" groups="account.group_account_manager,account.group_account_user" sequence="20" />
-    <menuitem id="menu_account_receivable_summary" name="Accounts Receivable Summary" parent="globpak.menu_account_custom_report_root" action="action_account_receivable_summary_menu" groups="account.group_account_manager,account.group_account_user" sequence="30" />
+    <menuitem id="menu_account_payable_summary" name="Accounts Payable Summary" parent="globpak.menu_account_bir_complilation_report_root" action="action_account_payable_summary_menu" groups="account.group_account_manager,account.group_account_user" sequence="50" />
+    <menuitem id="menu_account_receivable_summary" name="Accounts Receivable Summary" parent="globpak.menu_account_bir_complilation_report_root" action="action_account_receivable_summary_menu" groups="account.group_account_manager,account.group_account_user" sequence="60" />
 
 </data>
 </odoo>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Tax -->
+
+        <record id="view_ewt_structure_tree" model="ir.ui.view">
+            <field name="name">account.ewt.structure.tree</field>
+            <field name="model">account.ewt.structure</field>
+            <field name="arch" type="xml">
+                <tree string="EWT Structure">
+                    <field name="name"/>
+                    <field name="description"/>
+                </tree>
+            </field>
+        </record>
+        <record id="view_ewt_structure_search" model="ir.ui.view">
+            <field name="name">account.ewt.structure.search</field>
+            <field name="model">account.ewt.structure</field>
+            <field name="arch" type="xml">
+                <search string="Search EWT Structure">
+                    <field name="name" filter_domain="['|', ('name','ilike',self), ('description','ilike',self)]" string="EWT"/>
+                </search>
+            </field>
+        </record>
+        <record id="view_ewt_structure_form" model="ir.ui.view">
+            <field name="name">account.ewt.structure.form</field>
+            <field name="model">account.ewt.structure</field>
+            <field name="arch" type="xml">
+                <form string="EWT Structure">
+                    <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="description"/>
+                        </group>
+                    </group>
+                    </sheet>
+                </form>
+              </field>
+        </record>
+        <record id="action_ewt_structure_form" model="ir.actions.act_window">
+            <field name="name">EWT Structure</field>
+            <field name="res_model">account.ewt.structure</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain" eval="False"/> <!-- Force empty -->
+            <field name="view_id" ref="view_ewt_structure_tree"/>
+        </record>
+        <menuitem name="EWT Structure" action="action_ewt_structure_form" id="menu_ewt_structure_form" parent="account.account_account_menu" groups="account.group_account_manager,account.group_account_user" sequence="100"/>
+
+    </data>
+</odoo>

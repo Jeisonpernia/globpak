@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-from . import account_tax_rate
+from . import account_ewt_structure
+from . import account_tax
 from . import hr_expense
 from . import account_invoice
 from . import account_payment

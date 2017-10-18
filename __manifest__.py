@@ -33,8 +33,10 @@
         'security/ir.model.access.csv',
         'data/ir_sequence_data.xml',
         'data/us_check_printing.xml',
-        'data/account_tax_rate_data.xml',
+        'data/account_ewt_structure_data.xml',
         'views/layout_templates.xml',
+        'views/account_tax_view.xml',
+        'views/account_ewt_structure_view.xml',
         'views/account_invoice_view.xml',
         'views/account_payment_view.xml',
         'views/hr_expense_view.xml',
@@ -52,6 +54,9 @@
         # 'report/account_receivable_summary_report_views.xml', # END OF ACCOUNTING
         'report/report_deliveryslip.xml', # START OF PURCHASING AND INVENTORY
         'views/report.xml',
+        'wizard/account_report_alphalist_payee_view.xml',
+        'wizard/account_report_sales_transaction_view.xml',
+        'wizard/account_report_purchase_transaction_view.xml',
         'wizard/account_report_payable_summary_view.xml',
         'wizard/account_report_receivable_summary_view.xml',
         # 'views/report_account_payable_summary.xml',
