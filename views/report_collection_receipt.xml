@@ -25,8 +25,12 @@
                         
             <br/>
 
-            <p t-if="o.payment_type == 'inbound' and o.state == 'posted'">
+            <!-- <p t-if="o.payment_type == 'inbound' and o.state == 'posted'">
                 Received from <strong> <span t-field="o.partner_id.name" /> </strong> with TIN <strong> <span t-field="o.partner_id.x_tin" /> </strong> and address at <strong> <span t-esc="o.partner_id.contact_address" /> </strong>, the sum of <strong> <span t-field="o.check_amount_in_words" /> </strong> (<strong> <span t-esc="o.amount" t-options='{"widget": "monetary", "display_currency": o.currency_id}' /> </strong>) in partial/full payment of our Invoice/Statement as indicated.
+            </p> -->
+
+            <p t-if="o.payment_type == 'inbound' and o.state == 'posted'">
+                Received from <strong> <span t-esc="o.partner_id.contact_address" /> </strong>, the sum of <strong> <span t-field="o.check_amount_in_words" /> </strong> (<strong> <span t-esc="o.amount" t-options='{"widget": "monetary", "display_currency": o.currency_id}' /> </strong>) in partial/full payment of our Invoice/Statement as indicated.
             </p>
             
             <br/>
@@ -46,13 +50,13 @@
                 <tbody class="invoice_tbody">
                     <tr t-foreach="o.invoice_ids" t-as="invoice">
                         <td><span t-field="invoice.number"/></td>
-                        <td><span t-field="invoice.amount_total"/></td>
+                        <td><span t-field="o.amount"/></td>
                     </tr>
                 </tbody>
             </table>
 
             <!-- Payment Form -->
-            <table class="table table-condensed" t-if="o.payment_type == 'inbound' and o.state == 'posted'" style="font-size: 12px">
+            <!-- <table class="table table-condensed" t-if="o.payment_type == 'inbound' and o.state == 'posted'" style="font-size: 12px">
                 <thead>
                     <tr>
                         <th>FORM OF PAYMENT</th>
@@ -66,6 +70,38 @@
                     </tr>
                     <tr>
                         <td>TOTAL</td>
+                        <td><span t-field="o.amount" /></td>
+                    </tr>
+                </tbody>
+            </table> -->
+
+            <!-- Payment Details -->
+            <table class="table table-condensed" t-if="o.payment_type == 'inbound' and o.state == 'posted'" style="font-size: 12px">
+                <thead>
+                    <tr>
+                        <th>PAYMENT DETAILS</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody class="invoice_tbody">
+                    <tr>
+                        <td>Cash:</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Check No.:</td>
+                        <td><span t-if="o.check_number" t-field="o.check_number" /></td>
+                    </tr>
+                    <tr>
+                        <td>Check Date:</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Bank / Branch:</td>
+                        <td><span t-esc="o.journal_id.bank_id.name"/></td>
+                    </tr>
+                    <tr>
+                        <td>Amount:</td>
                         <td><span t-field="o.amount" /></td>
                     </tr>
                 </tbody>

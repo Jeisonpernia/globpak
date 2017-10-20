@@ -6,14 +6,26 @@
         Globpak Customizations""",
 
     'description': """
-        - Expense Report
-        - Account Payable Voucher
-        - Check Print
-        - Check Voucher
-        - Sales Invoice
-        - Collection Receipt
-        - Credit Memo
-        - Debit Memo
+        Acccounting Customizations
+            - Expense Report
+            - Account Payable Voucher
+            - Check Print
+            - Check Voucher
+            - Sales Invoice
+            - Acknowledgement Receipt
+            - Collection Receipt
+            - Credit Memo
+            - Debit Memo
+            - Journal Voucher
+            - Purchase Transaction Reconciliation of Listing Enforcement
+            - Sales Transaction Reconciliation of Listing Enforcement
+            - Alphabetical List of Payees from whom Taxes were Withheld
+            - BIR Compilation
+                - Sales Summary Report
+                - Summary of Expanded Withholding Tax Deduction
+                - Summary of Accounts Payable
+                - SUmmary of Accounts Receivable 
+                - Summary of Taxes and Licenses
     """,
 
     'author': "Excode Innovations Inc.",
@@ -57,9 +69,12 @@
         'wizard/account_report_alphalist_payee_view.xml',
         'wizard/account_report_sales_transaction_view.xml',
         'wizard/account_report_purchase_transaction_view.xml',
+        'wizard/account_report_sales_summary_view.xml',
+        'wizard/account_report_ewt_deduction_summary_view.xml',
+        # 'wizard/account_report_asset_summary_view.xml',
         'wizard/account_report_payable_summary_view.xml',
         'wizard/account_report_receivable_summary_view.xml',
-        # 'views/report_account_payable_summary.xml',
+        'wizard/account_report_taxes_licenses_summary_view.xml',
         'views/custom_report_menu.xml',
     ],
     # only loaded in demonstration mode

@@ -3,7 +3,7 @@ from odoo.exceptions import UserError
 from odoo.tools.misc import xlwt
 from xlsxwriter.workbook import Workbook
 
-class AccountReportPayableSummary(models.TransientModel):
+class AccountReportAlphalistPayee(models.TransientModel):
     _name = 'account.report.alphalist.payee'
     _description = 'Alphabetical List of Payees from whom Taxes are Withheld'
 

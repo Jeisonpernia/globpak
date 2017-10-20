@@ -5,7 +5,10 @@
      <t t-call="globpak.external_layout_accounting">
         <t t-set="o" t-value="o.with_context({'lang':o.partner_id.lang})"/>
         <div class="page">
-            <div class="row text-right">
+            <div t-if="o.type != 'in_refund'">
+                <h3>This report is for refund vendor bills only.</h3>
+            </div>
+            <div t-if="o.type == 'in_refund'" class="row text-right">
                 <h3>
                     <span t-if="o.type == 'in_refund'">Debit Memo</span>
                 </h3>
@@ -19,7 +22,7 @@
 
             <br/>
 
-            <div class="row">
+            <div t-if="o.type == 'in_refund'" class="row">
                 <div class="col-xs-12">
                     <strong><span t-field="o.partner_id" /></strong><br/>
                     <span t-field="o.partner_id" t-options='{"widget": "contact", "fields": ["address"], "no_marker": True}' />
@@ -29,7 +32,7 @@
 
             <br/>
 
-            <table class="table table-condensed" style="font-size: 12px">
+            <table t-if="o.type == 'in_refund'" class="table table-condensed" style="font-size: 12px">
                 <thead>
                     <tr>
                         <th>Description</th>
@@ -66,7 +69,7 @@
                 </tbody>
             </table>
 
-            <div class="row" style="font-size: 12px">
+            <div t-if="o.type == 'in_refund'" class="row" style="font-size: 12px">
                 <div class="col-xs-4 pull-right">
                     <table class="table table-condensed">
                         <tr class="border-black">
@@ -110,7 +113,7 @@
                 </div>
             </div>
 
-            <div style="position: absolute; top: 800px; width: 100%; font-size: 12px;">
+            <div t-if="o.type == 'in_refund'" style="position: absolute; top: 800px; width: 100%; font-size: 12px;">
                 <div class="col-xs-4">
                     <strong>Prepared By: </strong><br/><br/>
                     <span>____________________</span><br/>

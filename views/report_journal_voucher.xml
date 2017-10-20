@@ -16,6 +16,9 @@
                 <div class="col-xs-12 text-right">
                     <h5><strong>JV No: </strong><span t-field="o.name"/></h5>
                 </div>
+                <div class="col-xs-12 text-right" t-if="o.date">
+                    <strong>Date: </strong><span t-field="o.date"/>
+                </div>
             </div>
                         
             <br/>
@@ -27,6 +30,7 @@
                     <tr>
                         <th>Account Code</th>
                         <th>Account Description</th>
+                        <th>Particulars</th>
                         <th>Reference</th>
                         <th class="text-right">Debit</th>
                         <th class="text-right">Credit</th>
@@ -38,6 +42,7 @@
                     <tr t-foreach="o.line_ids" t-as="l">
                         <td><span t-field="l.account_id.code"/></td>
                         <td><span t-field="l.account_id.name"/></td>
+                        <td><span t-field="l.name"/></td>
                         <td><span t-field="l.ref"/></td>
                         <!-- <td class="text-right"><span t-esc="'%.2f'%(l.debit)" /></td> -->
                         <!-- <td class="text-right"><span t-esc="'%.2f'%(l.credit)" /></td> -->
@@ -47,6 +52,7 @@
                         <t t-set='credit_total' t-value='credit_total + l.credit'/>
                     </tr>
                     <tr class="border-black">
+                        <td></td>
                         <td></td>
                         <td></td>
                         <td class="text-right"><strong>Total</strong></td>

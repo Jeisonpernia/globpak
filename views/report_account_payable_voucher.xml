@@ -24,11 +24,15 @@
                 </div>
                 
                 <div name="invoice_address" class="col-xs-5" style="font-size: 14px">
-                    <address t-field="o.partner_id" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;], &quot;no_marker&quot;: True}"/>
+                    <!-- <address t-field="o.partner_id" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;, &quot;x_tin&quot;], &quot;no_marker&quot;: True}"/>
                     <span t-if="o.partner_id.vat">VAT: <span t-field="o.partner_id.vat"/></span>
+                    <span t-if="o.partner_id.x_tin">TIN: <span t-field="o.partner_id.x_tin"/></span> -->
+                    <span t-field="o.partner_id" t-field-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": true}'/>
                     <span t-if="o.partner_id.x_tin">TIN: <span t-field="o.partner_id.x_tin"/></span>
                 </div>
             </div>
+
+            <br/>
             
             <div class="row">
                 <div class="col-xs-12 text-center" t-if="o.type == 'in_invoice'" style="font-size: 14px">
@@ -38,9 +42,6 @@
             
             <br/>
             <br/>
-
-            <!-- Is there a discount on at least one line? -->
-            <!--<t t-set="display_discount" t-value="any([l.discount for l in o.invoice_line_ids])"/>-->
             
             <!-- ACCOUNT PAYABLE VOUCHER -->
             <table class="table table-condensed" t-if="o.move_id and o.type == 'in_invoice'" style="font-size: 12px">

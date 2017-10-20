@@ -34,6 +34,8 @@
                     <div style="border-bottom: 1px solid black;"></div>
                 </div>
             </div>
+            <center><h5><strong>CHECK VOUCHER</strong></h5></center>
+            <br/>
             <div class="row summary_line">
                 <div class="col-xs-6 text-left">
                     <span t-esc="page['partner_name']"/>
