@@ -9,3 +9,6 @@ from . import collection_receipt
 from . import debit_memo
 from . import credit_memo
 from . import custom_report_xls
+
+from . import hr_employee_official_business
+from . import hr_expense_detailed

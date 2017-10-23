@@ -22,10 +22,14 @@
             - Alphabetical List of Payees from whom Taxes were Withheld
             - BIR Compilation
                 - Sales Summary Report
+                - Summary of Purchases and Expenses
                 - Summary of Expanded Withholding Tax Deduction
                 - Summary of Accounts Payable
                 - SUmmary of Accounts Receivable 
                 - Summary of Taxes and Licenses
+        Others
+            - Official Business
+            - HR Expense Detailed
     """,
 
     'author': "Excode Innovations Inc.",
@@ -38,7 +42,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'hr_expense', 'report', 'l10n_us_check_printing'],
+    'depends': ['base', 'account', 'hr_expense', 'report', 'l10n_us_check_printing'],
 
     # always loaded
     'data': [
@@ -52,6 +56,8 @@
         'views/account_invoice_view.xml',
         'views/account_payment_view.xml',
         'views/hr_expense_view.xml',
+        'views/hr_employee_official_business_view.xml',
+        'views/hr_expense_detailed_view.xml',
         'views/report_expense_sheet.xml',
         'views/report_account_payable_voucher.xml',
         'views/report_invoice.xml',
@@ -62,14 +68,15 @@
         'views/report_debit_memo.xml',
         'report/print_check.xml',
         'report/print_check_top.xml',
-        'report/print_check_bottom.xml',
-        # 'report/account_receivable_summary_report_views.xml', # END OF ACCOUNTING
+        'report/print_check_bottom.xml', # END OF ACCOUNTING
         'report/report_deliveryslip.xml', # START OF PURCHASING AND INVENTORY
         'views/report.xml',
         'wizard/account_report_alphalist_payee_view.xml',
         'wizard/account_report_sales_transaction_view.xml',
         'wizard/account_report_purchase_transaction_view.xml',
+        'wizard/account_report_import_transaction_view.xml',
         'wizard/account_report_sales_summary_view.xml',
+        'wizard/account_report_purchase_expense_summary_view.xml',
         'wizard/account_report_ewt_deduction_summary_view.xml',
         # 'wizard/account_report_asset_summary_view.xml',
         'wizard/account_report_payable_summary_view.xml',

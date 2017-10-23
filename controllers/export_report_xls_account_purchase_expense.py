@@ -11,9 +11,9 @@ from odoo.tools.misc import xlwt
 
 from datetime import date
 
-class ExportReportXlsSalesSummary(http.Controller):
+class ExportReportXlsPurchaseExpenseSummary(http.Controller):
 
-    @http.route('/web/export_xls/sales_summary', type='http', auth="user")
+    @http.route('/web/export_xls/purchase_expense', type='http', auth="user")
     def export_xls(self, filename, title, company_id, date_from, date_to, journal_id, **kw):
         company = request.env['res.company'].search([('id', '=', company_id)])
         journal = request.env['account.journal'].search([('id', '=', journal_id)])
@@ -56,36 +56,44 @@ class ExportReportXlsSalesSummary(http.Controller):
         worksheet.write(5, 0, '%s to %s'%(date_from,date_to), style_header_bold) # Report Date
 
         # TABLE HEADER
-        worksheet.write_merge(7, 8, 0, 0, 'BRANCH', style_table_header_bold) # HEADER
-        worksheet.write_merge(7, 8, 1, 1, 'REFERENCE DATE', style_table_header_bold) # HEADER
-        worksheet.write_merge(7, 8, 2, 2, 'NAME OF CLIENT', style_table_header_bold) # HEADER
-        worksheet.write_merge(7, 8, 3, 3, 'ADDRESS', style_table_header_bold) # HEADER
-        worksheet.write_merge(7, 8, 4, 4, 'TIN', style_table_header_bold) # HEADER
+        worksheet.write_merge(7, 8, 0, 0, 'DATE', style_table_header_bold) # HEADER
+        worksheet.write_merge(7, 7, 1, 2, 'REFERENCE', style_table_header_bold) # HEADER
+        worksheet.write(8, 1, 'AP ENTRY NO.', style_table_header_bold) # HEADER
+        worksheet.write(8, 2, 'CV ENTRY NO.', style_table_header_bold) # HEADER
+        worksheet.write_merge(7, 8, 3, 3, 'NAME OF SUPPLIER', style_table_header_bold) # HEADER
+        worksheet.write_merge(7, 8, 4, 4, 'REGISTERED ADDRESS', style_table_header_bold) # HEADER
+        worksheet.write_merge(7, 8, 5, 5, 'TIN', style_table_header_bold) # HEADER
 
-        worksheet.write_merge(7, 7, 5, 8, 'REFERENCE', style_table_header_bold) # HEADER
-        worksheet.write(8, 5, 'SALES INVOICE', style_table_header_bold) # HEADER
-        worksheet.write(8, 6, 'OFFICIAL RECEIPTS', style_table_header_bold) # HEADER
-        worksheet.write(8, 7, 'DELIVERY RECEIPTS', style_table_header_bold) # HEADER
+        worksheet.write_merge(7, 7, 6, 8, 'REFERENCE DEETAILS', style_table_header_bold) # HEADER
+        worksheet.write(8, 6, 'SALES INVOICE', style_table_header_bold) # HEADER
+        worksheet.write(8, 7, 'OFFICIAL RECEIPT', style_table_header_bold) # HEADER
         worksheet.write(8, 8, 'OTHERS', style_table_header_bold) # HEADER
-        worksheet.write_merge(7, 8, 9, 9, 'AMOUNT', style_table_header_bold) # HEADER
 
-        worksheet.write_merge(7, 7, 10, 11, 'DOMESTIC', style_table_header_bold) # HEADER
-        worksheet.write(8, 10, 'GOODS', style_table_header_bold) # HEADER
-        worksheet.write(8, 11, 'SERVICES', style_table_header_bold) # HEADER
+        worksheet.write_merge(7, 8, 9, 9, 'GROSS AMOUNT', style_table_header_bold) # HEADER
+        worksheet.write_merge(7, 8, 10, 10, 'INPUT TAX 12%', style_table_header_bold) # HEADER
+        worksheet.write_merge(7, 8, 11, 11, 'NET OF VAT', style_table_header_bold) # HEADER
 
-        worksheet.write_merge(7, 8, 12, 12, 'SALES TO GOVERNMENT', style_table_header_bold) # HEADER
-        worksheet.write_merge(7, 8, 13, 13, 'VATABLE', style_table_header_bold) # HEADER
-        worksheet.write_merge(7, 8, 14, 14, 'ZERO RATED', style_table_header_bold) # HEADER
-        worksheet.write_merge(7, 8, 15, 15, 'EXEMPT', style_table_header_bold) # HEADER
-        worksheet.write_merge(7, 8, 16, 16, 'TOTAL TAXABLE SALES', style_table_header_bold) # HEADER
+        worksheet.write_merge(7, 8, 12, 12, 'PURCHASE OF CAPITAL GOODS > 1M', style_table_header_bold) # HEADER
+        worksheet.write_merge(7, 8, 13, 13, 'PURCHASE OF CAPITAL GOODS < 1M', style_table_header_bold) # HEADER
+        worksheet.write_merge(7, 8, 14, 14, 'PURCHASES OTHER THAN CAPITAL GOODS', style_table_header_bold) # HEADER
+        worksheet.write_merge(7, 8, 15, 15, 'DOMESTIC PURCHASE OF SERVICES', style_table_header_bold) # HEADER
+        worksheet.write_merge(7, 8, 16, 16, 'PURCHASES NOT QUALITFIED TO INPUT TAX', style_table_header_bold) # HEADER
+        worksheet.write_merge(7, 8, 17, 17, 'IMPORTATION OF GOODS OTHER THAN CAPITAL GOODS', style_table_header_bold) # HEADER
+        worksheet.write_merge(7, 8, 18, 18, 'SERVICES RENDERED BY NOW RESIDENTS', style_table_header_bold) # HEADER
+        worksheet.write_merge(7, 8, 19, 19, 'OTHERS', style_table_header_bold) # HEADER
 
-        worksheet.write_merge(7, 8, 17, 17, 'OUTPUT TAX (12%)', style_table_header_bold) # HEADER
-        worksheet.write_merge(7, 8, 18, 18, 'TOTAL INVOICE AMOUNT', style_table_header_bold) # HEADER
-        worksheet.write_merge(7, 8, 19, 19, '%7 STANDARD INPUT VAT', style_table_header_bold) # HEADER
-        worksheet.write_merge(7, 8, 20, 20, 'BIR FORM 2306', style_table_header_bold) # HEADER
-        worksheet.write_merge(7, 8, 21, 21, 'DATE RECEIVED', style_table_header_bold) # HEADER
-        worksheet.write_merge(7, 8, 22, 22, 'BIR FORM 2307', style_table_header_bold) # HEADER
-        worksheet.write_merge(7, 8, 23, 23, 'DATE RECEIVED', style_table_header_bold) # HEADER
+        worksheet.write_merge(7, 8, 20, 20, 'ACCOUNT TITLE', style_table_header_bold) # HEADER
+        worksheet.write_merge(7, 8, 21, 21, 'PARTICULARS', style_table_header_bold) # HEADER
+        worksheet.write_merge(7, 8, 22, 22, 'EXPENSE AMOUNT', style_table_header_bold) # HEADER
+        worksheet.write_merge(7, 7, 23, 26, 'EXPANDED WITHHOLDING TAX', style_table_header_bold) # HEADER
+        worksheet.write(8, 23, 'TAX BASE', style_table_header_bold) # HEADER
+        worksheet.write(8, 24, 'ATC', style_table_header_bold) # HEADER
+        worksheet.write(8, 25, 'EWT RATE', style_table_header_bold) # HEADER
+        worksheet.write(8, 26, 'EWT EXPANDED AMOUNT', style_table_header_bold) # HEADER
+        worksheet.write_merge(7, 8, 27, 27, 'EXPENSES NOT SUBJECTED TO EWT', style_table_header_bold) # HEADER
+        worksheet.write_merge(7, 8, 28, 28, 'ALLOWED INPUT TAX', style_table_header_bold) # HEADER
+        worksheet.write_merge(7, 8, 29, 29, 'DISALLOWED INPUT TAX', style_table_header_bold) # HEADER
+        worksheet.write_merge(7, 8, 30, 30, 'DEFERRED', style_table_header_bold) # HEADER
 
         # TABLE ROW LINES
         # table_row_start = 9
@@ -97,13 +105,13 @@ class ExportReportXlsSalesSummary(http.Controller):
             worksheet.write(row_count, 2, account.partner_id.name, style_table_row)
             worksheet.write(row_count, 3, '%s %s %s %s %s %s'%(account.partner_id.street or '',account.partner_id.street2 or '',account.partner_id.city or '',account.partner_id.state_id.name or '',account.partner_id.zip or '',account.partner_id.country_id.name or ''), style_table_row)
             worksheet.write(row_count, 4, account.partner_id.x_tin, style_table_row)
-
             worksheet.write(row_count, 5, account.number, style_table_row)
+
             worksheet.write(row_count, 6, '', style_table_row)
             worksheet.write(row_count, 7, '', style_table_row)
             worksheet.write(row_count, 8, '', style_table_row)
-            worksheet.write(row_count, 9, account.amount_untaxed, style_table_row_amount)
 
+            worksheet.write(row_count, 9, account.amount_untaxed, style_table_row_amount)
             worksheet.write(row_count, 10, '', style_table_row_amount) 
             worksheet.write(row_count, 11, '', style_table_row)
 
@@ -112,14 +120,21 @@ class ExportReportXlsSalesSummary(http.Controller):
             worksheet.write(row_count, 14, account.zero_rated_sales, style_table_row)
             worksheet.write(row_count, 15, account.vat_exempt_sales, style_table_row_amount) 
             worksheet.write(row_count, 16, account.vat_sales, style_table_row)
-
             worksheet.write(row_count, 17, account.amount_tax, style_table_row)
             worksheet.write(row_count, 18, account.amount_total, style_table_row)
             worksheet.write(row_count, 19, '', style_table_row)
+
             worksheet.write(row_count, 20, '', style_table_row)
             worksheet.write(row_count, 21, '', style_table_row)
             worksheet.write(row_count, 22, '', style_table_row)
             worksheet.write(row_count, 23, '', style_table_row)
+            worksheet.write(row_count, 24, '', style_table_row)
+            worksheet.write(row_count, 25, '', style_table_row)
+            worksheet.write(row_count, 26, '', style_table_row)
+            worksheet.write(row_count, 27, '', style_table_row)
+            worksheet.write(row_count, 28, '', style_table_row)
+            worksheet.write(row_count, 29, '', style_table_row)
+            worksheet.write(row_count, 30, '', style_table_row)
 
             row_count +=1
             transaction_count +=1
@@ -151,6 +166,13 @@ class ExportReportXlsSalesSummary(http.Controller):
         worksheet.write(table_total_start, 21, '', style_table_total_value)
         worksheet.write(table_total_start, 22, '', style_table_total_value)
         worksheet.write(table_total_start, 23, '', style_table_total_value)
+        worksheet.write(table_total_start, 24, '', style_table_total_value)
+        worksheet.write(table_total_start, 25, '', style_table_total_value)
+        worksheet.write(table_total_start, 26, '', style_table_total_value)
+        worksheet.write(table_total_start, 27, '', style_table_total_value)
+        worksheet.write(table_total_start, 28, '', style_table_total_value)
+        worksheet.write(table_total_start, 29, '', style_table_total_value)
+        worksheet.write(table_total_start, 30, '', style_table_total_value)
 
         response = request.make_response(None,
             headers=[('Content-Type', 'application/vnd.ms-excel'),

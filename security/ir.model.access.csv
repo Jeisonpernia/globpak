@@ -4,3 +4,7 @@ access_account_invoice_group_invoice_dm,account.debit.memo group invoice,model_a
 access_account_invoice_group_invoice_cm,account.credit.memo group invoice,model_account_credit_memo,account.group_account_invoice,1,1,1,1
 access_account_invoice_group_invoice_ar,account.acknowledgement.receipt group invoice,model_account_acknowledgement_receipt,account.group_account_invoice,1,1,1,1
 access_account_ewt_structure,account.ewt.structure,model_account_ewt_structure,account.group_account_user,1,1,1,0
+access_hr_employee_official_business,hr.employee.official.business,model_hr_employee_official_business,base.group_user,1,1,1,1
+access_hr_expense_detailed_summary,hr.expense.detailed.summary,model_hr_expense_detailed_summary,base.group_user,1,1,1,1
+access_hr_expense_detailed_line,hr.expense.detailed.line,model_hr_expense_detailed_line,base.group_user,1,1,1,1
+access_hr_expense_detailed_tax,hr.expense.detailed.tax,model_hr_expense_detailed_tax,base.group_user,1,1,1,1
