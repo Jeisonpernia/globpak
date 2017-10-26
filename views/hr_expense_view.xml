@@ -1,6 +1,88 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
+        <record id="hr_expense_form_view_extend" model="ir.ui.view">
+            <field name="name">hr.expense.form.extend</field>
+            <field name="model">hr.expense</field>
+            <field name="inherit_id" ref="hr_expense.hr_expense_form_view" />
+            <field name="arch" type="xml">
+                <xpath expr="//form/sheet/group" position="replace">
+                    <group>
+                        <group>
+                            <field name="employee_id"/>
+                            <field name="payment_mode" widget="radio"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="total_amount" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="ob_id" domain="[('employee_id', '=', employee_id), ('state', '=', 'validate')]"/>
+                            <field name="date" widget="date" />
+                            <field name="currency_id" groups="base.group_multi_currency"/>
+                            <field name="sheet_id" invisible="1"/>
+                            <field name="analytic_account_id" />
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="LINES">
+                            <field name="line_ids">
+                                <tree string="Expense Lines" editable="bottom">
+                                    <!-- <field name="sequence" widget="handle" /> -->
+                                    <field name="date" invisible="1" />
+                                    <field name="reference" />
+                                    <field name="partner_id" />
+                                    <field name="product_id"/>
+                                    <field name="name"/>
+                                    <field name="employee_id" invisible="1" />
+                                    <field name="company_id" invisible="0" />
+                                    <field name="account_id" groups="account.group_account_user" domain="[('company_id', '=', parent.company_id), ('internal_type', '=', 'other')]"/>
+                                    <field name="account_analytic_id" groups="analytic.group_analytic_accounting" domain="[('company_id', '=', parent.company_id)]" invisible="0" /> 
+                                    <!-- <field name="analytic_tag_ids" groups="analytic.group_analytic_accounting" widget="many2many_tags"/> -->
+                                    <field name="quantity"/>
+                                    <field name="uom_id" groups="product.group_uom" invisible="1" />
+                                    <field name="price_unit"/>
+                                    <!-- <field name="discount" groups="base.group_no_one"/> -->
+                                    <field name="tax_ids" widget="many2many_tags" domain="[('type_tax_use','=','purchase'),('company_id', '=', parent.company_id)]" options="{'no_create': True}"/>
+                                    <field name="untaxed_amount"/> 
+                                    <field name="currency_id" invisible="0"/>
+                                    <field name="state" />
+                                </tree>
+                            </field>
+                            <group>
+                                <group>
+                                    <div class="oe_inline">
+                                        <field name="tax_line_ids">
+                                            <tree editable="bottom" string="Taxes">
+                                                <field name="name"/>
+                                                <!-- Need invisible fields for on_change to create all necessary info -->
+                                                <field name="tax_id" invisible="1"/>
+                                                <field name="sequence" invisible="1"/>
+                                                <field name="manual" invisible="1"/>
+                                                <field name="account_id" groups="account.group_account_invoice"/>
+                                                <field name="account_analytic_id" domain="[('company_id', '=', parent.company_id)]" groups="analytic.group_analytic_accounting"/>
+                                                <field name="amount"/>
+                                                <field name="currency_id" invisible="1"/>
+                                            </tree>
+                                        </field> 
+                                    </div>
+                                </group>
+                                <group class="oe_subtotal_footer oe_right">
+                                    <field name="untaxed_amount"/>
+                                    <field name="tax_amount"/>
+                                    <field name="total_amount" class="oe_subtotal_footer_separator"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="OTHER INFO">
+                            <group>
+                                <field name="approver_id" />
+                                <field name="responsible_id" />
+                            </group>
+                        </page>
+                    </notebook>
+                </xpath>
+            </field>
+        </record>
+
         <record id="view_hr_expense_sheet_form_extend" model="ir.ui.view">
             <field name="name">hr.expense.sheet.form.extend</field>
             <field name="model">hr.expense.sheet</field>

@@ -11,16 +11,15 @@ class HrExpenseDetailedLine(models.Model):
     uom_id = fields.Many2one('product.uom', string='Unit of Measure', ondelete='set null', index=True, oldname='uos_id')
     quantity = fields.Float()
     price_unit = fields.Float(string='Price Unit')
-    # tax_ids = fields.Many2many('account.tax', 'detailed_expense_tax', 'detailed_expense_id', 'tax_id', string='Taxes', states={'done': [('readonly', True)], 'post': [('readonly', True)]})
     tax_ids = fields.Many2many('account.tax', 'detailed_expense_tax', 'detailed_expense_id', 'tax_id', string='Taxes')
     untaxed_amount = fields.Float(string='Subtotal', store=True, compute='_compute_amount', digits=dp.get_precision('Account'))
     total_amount = fields.Float(string='Total', store=True, compute='_compute_amount', digits=dp.get_precision('Account'))
 
-    # reference = fields.Char()
-    # date = fields.Datetime()
+    partner_id = fields.Many2one('res.partner', 'Vendor', required=True)
+    reference = fields.Char(string='Receipt #')
+    date = fields.Datetime()
 
     employee_id = fields.Many2one('hr.employee', string="Employee", required=True, readonly=True, states={'submit': [('readonly', False)]}, default=lambda self: self.env['hr.employee'].search([('user_id', '=', self.env.uid)], limit=1))
-    # partner_id = fields.Many2one('res.partner', 'Vendor')
     account_id = fields.Many2one('account.account', string='Account', states={'post': [('readonly', True)], 'done': [('readonly', True)]}, default=lambda self: self.env['ir.property'].get('property_account_expense_categ_id', 'product.category'))
     company_id = fields.Many2one('res.company', string='Company', readonly=True, states={'draft': [('readonly', False)], 'cancel': [('readonly', False)]}, default=lambda self: self.env.user.company_id)
     currency_id = fields.Many2one('res.currency', string='Currency', readonly=True, states={'draft': [('readonly', False)], 'cancel': [('readonly', False)]}, default=lambda self: self.env.user.company_id.currency_id)
@@ -333,7 +332,6 @@ class HrExpenseDetailedSummary(models.Model):
     def _onchange_employee_id(self):
         self.address_id = self.employee_id.address_home_id
         self.department_id = self.employee_id.department_id
-        self.approver_id = self.employee_id.parent_id
 
     @api.onchange('ob_id')
     def _onchange_ob_id(self):

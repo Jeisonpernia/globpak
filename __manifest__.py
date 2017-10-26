@@ -57,7 +57,7 @@
         'views/account_payment_view.xml',
         'views/hr_expense_view.xml',
         'views/hr_employee_official_business_view.xml',
-        'views/hr_expense_detailed_view.xml',
+        # 'views/hr_expense_detailed_view.xml',
         'views/report_expense_sheet.xml',
         'views/report_account_payable_voucher.xml',
         'views/report_invoice.xml',

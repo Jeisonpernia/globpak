@@ -11,4 +11,4 @@ from . import credit_memo
 from . import custom_report_xls
 
 from . import hr_employee_official_business
-from . import hr_expense_detailed
+# from . import hr_expense_detailed
