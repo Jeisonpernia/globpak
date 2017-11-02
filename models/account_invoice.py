@@ -46,6 +46,11 @@ class AccountInvoice(models.Model):
     dr_no = fields.Char(string='DR No.')
     dr_date = fields.Datetime(string='DR Date')
 
+    assessment_date = fields.Date(string='Assessment Date')
+    supplier_invoice_no = fields.Char(string='Supplier Invoice No')
+    bl_awb_no = fields.Char(string='BL/AWB No.')
+    import_entry_no = fields.Char(string='Import Entry No.')
+
     # STUDIO
     x_description = fields.Text('Description', store=True, copy=True)
     x_checked_by = fields.Many2one('res.partner', 'Checked By', store=True, copy=True) 

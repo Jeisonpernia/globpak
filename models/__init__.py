@@ -12,6 +12,7 @@ from . import custom_report_xls
 
 from . import hr_employee_official_business
 # from . import hr_expense_detailed
+from . import fleet_trip_ticket
 
 # STUDIO
 from . import studio_res_partner

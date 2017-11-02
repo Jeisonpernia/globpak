@@ -10,10 +10,10 @@ class StudioPurchaseOrder(models.Model):
 	x_origin = fields.Many2one('res.country', string='Origin', store=True, copy=True)
 
 	# NEW FIELDS
-	assessment_date = fields.Date(string='Assessment Date')
-	supplier_invoice_no = fields.Char(string='Supplier Invoice No')
-	bl_awb_no = fields.Char(string='BL/AWB No.')
-	import_entry_no = fields.Char(string='Import Entry No.')
+	# assessment_date = fields.Date(string='Assessment Date')
+	# supplier_invoice_no = fields.Char(string='Supplier Invoice No')
+	# bl_awb_no = fields.Char(string='BL/AWB No.')
+	# import_entry_no = fields.Char(string='Import Entry No.')
 
 	po_type = fields.Selection([
 		('local', 'Local'),

@@ -67,6 +67,7 @@
         'views/account_payment_view.xml',
         'views/hr_expense_view.xml',
         'views/hr_employee_official_business_view.xml',
+        'views/fleet_trip_ticket_view.xml',
         # 'views/hr_expense_detailed_view.xml',
         'views/studio_hr_employee_view.xml',
         'views/studio_purchase_order_view.xml',

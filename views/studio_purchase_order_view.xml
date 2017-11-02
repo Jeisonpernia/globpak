@@ -17,12 +17,12 @@
 					<field name="x_client_po_no"/>
 				</xpath>
 
-				<xpath expr="//field[@name='incoterm_id']" position="after">
+				<!-- <xpath expr="//field[@name='incoterm_id']" position="after">
 					<field name="assessment_date"/>
 					<field name="supplier_invoice_no"/>
 					<field name="bl_awb_no"/>
 					<field name="import_entry_no"/>
-				</xpath>
+				</xpath> -->
 				
 				<xpath expr="/form[1]/sheet[1]/notebook[1]/page[2]" position="after">
 					<page name="addition_info" string="Additional Info"/>
