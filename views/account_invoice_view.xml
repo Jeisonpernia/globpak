@@ -50,6 +50,16 @@
                     <field name="x_approved_by" />
                 </xpath>
 
+                <!-- STUDIO -->
+                <!-- <xpath expr="//field[@name='purchase_id']" position="after">
+                    <field name="x_description" />
+                </xpath> -->
+
+                <!-- <xpath expr="//field[@name='account_id']" position="after">
+                    <field name="x_checked_by" />
+                    <field name="x_approved_by" />
+                </xpath> -->
+
             </field>
         </record>
 

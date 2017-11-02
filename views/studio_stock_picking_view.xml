@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+    	<record id="view_stock_picking_form_extend" model="ir.ui.view">
+            <field name="name">stock.picking.form.extend</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_form" />
+            <field name="arch" type="xml">
+                
+				<xpath expr="//field[@name='origin']" position="after">
+					<field name="x_end_user_po"/>
+				</xpath>
+
+                <!-- <xpath expr="//field[@name='picking_type_id']" position="after">
+                    <field name="x_received_by"/>
+                    <field name="x_approved_by"/>
+                </xpath> -->
+								  
+            </field>
+        </record>
+    </data>
+</odoo>

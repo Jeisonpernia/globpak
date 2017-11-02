@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+    	<record id="view_employee_form_extend" model="ir.ui.view">
+            <field name="name">hr.employee.form.extend</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_form" />
+            <field name="arch" type="xml">
+
+				  <xpath expr="//field[@name='user_id']" position="after">
+				    <field name="x_hiredate"/>
+				  </xpath>
+
+				  <xpath expr="//field[@name='address_home_id']" position="attributes">
+				    <attribute name="groups"/>
+				    <attribute name="string">Residence Address</attribute>
+				  </xpath>
+
+				  <xpath expr="//field[@name='x_hiredate']" position="after">
+				    <field name="x_regularizationdate"/>
+				  </xpath>
+
+				  <!-- <xpath expr="//field[@name='medic_exam']" position="attributes">
+				    <attribute name="groups"/>
+				    <attribute name="invisible">True</attribute>
+				  </xpath> -->
+
+				  <!-- <xpath expr="//field[@name='vehicle']" position="attributes">
+				    <attribute name="groups"/>
+				    <attribute name="string">Assigned Company Vehicle</attribute>
+				  </xpath> -->
+
+				  <xpath expr="//field[@name='passport_id']" position="attributes">
+				    <attribute name="groups"/>
+				    <attribute name="invisible">True</attribute>
+				  </xpath>
+								 
+				  <!-- <xpath expr="//field[@name='vehicle_distance']" position="replace"/> -->
+
+				  <!-- <xpath expr="//field[@name='vehicle']" position="after">
+				    <group name="studio_group_JK2aR">
+				      <group name="other_details" string="Other Details"/>
+				    </group>
+				  </xpath> -->
+				  
+				  <!-- <xpath expr="//group[@name='other_details']" position="inside">
+				    <field name="x_idno"/>
+				    <field name="x_payrollaccount"/>
+				  </xpath> -->
+
+				  <!-- <xpath expr="//field[@name='bank_account_id']" position="replace"/> -->
+
+            </field>
+        </record> 
+    </data>
+</odoo>

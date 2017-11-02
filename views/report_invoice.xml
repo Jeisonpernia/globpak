@@ -2,7 +2,7 @@
 <odoo>
 <data>
 <template id="report_invoice_document_extend" inherit_id="account.report_invoice_document">
-    <xpath expr="//t[@t-call='report.external_layout']" position="replace">
+    <xpath expr="//t[@t-call='web.external_layout']" position="replace">
     <t t-call="globpak.external_layout_accounting">
     <!-- <xpath expr="//div[@class='page']" position="replace"> -->
         <div class="page">

@@ -12,3 +12,11 @@ from . import custom_report_xls
 
 from . import hr_employee_official_business
 # from . import hr_expense_detailed
+
+# STUDIO
+from . import studio_res_partner
+from . import studio_hr_employee
+# from . import studio_account_invoice
+from . import studio_sales_order
+from . import studio_stock_picking
+from . import studio_purchase_order

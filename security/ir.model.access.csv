@@ -7,6 +7,3 @@ access_account_ewt_structure,account.ewt.structure,model_account_ewt_structure,a
 access_hr_employee_official_business,hr.employee.official.business,model_hr_employee_official_business,base.group_user,1,1,1,1
 access_hr_expense_line,hr.expense.line,model_hr_expense_line,base.group_user,1,1,1,1
 access_hr_expense_tax,hr.expense.tax,model_hr_expense_tax,base.group_user,1,1,1,1
-access_hr_expense_detailed_summary,hr.expense.detailed.summary,model_hr_expense_detailed_summary,base.group_user,1,1,1,1
-access_hr_expense_detailed_line,hr.expense.detailed.line,model_hr_expense_detailed_line,base.group_user,1,1,1,1
-access_hr_expense_detailed_tax,hr.expense.detailed.tax,model_hr_expense_detailed_tax,base.group_user,1,1,1,1

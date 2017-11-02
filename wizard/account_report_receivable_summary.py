@@ -2,7 +2,7 @@ from odoo import fields, models, api, _
 from odoo.exceptions import UserError
 from odoo.tools.misc import xlwt
 from xlsxwriter.workbook import Workbook
-from cStringIO import StringIO
+# from cStringIO import StringIO
 import base64
 
 class AccountReportReceivableSummary(models.TransientModel):

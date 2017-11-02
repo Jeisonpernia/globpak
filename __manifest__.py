@@ -27,9 +27,18 @@
                 - Summary of Accounts Payable
                 - SUmmary of Accounts Receivable 
                 - Summary of Taxes and Licenses
+            - Landed Cost
+
+        Purchasing and Inventory Customizations
+            - RFQ
+            - Purchase Order
+            - Delivery Slip
+            - Picking Operation
+
         Others
             - Official Business
             - HR Expense Detailed
+            - Trip Ticket
     """,
 
     'author': "Excode Innovations Inc.",
@@ -42,13 +51,14 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'account', 'hr_expense', 'report', 'l10n_us_check_printing'],
+    # 'depends': ['base', 'account', 'hr_expense', 'report', 'l10n_us_check_printing'],
+    'depends': ['base', 'web', 'account', 'hr', 'hr_contract', 'hr_expense', 'l10n_us_check_printing'],
 
     # always loaded
     'data': [
         'security/ir.model.access.csv',
         'data/ir_sequence_data.xml',
-        'data/us_check_printing.xml',
+        # 'data/us_check_printing.xml',
         'data/account_ewt_structure_data.xml',
         'views/layout_templates.xml',
         'views/account_tax_view.xml',
@@ -58,6 +68,10 @@
         'views/hr_expense_view.xml',
         'views/hr_employee_official_business_view.xml',
         # 'views/hr_expense_detailed_view.xml',
+        'views/studio_hr_employee_view.xml',
+        'views/studio_purchase_order_view.xml',
+        'views/studio_sale_order_view.xml',
+        'views/studio_stock_picking_view.xml',
         'views/report_expense_sheet.xml',
         'views/report_account_payable_voucher.xml',
         'views/report_invoice.xml',
@@ -69,7 +83,9 @@
         'report/print_check.xml',
         'report/print_check_top.xml',
         'report/print_check_bottom.xml', # END OF ACCOUNTING
-        'report/report_deliveryslip.xml', # START OF PURCHASING AND INVENTORY
+        'report/report_purchaseorder.xml', # START OF PURCHASING AND INVENTORY
+        'report/report_picking.xml',
+        'report/report_deliveryslip.xml',
         'views/report.xml',
         'wizard/account_report_alphalist_payee_view.xml',
         'wizard/account_report_sales_transaction_view.xml',
