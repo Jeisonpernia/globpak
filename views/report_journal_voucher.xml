@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<data>
+
+<template id="report_journal_voucher_document">
+    <t t-call="globpak.external_layout_accounting">
+        <t t-set="o" t-value="o.with_context({'lang':o.partner_id.lang})"/>
+        <div class="page">
+            <div class="row">
+                <div class="text-center">
+                    <h2>Journal Voucher</h2>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-xs-12 text-right">
+                    <h5><strong>JV No: </strong><span t-field="o.name"/></h5>
+                </div>
+                <div class="col-xs-12 text-right" t-if="o.date">
+                    <strong>Date: </strong><span t-field="o.date"/>
+                </div>
+            </div>
+                        
+            <br/>
+            <br/>
+
+            <!-- JOURNAL VOUCHER -->
+            <table class="table table-condensed" t-if="o.line_ids" style="font-size: 12px">
+                <thead>
+                    <tr>
+                        <th>Account Code</th>
+                        <th>Account Description</th>
+                        <th>Particulars</th>
+                        <th>Reference</th>
+                        <th class="text-right">Debit</th>
+                        <th class="text-right">Credit</th>
+                    </tr>
+                </thead>
+                <tbody class="invoice_tbody">
+                    <t t-set='debit_total' t-value='0'/>
+                    <t t-set='credit_total' t-value='0'/>
+                    <tr t-foreach="o.line_ids" t-as="l">
+                        <td><span t-field="l.account_id.code"/></td>
+                        <td><span t-field="l.account_id.name"/></td>
+                        <td><span t-field="l.name"/></td>
+                        <td><span t-field="l.ref"/></td>
+                        <!-- <td class="text-right"><span t-esc="'%.2f'%(l.debit)" /></td> -->
+                        <!-- <td class="text-right"><span t-esc="'%.2f'%(l.credit)" /></td> -->
+                        <td class="text-right"><span t-esc="l.debit" t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"/></td>
+                        <td class="text-right"><span t-esc="l.credit" t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"/></td>
+                        <t t-set='debit_total' t-value='debit_total + l.debit'/>
+                        <t t-set='credit_total' t-value='credit_total + l.credit'/>
+                    </tr>
+                    <tr class="border-black">
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td class="text-right"><strong>Total</strong></td>
+                        <!-- <td class="text-right"><span t-esc="'%.2f'%(debit_total)" /></td> -->
+                        <!-- <td class="text-right"><span t-esc="'%.2f'%(credit_total)" /></td> -->
+                        <td class="text-right"><span t-esc="debit_total" t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"/></td>
+                        <td class="text-right"><span t-esc="credit_total" t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"/></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <br/>
+
+            <p t-if="o.narration" style="font-size: 9px">
+                <strong>Transaction Explanation:</strong>
+                <p style="font-size: 9px" t-field="o.narration"/>
+            </p>
+            
+            <br/>
+            
+            <div style="position: absolute; top: 800px; width: 100%">
+                <div class="col-xs-4">
+                    <strong>Prepared By: </strong><br/>
+                    <!-- <span t-field="o.user_id"/>     -->
+                </div>
+                <div class="col-xs-4">
+                    <strong>Checked By: </strong><br/>
+                    <!-- <span t-field="o.x_checked_by"/>                     -->
+                </div>
+                <div class="col-xs-4 pull-right">
+                    <strong>Approved By: </strong><br/>
+                    <!-- <span t-field="o.x_approved_by"/>                     -->
+                </div>
+            </div>
+            
+        </div>
+    </t>
+</template>
+
+<template id="report_journal_voucher">
+    <t t-call="report.html_container">
+        <t t-foreach="docs" t-as="o">
+            <t t-call="globpak.report_journal_voucher_document" t-lang="o.partner_id.lang"/>
+        </t>
+    </t>
+</template>
+
+</data>
+</odoo>

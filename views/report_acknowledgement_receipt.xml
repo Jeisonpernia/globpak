@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<data>
+<template id="report_account_acknowledgement_receipt_document">
+    <t t-call="globpak.external_layout_accounting">
+        <t t-set="o" t-value="o.with_context({'lang':o.partner_id.lang})"/>
+        <div class="page">
+            <div class="row">
+                <div class="text-center">
+                    <h3>
+                        <span t-if="o.payment_type == 'inbound' and o.state == 'posted'">Acknowlegement Receipt</span>
+                    </h3>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-xs-12 text-right" t-if="o.payment_type == 'inbound' and o.state == 'posted'">
+                    <h5><strong>No: </strong><span t-field="o.acknowledgement_receipt_id.name"/></h5>
+                </div>
+                
+                <div class="col-xs-12 text-right" t-if="o.payment_type == 'inbound' and o.state == 'posted'">
+                    <h5><strong>Date: </strong><span t-field="o.payment_date"/></h5>
+                </div>              
+            </div>
+                        
+            <br/>
+
+            <p t-if="o.payment_type == 'inbound' and o.state == 'posted'">
+                Received from <strong> <span t-field="o.partner_id.name" /> </strong> with TIN <strong> <span t-field="o.partner_id.x_tin" /> </strong> and address at <strong> <span t-esc="o.partner_id.contact_address" /> </strong>, the sum of <strong> <span t-field="o.check_amount_in_words" /> </strong> (<strong> <span t-esc="o.amount" t-options='{"widget": "monetary", "display_currency": o.currency_id}' /> </strong>) in partial/full payment for <strong><span t-esc="o.communication" /></strong>.
+            </p>
+            
+            <br/>
+
+            <!-- Payment Details -->
+            <table class="table table-condensed" t-if="o.payment_type == 'inbound' and o.state == 'posted'" style="font-size: 12px">
+                <thead>
+                    <tr>
+                        <th>PAYMENT DETAILS</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody class="invoice_tbody">
+                    <tr>
+                        <td>Cash:</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Check No.:</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Check Date:</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Bank / Branch:</td>
+                        <td><span t-esc="o.journal_id.bank_id.name"/></td>
+                    </tr>
+                    <tr>
+                        <td>Amount:</td>
+                        <td><span t-field="o.amount" /></td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div style="position: absolute; top: 800px; width: 100%" t-if="o.payment_type == 'inbound' and o.state == 'posted'">
+                <div class="col-xs-6 pull-right">
+                    <strong>By: </strong>
+                    <!-- <span t-field="o.x_checked_by"/>                     -->
+                </div>
+            </div>
+            
+        </div>
+    </t>
+</template>
+
+<template id="report_account_acknowledgement_receipt">
+    <t t-call="web.html_container">
+        <t t-foreach="docs" t-as="o">
+            <t t-call="globpak.report_account_acknowledgement_receipt_document" t-lang="o.partner_id.lang"/>
+        </t>
+    </t>
+</template>
+
+</data>
+</odoo>

@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="view_fleet_trip_ticket_tree" model="ir.ui.view">
+            <field name="name">fleet.trip.ticket.tree</field>
+            <field name="model">fleet.trip.ticket</field>
+            <field name="arch" type="xml">
+                <tree string="Trip Ticket">
+                    <field name="name"/>
+                    <field name="ticket_date"/>
+                    <field name="driver_id"/>
+                    <field name="vehicle_id"/>
+                    <field name="destination"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_fleet_trip_ticket_form" model="ir.ui.view">
+            <field name="name">fleet.trip.ticket.form</field>
+            <field name="model">fleet.trip.ticket</field>
+            <field eval="25" name="priority"/>
+            <field name="arch" type="xml">
+                <form string="Detailed Expense" class="o_expense_sheet">
+                    <header/>
+                    <sheet>
+                        <div class="oe_button_box"/>
+                        <div class="oe_title">
+                            <label for="name" class="oe_edit_only"/>
+                            <h1>
+                                <field name="name"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="driver_id" />
+                                <field name="vehicle_id" />
+                                <field name="destination" />
+                                <field name="purpose" />
+                                <field name="estimate_kilometers" />
+                            </group>
+                            <group>
+                                <field name="ticket_date" />
+                                <field name="license_plate" />
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="DETAILS">
+                                <group>
+                                    <group>
+                                        <field name="gas_diesel" />
+                                        <field name="reading_departure" />
+                                        <field name="departure_time" />
+                                    </group>
+                                    <group>
+                                        <field name="oil_fluid" />
+                                        <field name="reading_arrival" />
+                                        <field name="arrival_time" />
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="OTHER INFO">
+                                <group>
+                                    <field name="passenger_id" />
+                                    <field name="manager_id" />
+                                    <field name="president_id" />
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_fleet_trip_ticket_filter" model="ir.ui.view">
+            <field name="name">fleet.trip.ticket.filter</field>
+            <field name="model">fleet.trip.ticket</field>
+            <field name="arch" type="xml">
+                <search string="Trip Ticket">
+                    <field name="name" string="Trip Ticket"/>
+                    <field name="driver_id"/>
+                    <field name="vehicle_id"/>
+                    <separator />
+                    <group expand="0" string="Group By">
+                        <filter string="Driver" domain="[]" context="{'group_by': 'driver_id'}"/>
+                        <filter string="Vehicle" domain="[]" context="{'group_by': 'vehicle_id'}"/>
+                        <filter string="Trip Ticket Month" domain="[]" context="{'group_by': 'ticket_date'}" help="Trip Ticket by Month"/>
+                        <!-- <filter string="State" domain="[]" context="{'group_by': 'state'}" name="state"/> -->
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_fleet_trip_ticket_all" model="ir.actions.act_window">
+            <field name="name">All Trip Ticket</field>
+            <field name="res_model">fleet.trip.ticket</field>
+            <field name="view_mode">tree,form,</field>
+            <field name="search_view_id" ref="view_fleet_trip_ticket_filter"/>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click here to create a new detailed expense.
+              </p><p>
+                Once you have created your expense, submit it to your manager who will validate it.
+              </p>
+            </field>
+        </record>
+
+        <!-- <record id="action_hr_expense_detailed_summary_my_all" model="ir.actions.act_window">
+            <field name="name">My Detailed Expense</field>
+            <field name="res_model">hr.expense.detailed.summary</field>
+            <field name="view_mode">tree,form,</field>
+            <field name="search_view_id" ref="view_hr_expense_detailed_summary_filter"/>
+            <field name="domain">[('employee_id.user_id', '=', uid)]</field>
+            <field name="context">{}</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click here to create a new detailed expense.
+              </p><p>
+                Once you have created your expense, submit it to your manager who will validate it.
+              </p>
+            </field>
+        </record> -->
+
+        <!-- <record id="action_hr_expense_detailed_summary_all_to_approve" model="ir.actions.act_window">
+            <field name="name">Detailed Expenses To Approve</field>
+            <field name="res_model">hr.expense.detailed.summary</field>
+            <field name="view_mode">tree,form,</field>
+            <field name="search_view_id" ref="view_hr_expense_detailed_summary_filter"/>
+            <field name="domain">[('approver_id.user_id', '=', uid)]</field>
+            <field name="context">{'search_default_submitted': 1}</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click here to create a new detailed expense.
+              </p><p>
+                Once you have created your expense, submit it to your manager who will validate it.
+              </p>
+            </field>
+        </record> -->
+
+        <!-- <record id="action_hr_expense_detailed_summary_all_to_post" model="ir.actions.act_window">
+            <field name="name">Detailed Expenses To Post</field>
+            <field name="res_model">hr.expense.detailed.summary</field>
+            <field name="view_mode">tree,form,</field>
+            <field name="search_view_id" ref="view_hr_expense_detailed_summary_filter"/>
+            <field name="domain"></field>
+            <field name="context">{'search_default_to_post': 1}</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click here to create a new detailed expense.
+              </p><p>
+                Once you have created your expense, submit it to your manager who will validate it.
+              </p>
+            </field>
+        </record> -->
+
+        <!-- <record id="action_hr_expense_detailed_summary_all_to_pay" model="ir.actions.act_window">
+            <field name="name">Detailed Expenses To Pay</field>
+            <field name="res_model">hr.expense.detailed.summary</field>
+            <field name="view_mode">tree,form,</field>
+            <field name="search_view_id" ref="view_hr_expense_detailed_summary_filter"/>
+            <field name="domain"></field>
+            <field name="context">{'search_default_to_pay': 1}</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click here to create a new detailed expense.
+              </p><p>
+                Once you have created your expense, submit it to your manager who will validate it.
+              </p>
+            </field>
+        </record> -->
+
+        <!-- <menuitem id="menu_hr_expense_detailed_summary_my_reports" name="Detailed Expense" sequence="10" parent="hr_expense.menu_hr_expense_my_expenses" action="action_hr_expense_detailed_summary_my_all" />
+        <menuitem id="menu_hr_expense_detailed_summary_all_to_approve" name="Detailed Expenses To Approve" sequence="99" parent="hr_expense.menu_hr_expense_to_approve" action="action_hr_expense_detailed_summary_all_to_approve" />
+        <menuitem id="menu_hr_expense_detailed_summary_all_to_post" name="Detailed Expenses To Post" sequence="98" parent="hr_expense.menu_hr_expense_accountant" action="action_hr_expense_detailed_summary_all_to_post" />
+        <menuitem id="menu_hr_expense_detailed_summary_all_to_pay" name="Detailed Expenses To Pay" sequence="99" parent="hr_expense.menu_hr_expense_accountant" action="action_hr_expense_detailed_summary_all_to_pay" /> -->
+        <menuitem id="menu_fleet_trip_ticket_root" name="Trip Ticket" sequence="0" parent="fleet.menu_root" />
+
+        <menuitem id="menu_fleet_trip_ticket_all" name="All Trip Ticket" sequence="10" parent="globpak.menu_fleet_trip_ticket_root" action="action_fleet_trip_ticket_all" />
+
+    </data>
+</odoo>

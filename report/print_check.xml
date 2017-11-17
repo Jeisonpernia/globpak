@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<data>
+
+<template id="ckus_check_extend" inherit_id="l10n_us_check_printing.ckus_check">
+    <xpath expr="//div[@class='ckus_check']" position="replace">
+        <div class="ckus_check">
+            <div class="sequence_number" t-if="page['sequence_number']" t-esc="page['sequence_number']" />
+            <div class="ckus_date" t-esc="formatLang(page['payment_date'], date=True)" style="top: 0.37in;left: 6.13in;" />
+            <div class="ckus_amount" style="top: 0.60in;left: 6.35in;">
+                <t t-if="isinstance(page['amount'], float)"><t t-esc="formatLang(page['amount'])"/></t>
+                <t t-if="isinstance(page['amount'], str)"><t t-esc="page['amount']"/></t>
+            </div>
+            <div class="ckus_payee_name" t-esc="page['partner_name']" style="top: 0.70in; left: 1.30in; font-size: 13px;" />
+            <div class="ckus_amount_in_word" t-esc="page['amount_in_word']" style="top: 0.95in; left: 1.15in; font-weight: normal; font-size: 13px"/>
+            <!--<div class="ckus_memo" t-esc="page['memo']"/>-->
+        </div>
+    </xpath>
+</template>
+
+<template id="ckus_stub_extend" inherit_id="l10n_us_check_printing.ckus_stub">
+    <xpath expr="//div[@t-attf-class='ckus_stub ckus_stub_{{ stub_num }}']" position="replace">
+        <div t-attf-class="ckus_stub ckus_stub_{{ stub_num }}">
+            <div class="sequence_number" t-if="page['sequence_number']" t-esc="page['sequence_number']"/>
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="col-xs-1">
+                        <img t-if="company.logo" t-att-src="'data:image/png;base64,%s' % company.logo" style="max-height: 65px;"/>
+                    </div>
+                </div>
+            </div>
+            <div class="row zero_min_height">
+                <div class="col-xs-12">
+                    <div style="border-bottom: 1px solid black;"></div>
+                </div>
+            </div>
+            <center><h5><strong>CHECK VOUCHER</strong></h5></center>
+            <br/>
+            <div class="row summary_line">
+                <div class="col-xs-6 text-left">
+                    <span t-esc="page['partner_name']"/>
+                </div>
+                <div class="col-xs-6 text-right">
+                    <span t-esc="formatLang(page['payment_date'], date=True)"/>
+                </div>
+            </div>
+
+            <table class="table table-bordered table-condensed stub_lines" t-if="page['stub_lines']">
+                <thead><tr>
+                    <th class="text-left">Due Date</th>
+                    <th class="text-left">Description</th>
+                    <th class="text-right">Invoice Amount</th>
+                    <th class="text-right">Balance Due</th>
+                    <th class="text-right">Payment</th>
+                </tr></thead>
+                <tbody>
+                    <t t-foreach="page['stub_lines']" t-as="stub_line">
+                        <t t-if="stub_line.get('header')">
+                            <tr><th colspan="6"><t t-esc="stub_line['name']"/></th></tr>
+                        </t>
+                        <t t-if="not stub_line.get('header')"><tr>
+                            <td class="text-left"><t t-if="stub_line['due_date']" t-esc="formatLang(stub_line['due_date'], date=True)"/></td>
+                            <td class="text-left"><t t-esc="stub_line['number']"/></td>
+                            <td class="text-right"><t t-esc="formatLang(stub_line['amount_total'], monetary=True, currency_obj=stub_line['currency'])"/></td>
+                            <td class="text-right">
+                                <t t-if="int(stub_line['amount_residual']*10**4) != 0"><t t-esc="formatLang(stub_line['amount_residual'], monetary=True, currency_obj=stub_line['currency'])"/></t>
+                                <t t-if="int(stub_line['amount_residual']*10**4) == 0">-</t>
+                            </td>
+                            <td class="text-right"><t t-esc="formatLang(stub_line['amount_paid'], monetary=True, currency_obj=stub_line['currency'])"/></td>
+                        </tr></t>
+                    </t>
+                    <tr t-if="page['stub_cropped']"><td colspan="6" class="text-right">...</td></tr>
+                </tbody>
+            </table>
+            
+            <br/>
+            <br/>
+
+            <div class="text-right" style="font-weight:bold">Check Amount:
+                <t t-if="isinstance(page['amount'], float)"><t t-esc="formatLang(page['amount'], monetary=True, currency_obj=page['currency'])"/></t>
+                <t t-if="isinstance(page['amount'], str)"><t t-esc="page['amount']"/></t>
+            </div>
+
+            <br/>
+            <br/>
+
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="col-xs-1">
+                        <img t-if="company.logo" t-att-src="'data:image/png;base64,%s' % company.logo" style="max-height: 65px;"/>
+                    </div>
+                </div>
+            </div>
+            <div class="row zero_min_height">
+                <div class="col-xs-12">
+                    <div style="border-bottom: 1px solid black;"></div>
+                </div>
+            </div>
+            <center><h5><strong>ACKNOWLEDGEMENT RECEIPT</strong></h5></center>
+            <br/>
+            <div class="row">
+                <div class="col-xs-4 pull-right" style="font-size: 12px">
+                    <center>
+                    <span>____________________________</span><br/>
+                    <span>RECEIVED BY / DATE</span>
+                    </center>
+                </div>
+            </div>
+            <br/>
+            <div class="row" style="font-size: 12px">
+                <center><span t-esc="company.partner_id.contact_address"/></center>
+            </div>
+        </div>        
+    </xpath>
+</template>
+
+</data>
+</odoo>

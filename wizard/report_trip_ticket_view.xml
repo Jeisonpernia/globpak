@@ -1,0 +1,31 @@
+<odoo>
+	<data>
+		<record id="report_trip_ticket_view" model="ir.ui.view">
+			<field name="name">Trip Ticket Report</field>
+			<field name="model">report.trip.ticket</field>
+			<field name="arch" type="xml">
+				<form string="Trip Ticket Report">
+					<group col="4">
+						<field name="date_from"/>
+						<field name="date_to"/>
+					</group>
+					<footer>
+						<button name="generate_report" string="Print" type="object" default_focus="1" class="oe_highlight"/>
+							or 
+						<button string="Cancel" class="oe_link" special="cancel" />
+					</footer>
+				</form>
+			</field>
+		</record>
+
+		<record id="action_report_trip_ticket_menu" model="ir.actions.act_window">
+			<field name="name">Trip Ticket Report</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">report.trip.ticket</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">form</field>
+			<field name="view_id" ref="report_trip_ticket_view"/>
+			<field name="target">new</field>
+		</record>
+	</data>
+</odoo>

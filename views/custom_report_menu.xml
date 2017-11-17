@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<data>
+    <!-- REPORTS -->
+    <menuitem id="menu_account_alphalist_payee" name="Alphabetical List of Payees from whom Taxes are Withheld" parent="account.menu_finance_reports" action="action_account_report_alphalist_payee_menu" groups="account.group_account_manager,account.group_account_user" sequence="96" />
+    <menuitem id="menu_account_sales_transaction" name="Sales Transaction" parent="account.menu_finance_reports" action="action_account_sales_transaction_summary_menu" groups="account.group_account_manager,account.group_account_user" sequence="97" />
+    <menuitem id="menu_account_purchase_transaction" name="Purchase Transaction" parent="account.menu_finance_reports" action="action_account_purchase_transaction_summary_menu" groups="account.group_account_manager,account.group_account_user" sequence="98" />
+    <menuitem id="menu_account_import_transaction" name="Imports Transaction" parent="account.menu_finance_reports" action="action_account_import_transaction_summary_menu" groups="account.group_account_manager,account.group_account_user" sequence="99" />
+
+    <menuitem id="menu_account_bir_complilation_report_root" name="BIR Compilation" parent="account.menu_finance_reports" groups="account.group_account_manager,account.group_account_user" sequence="100" />
+    <menuitem id="menu_account_sales_summary" name="Sales Summary Report" parent="globpak.menu_account_bir_complilation_report_root" action="action_account_sales_summary_menu" groups="account.group_account_manager,account.group_account_user" sequence="10"/>
+    <menuitem id="menu_account_purchase_expense_summary" name="Summary of Purchases and Expenses" parent="globpak.menu_account_bir_complilation_report_root" action="action_account_purchase_expense_summary_menu" groups="account.group_account_manager,account.group_account_user" sequence="20"/>
+    <menuitem id="menu_account_ewt_deduction_summary" name="Summary of Expanded Withholding Tax Deduction" parent="globpak.menu_account_bir_complilation_report_root" action="action_account_ewt_deduction_summary_menu" groups="account.group_account_manager,account.group_account_user" sequence="30"/>
+    <!-- <menuitem id="menu_account_asset_summary" name="Asset Summary Report" parent="globpak.menu_account_bir_complilation_report_root" action="action_account_asset_summary_menu" groups="account.group_account_manager,account.group_account_user" sequence="40"/> -->
+    <menuitem id="menu_account_payable_summary" name="Accounts Payable Summary" parent="globpak.menu_account_bir_complilation_report_root" action="action_account_payable_summary_menu" groups="account.group_account_manager,account.group_account_user" sequence="50" />
+    <menuitem id="menu_account_receivable_summary" name="Accounts Receivable Summary" parent="globpak.menu_account_bir_complilation_report_root" action="action_account_receivable_summary_menu" groups="account.group_account_manager,account.group_account_user" sequence="60" />
+    <menuitem id="menu_account_taxes_licenses_summary" name="Summary of Taxes and Licenses" parent="globpak.menu_account_bir_complilation_report_root" action="action_account_taxes_licenses_summary_menu" groups="account.group_account_manager,account.group_account_user" sequence="70" />
+
+    <!--  TRIP TICKET -->
+    <menuitem id="menu_report_trip_ticket" name="Trip Ticket Report" parent="fleet.menu_fleet_reporting" action="action_report_trip_ticket_menu" groups="fleet.fleet_group_manager" sequence="100" />
+</data>
+</odoo>

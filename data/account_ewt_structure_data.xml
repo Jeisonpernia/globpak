@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+
+        <record model="account.ewt.structure" id="account_tax_rate_data_wc158">
+            <field name="name">WC158</field>
+            <field name="description">Income payments made by top 20,000 private corporations to their local/resident suppliers of goods - Corporate</field>
+        </record>
+
+        <record model="account.ewt.structure" id="account_tax_rate_data_wc160">
+            <field name="name">WC160</field>
+            <field name="description">Income payments made by top 20,000 private corporations to their local/resident suppliers of services - Corporate</field>
+        </record>
+        
+    </data>
+</odoo>
