@@ -33,7 +33,10 @@ class AccountInvoice(models.Model):
         self.vat_exempt_sales_signed = vat_exempt * sign
         self.zero_rated_sales_signed = zero_rated * sign
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 80172243da9ab8c20a53be2ffaaf0487131cbbeb
     # NEW FIELDS
     vat_sales = fields.Monetary(string='Vatable Sales', store=True, readonly=True, compute='_compute_amount_sales', track_visibility='always')
     vat_exempt_sales = fields.Monetary(string='Vat Exempt Sales', store=True, readonly=True, compute='_compute_amount_sales', track_visibility='always')
@@ -51,7 +54,10 @@ class AccountInvoice(models.Model):
     supplier_invoice_no = fields.Char(string='Supplier Invoice No')
     bl_awb_no = fields.Char(string='BL/AWB No.')
     import_entry_no = fields.Char(string='Import Entry No.')
+<<<<<<< HEAD
     landed_cost_line_id = fields.Many2one('account.landed.cost', 'Landed Cost')
+=======
+>>>>>>> 80172243da9ab8c20a53be2ffaaf0487131cbbeb
 
     # STUDIO
     x_description = fields.Text('Description', store=True, copy=True)

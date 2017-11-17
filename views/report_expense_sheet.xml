@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 	<data>
@@ -100,3 +101,107 @@
 		</template>
 	</data>
 </odoo>
+=======
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+		<template id="report_expense_sheet_extend" inherit_id="hr_expense.report_expense_sheet">
+			<xpath expr="//t[@t-call='web.external_layout']" position="replace">
+			<t t-call="globpak.external_layout_accounting">
+				<div class="page">
+					<div class="text-center">
+						<h2>Expenses Report</h2>
+					</div>
+
+					<div class="col-xs-12 text-right">
+                    	<h5><strong>Date: </strong><span t-field="o.accounting_date"/></h5>
+                	</div>
+
+					<div class="row mt32 mb32">
+
+						<div class="col-xs-12">
+							<strong>Description:</strong>
+							<p t-field="o.name"/>
+						</div>
+
+					</div>
+
+					<table class="table table-condensed" style="font-size: 12px">
+						<thead>
+							<tr>
+								<th>Date</th>
+								<th>Ref.</th>
+								<th>Payee</th>
+								<th>Particulars</th>
+								<th>Account Code</th>
+								<th class="text-right">Gross</th>
+								<th class="text-right">Taxes</th>
+								<th class="text-right">Net</th>
+							</tr>
+						</thead>
+						<tbody>
+							<t t-set='tax_total' t-value='0'/>
+							<tr t-foreach="o.expense_line_ids" t-as="line">
+								<td><span t-field="line.date"/></td>
+								<td><span t-field="line.reference"/></td>
+								 <td><span t-field="line.x_vendor"/></td>
+								<td>
+                                    <span t-field="line.name"/>
+                                    <span t-field="line.description"/>
+                                    <br/>
+                                    <span t-field="line.analytic_account_id.name"/>
+                                </td>
+                                <td><span t-field="line.account_id"/></td>
+								<td class="text-right"><span t-field="line.total_amount"/></td>
+								<td class="text-right">
+									<t t-foreach="line.tax_ids" t-as="tax">
+										<!--<t t-if="tax.description">
+											<span t-field="tax.description"/>
+										</t>
+										<t t-if="not tax.description">
+											<span t-field="tax.name"/>
+										</t>-->
+										<!--<t t-esc="get_tax_details(tax)" t-as="tax_details">
+											<span t-esc="">
+										</t>-->
+										<t t-set='tax_amount' t-value='o.get_tax_details(line, tax)'/>
+										<span t-esc="'%.2f'%(tax_amount)" />
+										<t t-set='tax_total' t-value='tax_total + tax_amount'/>
+									</t>
+								</td>
+								<td class="text-right"><span t-field="line.unit_amount"/></td>
+							</tr>
+							<tr class="border-black">
+                        		<td></td>
+								<td></td>
+                        		<td></td>
+                        		<td></td>
+                        		<td class="text-right"><strong>Total</strong></td>
+                        		<td class="text-right"><span t-field="o.total_amount" /></td>
+                        		<td class="text-right"><span t-esc="'%.2f'%(tax_total)" /></td>
+                        		<td class="text-right"><span t-field="o.untaxed_amount" /></td>
+                    		</tr>
+						</tbody>
+					</table>
+
+					<div style="position: absolute; top: 1050px; width: 100%">
+						<div class="col-xs-4">
+							<strong>Prepared By: </strong><br/>
+							<span t-field="o.employee_id.name"/>
+						</div>
+						<div class="col-xs-4">
+							<strong>Checked By: </strong><br/>
+							<span t-field="o.x_checked_by.name"/>
+						</div>
+						<div class="col-xs-4">
+							<strong>Approved By: </strong><br/>
+							<span t-field="o.x_approved_by.name"/>
+						</div>
+					</div>
+				</div>
+			</t>
+			</xpath>
+		</template>
+	</data>
+</odoo>
+>>>>>>> 80172243da9ab8c20a53be2ffaaf0487131cbbeb
