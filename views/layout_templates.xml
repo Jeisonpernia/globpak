@@ -4,7 +4,6 @@
 
 <template id="external_layout_accounting">
     <!-- Multicompany -->
-<<<<<<< HEAD
 
     <!-- <t t-call="globpak.external_layout_accounting_header" />
     <t t-raw="0" />
@@ -39,24 +38,6 @@
 </template>
 
 <template id="external_layout_accounting_custom">
-=======
-    <t t-if="not o and doc">
-        <t t-set="o" t-value="doc"/>
-    </t>
-    <t t-if="o and 'company_id' in o">
-        <t t-set="company" t-value="o.company_id"></t>
-    </t>
-    <t t-if="not o or not 'company_id' in o">
-        <t t-set="company" t-value="res_company"></t>
-    </t>
-
-    <t t-call="globpak.external_layout_accounting_header" />
-    <t t-raw="0" />
-    <t t-call="globpak.external_layout_accounting_footer" />
-</template>
-
-<template id="external_layout_accounting_header">
->>>>>>> 80172243da9ab8c20a53be2ffaaf0487131cbbeb
     <div class="header">
         <div class="row">
             <div class="col-xs-12">
