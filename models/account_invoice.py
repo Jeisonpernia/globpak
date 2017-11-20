@@ -33,10 +33,6 @@ class AccountInvoice(models.Model):
         self.vat_exempt_sales_signed = vat_exempt * sign
         self.zero_rated_sales_signed = zero_rated * sign
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 80172243da9ab8c20a53be2ffaaf0487131cbbeb
     # NEW FIELDS
     vat_sales = fields.Monetary(string='Vatable Sales', store=True, readonly=True, compute='_compute_amount_sales', track_visibility='always')
     vat_exempt_sales = fields.Monetary(string='Vat Exempt Sales', store=True, readonly=True, compute='_compute_amount_sales', track_visibility='always')

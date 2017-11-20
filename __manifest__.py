@@ -99,10 +99,7 @@
         'wizard/account_report_payable_summary_view.xml',
         'wizard/account_report_receivable_summary_view.xml',
         'wizard/account_report_taxes_licenses_summary_view.xml',
-<<<<<<< HEAD
         'wizard/report_trip_ticket_view.xml',
-=======
->>>>>>> 80172243da9ab8c20a53be2ffaaf0487131cbbeb
         'views/custom_report_menu.xml',
     ],
     # only loaded in demonstration mode

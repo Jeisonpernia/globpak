@@ -86,13 +86,8 @@ class ExportReportXlsAccountImportTransaction(http.Controller):
         total_amount_tax = 0
         for account in account_imports:
             worksheet.write(row_count, 0, account.date, style_table_row) 
-<<<<<<< HEAD
             worksheet.write(row_count, 1, account.import_entry_no or '', style_table_row)
             worksheet.write(row_count, 2, account.assessment_date or '', style_table_row)
-=======
-            worksheet.write(row_count, 1, '', style_table_row)
-            worksheet.write(row_count, 2, '', style_table_row)
->>>>>>> 80172243da9ab8c20a53be2ffaaf0487131cbbeb
             worksheet.write(row_count, 3, account.partner_id.name, style_table_row)
             worksheet.write(row_count, 4, '', style_table_row)
             
