@@ -3,7 +3,7 @@
     <data noupdate="0">
 
         <record id="l10n_us_check_printing.action_print_check_top" model="ir.actions.report.xml">
-            <field name="name">Print Check New</field>
+            <field name="name">Print Check</field>
         </record>
 
         <delete model="ir.actions.report.xml" id="l10n_us_check_printing.action_print_check_middle"/>

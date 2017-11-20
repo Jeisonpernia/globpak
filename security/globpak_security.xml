@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+    	<!-- SALES MANAGER -->
+        <record id="sale.access_product_template_sale_manager" model="ir.model.access">
+            <field name="perm_unlink" eval="False"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_create" eval="False"/>
+        </record>
+        <record id="sale.access_product_product_sale_manager" model="ir.model.access">
+            <field name="perm_unlink" eval="False"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_create" eval="False"/>
+        </record>
+    </data>
+</odoo>

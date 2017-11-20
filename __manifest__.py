@@ -52,11 +52,12 @@
 
     # any module necessary for this one to work correctly
     # 'depends': ['base', 'account', 'hr_expense', 'report', 'l10n_us_check_printing'],
-    'depends': ['base', 'web', 'account', 'hr', 'hr_contract', 'hr_expense', 'l10n_us_check_printing'],
+    'depends': ['base', 'web', 'account', 'hr', 'hr_contract', 'hr_expense', 'l10n_us_check_printing', 'sale'],
 
     # always loaded
     'data': [
         'security/ir.model.access.csv',
+        'security/globpak_security.xml',
         'data/ir_sequence_data.xml',
         # 'data/us_check_printing.xml',
         'data/account_ewt_structure_data.xml',
@@ -68,7 +69,6 @@
         'views/hr_expense_view.xml',
         'views/hr_employee_official_business_view.xml',
         'views/fleet_trip_ticket_view.xml',
-        # 'views/hr_expense_detailed_view.xml',
         'views/studio_hr_employee_view.xml',
         'views/studio_purchase_order_view.xml',
         'views/studio_sale_order_view.xml',
@@ -81,6 +81,8 @@
         'views/report_journal_voucher.xml',
         'views/report_credit_memo.xml',
         'views/report_debit_memo.xml',
+        'views/product_view.xml',
+        'views/hr_holidays_view.xml',
         'report/print_check.xml',
         'report/print_check_top.xml',
         'report/print_check_bottom.xml', # END OF ACCOUNTING

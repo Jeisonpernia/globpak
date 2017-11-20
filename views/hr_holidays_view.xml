@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+    	<record id="edit_holiday_new_extend" model="ir.ui.view">
+            <field name="name">edit.holiday.new</field>
+            <field name="model">hr.holidays</field>
+            <field name="inherit_id" ref="hr_holidays.edit_holiday_new" />
+            <field name="arch" type="xml">
+
+                <xpath expr="//field[@name='department_id']" position="after">
+                    <field name="approver_id" />
+                    <field name="current_user" invisible="1" />
+                </xpath>
+
+            </field>
+        </record> 
+    </data>
+</odoo>

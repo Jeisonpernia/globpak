@@ -27,7 +27,8 @@
                         <button name="submit_ob" states="draft" string="Submit to Manager" type="object" class="oe_highlight"/>
                         <button name="approve_ob" states="confirm" string="Approve" type="object" class="oe_highlight" groups="hr_expense.group_hr_expense_user"/>
                         <button name="refuse_ob" states="confirm" string="Refuse" type="object" groups="hr_expense.group_hr_expense_user"/>
-                        <field name="state" widget="statusbar" statusbar_visible="draft,confirm,validate"/>
+                        <button name="done_ob" states="validate" string="Done" type="object" class="oe_highlight"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,confirm,validate,done"/>
                     </header>
                     <sheet>
                         <div class="oe_title" name="title">
@@ -138,6 +139,23 @@
             </field>
         </record>
 
+        <record model="ir.actions.act_window" id="hr_employee_official_business_my_all">
+            <field name="name">My Official Business</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">hr.employee.official.business</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="hr_employee_official_business_view_search" />
+            <!-- <field name="domain">[]</field> -->
+            <field name="domain">[('employee_id.user_id', '=', uid)]</field>
+            <field name="context">{}}</field>
+            <field name="help" type="html">
+              <p>
+                Create your official business.
+              </p>
+            </field>
+        </record>
+
         <record model="ir.actions.act_window" id="hr_employee_official_business_all_to_approve_action">
             <field name="name">Official Business To Approve</field>
             <field name="type">ir.actions.act_window</field>
@@ -156,9 +174,14 @@
         </record>
 
         <menuitem id="menu_hr_employee_official_business_root" name="My OB" parent="hr_expense.menu_hr_expense_root" groups="base.group_user" sequence="0" />
+        
         <menuitem id="menu_hr_employee_official_business_unsubmitted" name="Official Business To Submit" parent="globpak.menu_hr_employee_official_business_root" action="hr_employee_official_business_unsubmitted_action" groups="base.group_user" sequence="10" />
+        
         <menuitem id="menu_hr_employee_official_business_refused" name="Refused Official Business" parent="globpak.menu_hr_employee_official_business_root" action="hr_employee_official_business_refused_action" groups="base.group_user" sequence="20" />
+        <menuitem id="menu_hr_employee_official_my_all" name="My Official Business" parent="globpak.menu_hr_employee_official_business_root" action="hr_employee_official_business_my_all" groups="base.group_user" sequence="30" />
+
         <menuitem id="menu_hr_employee_official_business_all_to_approve" name="Official Business To Approve" parent="hr_expense.menu_hr_expense_to_approve" action="hr_employee_official_business_all_to_approve_action" groups="base.group_user" sequence="100" />
+
         <menuitem id="menu_hr_employee_official_business_all" name="All Official Business " parent="hr_expense.menu_hr_expense_reports" action="hr_employee_official_business_all_action" groups="base.group_user" sequence="100" />
 
     </data>

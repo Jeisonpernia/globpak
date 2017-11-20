@@ -34,6 +34,7 @@ class HrEmployeeOfficialBusiness(models.Model):
                 ('confirm', 'Pending'),
                 ('cancel', 'Refused'),
                 ('validate', 'Approved'),
+                ('done', 'Done'),
         ], default='draft')
         
         @api.model
@@ -79,3 +80,8 @@ class HrEmployeeOfficialBusiness(models.Model):
         def refuse_ob(self):
                 for ob in self:
                         ob.state = 'cancel'
+
+        @api.multi
+        def done_ob(self):
+                for ob in self:
+                        ob.state = 'done'

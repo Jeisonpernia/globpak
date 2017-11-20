@@ -15,11 +15,8 @@
     <menuitem id="menu_account_payable_summary" name="Accounts Payable Summary" parent="globpak.menu_account_bir_complilation_report_root" action="action_account_payable_summary_menu" groups="account.group_account_manager,account.group_account_user" sequence="50" />
     <menuitem id="menu_account_receivable_summary" name="Accounts Receivable Summary" parent="globpak.menu_account_bir_complilation_report_root" action="action_account_receivable_summary_menu" groups="account.group_account_manager,account.group_account_user" sequence="60" />
     <menuitem id="menu_account_taxes_licenses_summary" name="Summary of Taxes and Licenses" parent="globpak.menu_account_bir_complilation_report_root" action="action_account_taxes_licenses_summary_menu" groups="account.group_account_manager,account.group_account_user" sequence="70" />
-<<<<<<< HEAD
 
     <!--  TRIP TICKET -->
     <menuitem id="menu_report_trip_ticket" name="Trip Ticket Report" parent="fleet.menu_fleet_reporting" action="action_report_trip_ticket_menu" groups="fleet.fleet_group_manager" sequence="100" />
-=======
->>>>>>> 80172243da9ab8c20a53be2ffaaf0487131cbbeb
 </data>
 </odoo>
