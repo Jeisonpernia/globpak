@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="account_landed_cost_view_tree" model="ir.ui.view">
+            <field name="name">account.landed.cost.tree</field>
+            <field name="model">account.landed.cost</field>
+            <field name="priority" eval="8" />
+            <field name="arch" type="xml">
+                <tree string="Landed Cost">
+                    <field name="name" />
+                    <field name="amount_total" widget="monetary" />
+                </tree>
+            </field>
+        </record>
+
+        <record id="account_landed_cost_view_form" model="ir.ui.view">
+            <field name="name">account.landed.cost.form</field>
+            <field name="model">account.landed.cost</field>
+            <field name="priority" eval="8" />
+            <field name="arch" type="xml">
+                <form string="Landed Cost">
+                    <header/>
+                    <sheet>
+                        <div class="oe_title" name="title">
+                            <label for="name" class="edit_only" />
+                            <h1><field name="name" readonly="1"/></h1>
+                        </div>
+
+                        <div class="oe_right oe_button_box" name="buttons"/>
+                        <group>
+                            <group>
+                                <field name="invoice_id" />
+                            </group>
+                            <group>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Details">
+                                <field name="line_ids">
+                                    <tree editable="bottom">
+                                        <field name="name"/>
+                                        <field name="amount"/>
+                                    </tree>
+                                </field>
+                                <group class="oe_subtotal_footer oe_right">
+                                    <!-- <field name="amount_untaxed"/> -->
+                                    <!-- <field name="amount_tax"/> -->
+                                    <field name="amount_total" class="oe_subtotal_footer_separator"/>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="account_landed_cost_view_search" model="ir.ui.view">
+            <field name="name">account.landed.cost.search</field>
+            <field name="model">account.landed.cost</field>
+            <field name="priority" eval="8" />
+            <field name="arch" type="xml">
+                <search string="Landed Cost">
+                    <field name="name" />
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_landed_cost">
+            <field name="name">Landed Cost</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">account.landed.cost</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="account_landed_cost_view_search" />
+            <field name="help" type="html">
+              <p>
+                Create your record.
+              </p>
+            </field>
+        </record>
+
+        <menuitem id="menu_account_landed_cost" name="Landed Cost" parent="account.menu_finance_payables_documents" groups="base.group_user" action="action_landed_cost" sequence="1000" />    
+
+    </data>
+</odoo>

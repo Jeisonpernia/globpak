@@ -1,6 +1,70 @@
 from odoo import models, fields, api, _ 
+from odoo.exceptions import UserError, AccessError
 
 class StudioSalesOrder(models.Model):
 	_inherit = 'sale.order'
 
-	x_clientpo = fields.Many2one(string='Client PO No.', store=True, copy=True)
+	x_clientpo = fields.Char(string='Client PO No.', store=True, copy=True)
+	description = fields.Text()
+
+	state = fields.Selection([
+		('draft', 'Quotation'),
+		('sent', 'Quotation Sent'),
+		('validate', 'Validated'),
+		('sale', 'Sales Order'),
+		('done', 'Locked'),
+		('cancel', 'Cancelled'),
+	])
+
+	# is_allowed_price_edit = fields.Boolean(default='_compute_group')
+
+	@api.multi
+	def action_confirm(self):
+		for record in self:
+			if not record.x_clientpo:
+				raise UserError('Cannot confirm sale. Client PO number is required.')
+
+		res = super(StudioSalesOrder, self).action_confirm()
+		return res
+
+	@api.multi
+	def action_validate(self):
+		for record in self:
+			if not record.x_clientpo:
+				raise UserError('Cannot validate sale. Client PO number is required.')
+			else:
+				record.write({'state': 'validate'})
+
+	# @api.depends('partner_id')
+	# def _compute_group(self):
+	# 	user = self.env['res.users'].browse(self.env.uid)
+	# 	if user.has_group('sales_team.group_sale_salesman_all_leads') or user.has_group('sales_team.group_sale_salesman') or user.has_group('sales_team.group_sale_manager'):
+	# 		self.is_allowed_price_edit = False
+	# 		if user.has_group('account.group_account_invoice') or user.has_group('account.group_account_user') or user.has_group('account.group_account_manager'):
+	# 			self.is_allowed_price_edit = True
+	# 	else:
+	# 		self.is_allowed_price_edit = True
+
+class StudioSalesOrderLine(models.Model):
+	_inherit = 'sale.order.line'
+
+	is_allowed_price_edit = fields.Boolean(compute='_compute_group')
+
+	@api.depends('product_id')
+	def _compute_group(self):
+		user = self.env['res.users'].browse(self.env.uid)
+		if user.has_group('sales_team.group_sale_salesman_all_leads') or user.has_group('sales_team.group_sale_salesman') or user.has_group('sales_team.group_sale_manager'):
+			self.is_allowed_price_edit = False
+			if user.has_group('account.group_account_invoice') or user.has_group('account.group_account_user') or user.has_group('account.group_account_manager'):
+				self.is_allowed_price_edit = True
+		else:
+			self.is_allowed_price_edit = True
+
+	@api.multi
+	def _prepare_procurement_values(self, group_id):
+		vals = super(StudioSalesOrderLine, self)._prepare_procurement_values(group_id=group_id)
+		for line in self:
+			vals.update({
+				'x_client_po_no': line.order_id.x_clientpo,
+			})
+		return vals

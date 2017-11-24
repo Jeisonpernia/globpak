@@ -45,6 +45,7 @@
                             <group>
                                 <field name="company_id" />
                                 <field name="approver_id" />
+                                <field name="current_user" />
                             </group>
                         </group>
                         <notebook>

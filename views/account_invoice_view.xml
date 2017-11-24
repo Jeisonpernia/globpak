@@ -58,12 +58,19 @@
                     <page string="Importation">
                         <group>
                             <group>
-                                <field name="assessment_date"/>
                                 <field name="supplier_invoice_no"/>
                                 <field name="bl_awb_no"/>
-                                <field name="import_entry_no"/>
                             </group>
                             <group>
+                                <field name="landed_cost_line_id"/>
+                            </group>
+                        </group>
+                        <group>
+                            <group string="Customs">
+                                <field name="assessment_date"/>
+                                <field name="import_entry_no"/>
+                            </group>
+                            <group string="Brokerage">
                                 <field name="landed_cost_line_id"/>
                             </group>
                         </group>

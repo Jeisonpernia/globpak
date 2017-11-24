@@ -81,12 +81,13 @@
         'views/report_journal_voucher.xml',
         'views/report_credit_memo.xml',
         'views/report_debit_memo.xml',
+        'views/account_landed_cost_view.xml',
         'views/product_view.xml',
         'views/hr_holidays_view.xml',
         'report/print_check.xml',
         'report/print_check_top.xml',
-        'report/print_check_bottom.xml', # END OF ACCOUNTING
-        'report/report_purchaseorder.xml', # START OF PURCHASING AND INVENTORY
+        'report/print_check_bottom.xml', 
+        'report/report_purchaseorder.xml',
         'report/report_picking.xml',
         'report/report_deliveryslip.xml',
         'views/report.xml',

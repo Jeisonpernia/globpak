@@ -14,6 +14,7 @@ from . import account_landed_cost
 from . import hr_employee_official_business
 from . import fleet_trip_ticket
 from . import hr_holidays
+from . import product
 
 # STUDIO
 from . import studio_res_partner

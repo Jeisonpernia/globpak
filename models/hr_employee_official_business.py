@@ -1,5 +1,7 @@
 from odoo import models, fields, api, _
 
+from odoo.exceptions import UserError
+
 class HrEmployeeOfficialBusiness(models.Model):
         _name = 'hr.employee.official.business'
         _description = 'HR Employee Official Business'
@@ -36,6 +38,15 @@ class HrEmployeeOfficialBusiness(models.Model):
                 ('validate', 'Approved'),
                 ('done', 'Done'),
         ], default='draft')
+
+        current_user = fields.Many2one('res.users', compute='_get_current_user')
+
+        @api.depends()
+        def _get_current_user(self):
+                for rec in self:
+                        rec.current_user = self.env.user
+                # i think this work too so you don't have to loop
+                self.update({'current_user' : self.env.user.id})
         
         @api.model
         def create(self, values):
@@ -74,11 +85,15 @@ class HrEmployeeOfficialBusiness(models.Model):
         @api.multi
         def approve_ob(self):
                 for ob in self:
+                        if ob.approver_id.user_id != ob.current_user:
+                                raise UserError("You're not allowed to approve this OB. OB Approver: %s" % (ob.approver_id.name))
                         ob.state = 'validate'
 
         @api.multi
         def refuse_ob(self):
                 for ob in self:
+                        if ob.approver_id.user_id != ob.current_user:
+                                raise UserError("You're not allowed to refuse this OB. OB Approver: %s" % (ob.approver_id.name))
                         ob.state = 'cancel'
 
         @api.multi
