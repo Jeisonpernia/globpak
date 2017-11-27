@@ -11,6 +11,7 @@
                     <field name="driver_id"/>
                     <field name="vehicle_id"/>
                     <field name="destination"/>
+                    <field name="state"/>
                 </tree>
             </field>
         </record>
@@ -21,7 +22,13 @@
             <field eval="25" name="priority"/>
             <field name="arch" type="xml">
                 <form string="Detailed Expense" class="o_expense_sheet">
-                    <header/>
+                    <header>
+                        <button name="submit_trip" states="draft" string="Submit to Manager" type="object" class="oe_highlight"/>
+                        <button name="approve_trip" states="confirm" string="Approve" type="object" class="oe_highlight"/>
+                        <button name="cancel_trip" states="confirm" string="Cancel" type="object"/>
+                        <button name="done_trip" states="validate" string="Done" type="object" class="oe_highlight"/>
+                        <field name="state" widget="statusbar"/>
+                    </header>
                     <sheet>
                         <div class="oe_button_box"/>
                         <div class="oe_title">
@@ -63,6 +70,8 @@
                                     <field name="passenger_id" />
                                     <field name="manager_id" />
                                     <field name="president_id" />
+                                    <field name="employee_id" />
+                                    <field name="current_user" />
                                 </group>
                             </page>
                         </notebook>
@@ -88,7 +97,11 @@
                         <filter string="Driver" domain="[]" context="{'group_by': 'driver_id'}"/>
                         <filter string="Vehicle" domain="[]" context="{'group_by': 'vehicle_id'}"/>
                         <filter string="Trip Ticket Month" domain="[]" context="{'group_by': 'ticket_date'}" help="Trip Ticket by Month"/>
-                        <!-- <filter string="State" domain="[]" context="{'group_by': 'state'}" name="state"/> -->
+                        <filter domain="[('state', '=', 'draft')]" string="To Submit" name="to_report" help="New Trip Ticket"/>
+                        <filter domain="[('state', '=', 'confirm')]" string="To Approve" name="to_approve" help="Confirmed Trip Ticket"/>
+                        <filter domain="[('state', '=', 'validae')]" string="Approved" name="approved" help="Approved Trip Ticket"/>
+                        <filter domain="[('state', '=', 'refused')]" string="Canceled" name="refused" help="Canceled Trip Ticket"/>
+                        <filter domain="[('state', '!=', 'cancel')]" string="Not Canceled" name="uncancelled" help="Actual Trip Ticket, not the canceled ones"/>
                     </group>
                 </search>
             </field>
@@ -97,88 +110,59 @@
         <record id="action_fleet_trip_ticket_all" model="ir.actions.act_window">
             <field name="name">All Trip Ticket</field>
             <field name="res_model">fleet.trip.ticket</field>
-            <field name="view_mode">tree,form,</field>
+            <field name="view_mode">tree,form</field>
             <field name="search_view_id" ref="view_fleet_trip_ticket_filter"/>
             <field name="help" type="html">
               <p class="oe_view_nocontent_create">
-                Click here to create a new detailed expense.
+                Click here to create a new trip ticket.
               </p><p>
-                Once you have created your expense, submit it to your manager who will validate it.
+                Once you have created your trip ticket, submit it to your manager who will validate it.
               </p>
             </field>
         </record>
 
-        <!-- <record id="action_hr_expense_detailed_summary_my_all" model="ir.actions.act_window">
-            <field name="name">My Detailed Expense</field>
-            <field name="res_model">hr.expense.detailed.summary</field>
-            <field name="view_mode">tree,form,</field>
-            <field name="search_view_id" ref="view_hr_expense_detailed_summary_filter"/>
+        <record model="ir.actions.act_window" id="action_fleet_trip_ticket_unsubmitted_action">
+            <field name="name">My Trip Ticket To Submit</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">fleet.trip.ticket</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_fleet_trip_ticket_filter" />
+            <!-- <field name="domain">[]</field> -->
             <field name="domain">[('employee_id.user_id', '=', uid)]</field>
-            <field name="context">{}</field>
+            <field name="context">{'search_default_to_report': 1}</field>
             <field name="help" type="html">
-              <p class="oe_view_nocontent_create">
-                Click here to create a new detailed expense.
-              </p><p>
-                Once you have created your expense, submit it to your manager who will validate it.
+              <p>
+                Create new trip ticket.
               </p>
             </field>
-        </record> -->
+        </record>
 
-        <!-- <record id="action_hr_expense_detailed_summary_all_to_approve" model="ir.actions.act_window">
-            <field name="name">Detailed Expenses To Approve</field>
-            <field name="res_model">hr.expense.detailed.summary</field>
-            <field name="view_mode">tree,form,</field>
-            <field name="search_view_id" ref="view_hr_expense_detailed_summary_filter"/>
-            <field name="domain">[('approver_id.user_id', '=', uid)]</field>
-            <field name="context">{'search_default_submitted': 1}</field>
+        <record model="ir.actions.act_window" id="action_fleet_trip_ticket_refused_action">
+            <field name="name">Canceled Trip Ticket</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">fleet.trip.ticket</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_fleet_trip_ticket_filter" />
+            <!-- <field name="domain">[]</field> -->
+            <field name="domain">[('employee_id.user_id', '=', uid)]</field>
+            <field name="context">{'search_default_refused': 1}</field>
             <field name="help" type="html">
-              <p class="oe_view_nocontent_create">
-                Click here to create a new detailed expense.
-              </p><p>
-                Once you have created your expense, submit it to your manager who will validate it.
+              <p>
+                Create new trip ticket.
               </p>
             </field>
-        </record> -->
+        </record>
 
-        <!-- <record id="action_hr_expense_detailed_summary_all_to_post" model="ir.actions.act_window">
-            <field name="name">Detailed Expenses To Post</field>
-            <field name="res_model">hr.expense.detailed.summary</field>
-            <field name="view_mode">tree,form,</field>
-            <field name="search_view_id" ref="view_hr_expense_detailed_summary_filter"/>
-            <field name="domain"></field>
-            <field name="context">{'search_default_to_post': 1}</field>
-            <field name="help" type="html">
-              <p class="oe_view_nocontent_create">
-                Click here to create a new detailed expense.
-              </p><p>
-                Once you have created your expense, submit it to your manager who will validate it.
-              </p>
-            </field>
-        </record> -->
-
-        <!-- <record id="action_hr_expense_detailed_summary_all_to_pay" model="ir.actions.act_window">
-            <field name="name">Detailed Expenses To Pay</field>
-            <field name="res_model">hr.expense.detailed.summary</field>
-            <field name="view_mode">tree,form,</field>
-            <field name="search_view_id" ref="view_hr_expense_detailed_summary_filter"/>
-            <field name="domain"></field>
-            <field name="context">{'search_default_to_pay': 1}</field>
-            <field name="help" type="html">
-              <p class="oe_view_nocontent_create">
-                Click here to create a new detailed expense.
-              </p><p>
-                Once you have created your expense, submit it to your manager who will validate it.
-              </p>
-            </field>
-        </record> -->
-
-        <!-- <menuitem id="menu_hr_expense_detailed_summary_my_reports" name="Detailed Expense" sequence="10" parent="hr_expense.menu_hr_expense_my_expenses" action="action_hr_expense_detailed_summary_my_all" />
-        <menuitem id="menu_hr_expense_detailed_summary_all_to_approve" name="Detailed Expenses To Approve" sequence="99" parent="hr_expense.menu_hr_expense_to_approve" action="action_hr_expense_detailed_summary_all_to_approve" />
-        <menuitem id="menu_hr_expense_detailed_summary_all_to_post" name="Detailed Expenses To Post" sequence="98" parent="hr_expense.menu_hr_expense_accountant" action="action_hr_expense_detailed_summary_all_to_post" />
-        <menuitem id="menu_hr_expense_detailed_summary_all_to_pay" name="Detailed Expenses To Pay" sequence="99" parent="hr_expense.menu_hr_expense_accountant" action="action_hr_expense_detailed_summary_all_to_pay" /> -->
+        
         <menuitem id="menu_fleet_trip_ticket_root" name="Trip Ticket" sequence="0" parent="fleet.menu_root" />
 
-        <menuitem id="menu_fleet_trip_ticket_all" name="All Trip Ticket" sequence="10" parent="globpak.menu_fleet_trip_ticket_root" action="action_fleet_trip_ticket_all" />
+        <menuitem id="menu_fleet_trip_ticket_unsubmitted" name="Trip Ticket To Submit" parent="globpak.menu_fleet_trip_ticket_root" action="action_fleet_trip_ticket_unsubmitted_action" groups="base.group_user" sequence="10" />
+
+        <menuitem id="menu_fleet_trip_ticket_refused" name="Canceled Trip Ticket" parent="globpak.menu_fleet_trip_ticket_root" action="action_fleet_trip_ticket_refused_action" groups="base.group_user" sequence="20" />
+
+        <menuitem id="menu_fleet_trip_ticket_all" name="All Trip Ticket" sequence="30" parent="globpak.menu_fleet_trip_ticket_root" action="action_fleet_trip_ticket_all" />
 
     </data>
 </odoo>

@@ -60,11 +60,11 @@ class StudioSalesOrderLine(models.Model):
 		else:
 			self.is_allowed_price_edit = True
 
-	@api.multi
-	def _prepare_procurement_values(self, group_id):
-		vals = super(StudioSalesOrderLine, self)._prepare_procurement_values(group_id=group_id)
-		for line in self:
-			vals.update({
-				'x_client_po_no': line.order_id.x_clientpo,
-			})
-		return vals
+	# @api.multi
+	# def _prepare_procurement_values(self, group_id):
+	# 	values = super(StudioSalesOrderLine, self)._prepare_procurement_values(group_id=group_id)
+	# 	self.ensure_one()
+	# 	values.update({
+	# 		'x_client_po_no': self.order_id.x_clientpo,
+	# 	})
+	# 	return values

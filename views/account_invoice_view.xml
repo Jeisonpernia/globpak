@@ -78,9 +78,9 @@
                 </xpath>
 
                 <!-- STUDIO -->
-                <!-- <xpath expr="//field[@name='purchase_id']" position="after">
+                <xpath expr="//field[@name='purchase_id']" position="after">
                     <field name="x_description" />
-                </xpath> -->
+                </xpath>
 
                 <!-- <xpath expr="//field[@name='account_id']" position="after">
                     <field name="x_checked_by" />

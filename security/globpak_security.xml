@@ -14,5 +14,17 @@
             <field name="perm_read" eval="True"/>
             <field name="perm_create" eval="False"/>
         </record>
+        <record id="hr_timesheet.access_product_template_timesheet_user" model="ir.model.access">
+            <field name="perm_unlink" eval="False"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_create" eval="False"/>
+        </record>
+        <record id="hr_timesheet.access_product_product_user" model="ir.model.access">
+            <field name="perm_unlink" eval="False"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_create" eval="False"/>
+        </record>
     </data>
 </odoo>
