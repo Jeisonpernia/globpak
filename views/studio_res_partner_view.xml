@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+    	<record id="view_partner_form_extend" model="ir.ui.view">
+            <field name="name">res.partner.form.extend</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form" />
+            <field name="arch" type="xml">
+
+                <xpath expr="//field[@name='category_id']" position="after">
+                    <field name="account_type" />
+                    <field name="industry" />
+                    <field name="annual_revenue" />
+                </xpath>
+
+                <xpath expr="//field[@name='email']" position="before">
+                    <field name="fax" widget="phone"/>
+                </xpath>
+				  
+            </field>
+        </record> 
+        
+    </data>
+</odoo>

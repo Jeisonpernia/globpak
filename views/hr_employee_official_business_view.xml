@@ -10,7 +10,7 @@
                     <field name="name" />
                     <field name="employee_id" />
                     <field name="department_id" />
-                    <field name="date" />
+                    <field name="date_ob" />
                     <field name="departure_time" />
                     <field name="state" />
                 </tree>
@@ -25,10 +25,10 @@
                 <form string="Official Business">
                     <header>
                         <button name="submit_ob" states="draft" string="Submit to Manager" type="object" class="oe_highlight"/>
-                        <button name="approve_ob" states="confirm" string="Approve" type="object" class="oe_highlight" groups="hr_expense.group_hr_expense_manager"/>
-                        <button name="refuse_ob" states="confirm" string="Refuse" type="object" groups="hr_expense.group_hr_expense_manager"/>
+                        <button name="approve_ob" states="confirm" string="Approve" type="object" class="oe_highlight" groups="hr_expense.group_hr_expense_user"/>
+                        <button name="refuse_ob" states="confirm" string="Refuse" type="object" groups="hr_expense.group_hr_expense_user"/>
                         <button name="done_ob" states="validate" string="Done" type="object" class="oe_highlight"/>
-                        <field name="state" widget="statusbar" statusbar_visible="draft,confirm,validate,done"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,confirm,validate,expense,done"/>
                     </header>
                     <sheet>
                         <div class="oe_title" name="title">
@@ -45,17 +45,18 @@
                             <group>
                                 <field name="company_id" />
                                 <field name="approver_id" />
-                                <field name="current_user" />
+                                <field name="current_user" invisible="1" />
                             </group>
                         </group>
                         <notebook>
                             <page string="Details">
                                 <group>
                                     <group>
-                                        <field name="date" widget="date" />
+                                        <field name="date_ob" />
                                         <field name="departure_time" />
                                     </group>
                                     <group>
+                                        <field name="date_submitted" readonly="1" />
                                         <field name="transportation_means" />
                                     </group>
                                 </group>
@@ -81,8 +82,9 @@
             <field name="model">hr.employee.official.business</field>
             <field name="priority" eval="8" />
             <field name="arch" type="xml">
-                <calendar color="employee_id" date_start="date" mode="month" string="Official Business">
+                <calendar color="state" date_start="date_ob" mode="month" string="Official Business">
                     <field name="name"/>
+                    <field name="visit_purpose"/>
                     <field name="department_id"/>
                 </calendar>
             </field>
@@ -109,7 +111,7 @@
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">hr.employee.official.business</field>
             <field name="view_type">form</field>
-            <field name="view_mode">calendar,tree,form</field>
+            <field name="view_mode">tree,calendar,form</field>
             <field name="search_view_id" ref="hr_employee_official_business_view_search" />
             <field name="help" type="html">
               <p>
@@ -118,14 +120,13 @@
             </field>
         </record>
 
-        <record model="ir.actions.act_window" id="hr_employee_official_business_unsubmitted_action">
+        <!-- <record model="ir.actions.act_window" id="hr_employee_official_business_unsubmitted_action">
             <field name="name">My Official Business To Submit</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">hr.employee.official.business</field>
             <field name="view_type">form</field>
             <field name="view_mode">calendar,tree,form</field>
             <field name="search_view_id" ref="hr_employee_official_business_view_search" />
-            <!-- <field name="domain">[]</field> -->
             <field name="domain">[('employee_id.user_id', '=', uid)]</field>
             <field name="context">{'search_default_to_report': 1}</field>
             <field name="help" type="html">
@@ -133,16 +134,15 @@
                 Create your official business.
               </p>
             </field>
-        </record>
+        </record> -->
 
-        <record model="ir.actions.act_window" id="hr_employee_official_business_refused_action">
+        <!-- <record model="ir.actions.act_window" id="hr_employee_official_business_refused_action">
             <field name="name">Refused Official Business</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">hr.employee.official.business</field>
             <field name="view_type">form</field>
             <field name="view_mode">calendar,tree,form</field>
             <field name="search_view_id" ref="hr_employee_official_business_view_search" />
-            <!-- <field name="domain">[]</field> -->
             <field name="domain">[('employee_id.user_id', '=', uid)]</field>
             <field name="context">{'search_default_refused': 1}</field>
             <field name="help" type="html">
@@ -150,16 +150,15 @@
                 Create your official business.
               </p>
             </field>
-        </record>
+        </record> -->
 
         <record model="ir.actions.act_window" id="hr_employee_official_business_my_all">
             <field name="name">My Official Business</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">hr.employee.official.business</field>
             <field name="view_type">form</field>
-            <field name="view_mode">calendar,tree,form</field>
+            <field name="view_mode">tree,calendar,form</field>
             <field name="search_view_id" ref="hr_employee_official_business_view_search" />
-            <!-- <field name="domain">[]</field> -->
             <field name="domain">[('employee_id.user_id', '=', uid)]</field>
             <field name="context">{}}</field>
             <field name="help" type="html">
@@ -174,7 +173,7 @@
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">hr.employee.official.business</field>
             <field name="view_type">form</field>
-            <field name="view_mode">calendar,tree,form</field>
+            <field name="view_mode">tree,calendar,form</field>
             <field name="search_view_id" ref="hr_employee_official_business_view_search" />
             <!-- <field name="domain">[]</field> -->
             <field name="domain">[('approver_id.user_id', '=', uid)]</field>
@@ -188,9 +187,9 @@
 
         <menuitem id="menu_hr_employee_official_business_root" name="My OB" parent="hr_expense.menu_hr_expense_root" groups="base.group_user" sequence="0" />
         
-        <menuitem id="menu_hr_employee_official_business_unsubmitted" name="Official Business To Submit" parent="globpak.menu_hr_employee_official_business_root" action="hr_employee_official_business_unsubmitted_action" groups="base.group_user" sequence="10" />
+        <!-- <menuitem id="menu_hr_employee_official_business_unsubmitted" name="Official Business To Submit" parent="globpak.menu_hr_employee_official_business_root" action="hr_employee_official_business_unsubmitted_action" groups="base.group_user" sequence="10" /> -->
         
-        <menuitem id="menu_hr_employee_official_business_refused" name="Refused Official Business" parent="globpak.menu_hr_employee_official_business_root" action="hr_employee_official_business_refused_action" groups="base.group_user" sequence="20" />
+        <!-- <menuitem id="menu_hr_employee_official_business_refused" name="Refused Official Business" parent="globpak.menu_hr_employee_official_business_root" action="hr_employee_official_business_refused_action" groups="base.group_user" sequence="20" /> -->
         
         <menuitem id="menu_hr_employee_official_my_all" name="My Official Business" parent="globpak.menu_hr_employee_official_business_root" action="hr_employee_official_business_my_all" groups="base.group_user" sequence="30" />
 

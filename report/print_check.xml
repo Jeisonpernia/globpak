@@ -19,12 +19,13 @@
 
 <template id="ckus_stub_extend" inherit_id="l10n_us_check_printing.ckus_stub">
     <xpath expr="//div[@t-attf-class='ckus_stub ckus_stub_{{ stub_num }}']" position="replace">
+        <t t-set="company" t-value="o.company_id.sudo()"/>
         <div t-attf-class="ckus_stub ckus_stub_{{ stub_num }}">
             <div class="sequence_number" t-if="page['sequence_number']" t-esc="page['sequence_number']"/>
             <div class="row">
                 <div class="col-xs-12">
                     <div class="col-xs-1">
-                        <img t-if="company_id.logo" t-att-src="'data:image/png;base64,%s' % company_id.logo" style="max-height: 65px;"/>
+                        <img t-if="company.logo" t-att-src="'data:image/png;base64,%s' % company.logo" style="max-height: 65px;"/>
                     </div>
                 </div>
             </div>
@@ -40,7 +41,7 @@
                     <span t-esc="page['partner_name']"/>
                 </div>
                 <div class="col-xs-6 text-right">
-                    <span t-esc="formatLang(page['payment_date'], date=True)"/>
+                    <span t-esc="page['payment_date']"/>
                 </div>
             </div>
 
@@ -57,16 +58,17 @@
                         <t t-if="stub_line.get('header')">
                             <tr><th colspan="6"><t t-esc="stub_line['name']"/></th></tr>
                         </t>
-                        <t t-if="not stub_line.get('header')"><tr>
-                            <td class="text-left"><t t-if="stub_line['due_date']" t-esc="formatLang(stub_line['due_date'], date=True)"/></td>
-                            <td class="text-left"><t t-esc="stub_line['number']"/></td>
-                            <td class="text-right"><t t-esc="formatLang(stub_line['amount_total'], monetary=True, currency_obj=stub_line['currency'])"/></td>
-                            <td class="text-right">
-                                <t t-if="int(stub_line['amount_residual']*10**4) != 0"><t t-esc="formatLang(stub_line['amount_residual'], monetary=True, currency_obj=stub_line['currency'])"/></t>
-                                <t t-if="int(stub_line['amount_residual']*10**4) == 0">-</t>
-                            </td>
-                            <td class="text-right"><t t-esc="formatLang(stub_line['amount_paid'], monetary=True, currency_obj=stub_line['currency'])"/></td>
-                        </tr></t>
+                        <t t-if="not stub_line.get('header')">
+                            <tr>
+                                <td class="text-left"><t t-if="stub_line['due_date']" t-esc="stub_line['due_date']"/></td>
+                                <td class="text-left"><t t-esc="stub_line['number']"/></td>
+                                <td class="text-right"><t t-esc="stub_line['amount_total']"/></td>
+                                <td class="text-right">
+                                    <t t-esc="stub_line['amount_residual']"/>
+                                </td>
+                                <td class="text-right"><t t-esc="stub_line['amount_paid']"/></td>
+                            </tr>
+                        </t>
                     </t>
                     <tr t-if="page['stub_cropped']"><td colspan="6" class="text-right">...</td></tr>
                 </tbody>
@@ -76,17 +78,16 @@
             <br/>
 
             <div class="text-right" style="font-weight:bold">Check Amount:
-                <t t-if="isinstance(page['amount'], float)"><t t-esc="formatLang(page['amount'], monetary=True, currency_obj=page['currency'])"/></t>
-                <t t-if="isinstance(page['amount'], str)"><t t-esc="page['amount']"/></t>
+                <t t-if="page['amount']"><t t-esc="page['amount']"/></t>
+                <t t-if="page['amount']"><t t-esc="page['amount']"/></t>
             </div>
 
-            <br/>
             <br/>
 
             <div class="row">
                 <div class="col-xs-12">
                     <div class="col-xs-1">
-                        <img t-if="company_id.logo" t-att-src="'data:image/png;base64,%s' % company_id.logo" style="max-height: 65px;"/>
+                        <img t-if="company.logo" t-att-src="'data:image/png;base64,%s' % company.logo" style="max-height: 65px;"/>
                     </div>
                 </div>
             </div>
@@ -107,7 +108,7 @@
             </div>
             <br/>
             <div class="row" style="font-size: 12px">
-                <center><span t-esc="company_id.partner_id.contact_address"/></center>
+                <center><span t-esc="company.partner_id.contact_address"/></center>
             </div>
         </div>        
     </xpath>

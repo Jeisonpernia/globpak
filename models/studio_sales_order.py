@@ -5,6 +5,7 @@ class StudioSalesOrder(models.Model):
 	_inherit = 'sale.order'
 
 	x_clientpo = fields.Char(string='Client PO No.', store=True, copy=True)
+	subject = fields.Char()
 	description = fields.Text()
 
 	state = fields.Selection([
@@ -16,7 +17,7 @@ class StudioSalesOrder(models.Model):
 		('cancel', 'Cancelled'),
 	])
 
-	# is_allowed_price_edit = fields.Boolean(default='_compute_group')
+	is_allowed_sale_validate_confirm = fields.Boolean(compute='_compute_group')
 
 	@api.multi
 	def action_confirm(self):
@@ -35,15 +36,14 @@ class StudioSalesOrder(models.Model):
 			else:
 				record.write({'state': 'validate'})
 
-	# @api.depends('partner_id')
-	# def _compute_group(self):
-	# 	user = self.env['res.users'].browse(self.env.uid)
-	# 	if user.has_group('sales_team.group_sale_salesman_all_leads') or user.has_group('sales_team.group_sale_salesman') or user.has_group('sales_team.group_sale_manager'):
-	# 		self.is_allowed_price_edit = False
-	# 		if user.has_group('account.group_account_invoice') or user.has_group('account.group_account_user') or user.has_group('account.group_account_manager'):
-	# 			self.is_allowed_price_edit = True
-	# 	else:
-	# 		self.is_allowed_price_edit = True
+	@api.depends('partner_id')
+	def _compute_group(self):
+		user = self.env['res.users'].browse(self.env.uid)
+		if user.has_group('sales_team.group_sale_salesman_all_leads') or user.has_group('sales_team.group_sale_salesman') or user.has_group('sales_team.group_sale_manager'):
+			self.is_allowed_sale_validate_confirm = False
+		
+		if user.has_group('account.group_account_manager'):
+			self.is_allowed_sale_validate_confirm = True
 
 class StudioSalesOrderLine(models.Model):
 	_inherit = 'sale.order.line'
@@ -59,12 +59,3 @@ class StudioSalesOrderLine(models.Model):
 				self.is_allowed_price_edit = True
 		else:
 			self.is_allowed_price_edit = True
-
-	# @api.multi
-	# def _prepare_procurement_values(self, group_id):
-	# 	values = super(StudioSalesOrderLine, self)._prepare_procurement_values(group_id=group_id)
-	# 	self.ensure_one()
-	# 	values.update({
-	# 		'x_client_po_no': self.order_id.x_clientpo,
-	# 	})
-	# 	return values

@@ -68,9 +68,9 @@
                             <page string="OTHER INFO">
                                 <group>
                                     <field name="passenger_id" />
-                                    <field name="manager_id" />
+                                    <field name="approver_id" readonly="1"/>
                                     <field name="president_id" />
-                                    <field name="employee_id" />
+                                    <field name="employee_id" readonly="1"/>
                                     <field name="current_user" />
                                 </group>
                             </page>

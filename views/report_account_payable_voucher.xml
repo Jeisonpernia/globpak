@@ -28,7 +28,7 @@
                     <span t-if="o.partner_id.vat">VAT: <span t-field="o.partner_id.vat"/></span>
                     <span t-if="o.partner_id.x_tin">TIN: <span t-field="o.partner_id.x_tin"/></span> -->
                     <span t-field="o.partner_id" t-field-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": true}'/>
-                    <span t-if="o.partner_id.x_tin">TIN: <span t-field="o.partner_id.x_tin"/></span>
+                    <span t-if="o.partner_id.vat">TIN: <span t-field="o.partner_id.vat"/></span>
                 </div>
             </div>
 

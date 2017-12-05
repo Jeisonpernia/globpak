@@ -5,21 +5,22 @@ from odoo.exceptions import UserError
 class HrEmployeeOfficialBusiness(models.Model):
         _name = 'hr.employee.official.business'
         _description = 'HR Employee Official Business'
-        _inherit = ['mail.thread']
-        _order = "date desc, id desc"
+        _inherit = ['mail.thread','mail.activity.mixin']
+        _order = "date_ob desc, id desc"
 
         name = fields.Char(string='OB #', required=True, copy=False, readonly=True, index=True, default=lambda self: _('New'))
-        employee_id = fields.Many2one('hr.employee', 'Employee', required=True, default=lambda self: self.env['hr.employee'].search([('user_id', '=', self.env.uid)], limit=1))
+        employee_id = fields.Many2one('hr.employee', 'Employee', required=True, default=lambda self: self.env['hr.employee'].search([('user_id', '=', self.env.uid)], limit=1), track_visibility='always')
         department_id = fields.Many2one('hr.department', 'Department', store=True, compute='_set_employee_details')
-        date = fields.Datetime()
+        date_ob = fields.Date(required=True, default=fields.Datetime.now(), string='Date of Official Business', track_visibility='always')
+        date_submitted = fields.Datetime(string='Submitted Date')
         company_id = fields.Many2one('res.company', 'Company', readonly=True, store=True, default=lambda self: self.env.user.company_id)
         departure_time = fields.Selection([
                 ('earlymorning', 'Early Morning'),
                 ('morning', 'Morning'),
                 ('directob', 'Direct OB'),
                 ('afternoon', 'Afternoon'),
-        ], string='Estimated Time of Departure')
-        visit_purpose = fields.Text(string='Purpose of Visit')
+        ], string='Estimated Time of Departure', required=True, track_visibility='always')
+        visit_purpose = fields.Text(string='Purpose of Visit', required=True, track_visibility='always')
         visit_person = fields.Text(string='Person to Visit')
         visit_place = fields.Text(string='Place to Visit')
         transportation_means = fields.Selection([
@@ -27,19 +28,28 @@ class HrEmployeeOfficialBusiness(models.Model):
                 ('companycar', 'With Company Car'),
                 ('truck', 'Truck'),
                 ('commute','Commute'),
-        ], string='Means of Transportation')
+        ], string='Means of Transportation', required=True, track_visibility='always')
         remarks = fields.Text(string='Other Remarks')
         user_id = fields.Many2one('res.user', 'User')
-        approver_id = fields.Many2one('hr.employee','Approver', store=True, compute='_set_employee_details')
+        approver_id = fields.Many2one('hr.employee','Approver', store=True, compute='_set_employee_details', track_visibility='always')
         state = fields.Selection([
                 ('draft', 'To Submit'),
                 ('confirm', 'Pending'),
                 ('cancel', 'Refused'),
                 ('validate', 'Approved'),
+                ('expense', 'In Expense'),
                 ('done', 'Done'),
-        ], default='draft')
+        ], default='draft', track_visibility='onchange')
 
         current_user = fields.Many2one('res.users', compute='_get_current_user')
+
+        @api.multi
+        def name_get(self):
+                res = []
+                for rec in self:
+                        name = '[%s] %s' % (rec.name, rec.visit_purpose)
+                        res.append((rec.id, name))
+                return res
 
         @api.depends()
         def _get_current_user(self):
@@ -81,6 +91,7 @@ class HrEmployeeOfficialBusiness(models.Model):
         def submit_ob(self):
                 for ob in self:
                         ob.state = 'confirm'
+                        ob.date_submitted = fields.Datetime.now()
 
         @api.multi
         def approve_ob(self):

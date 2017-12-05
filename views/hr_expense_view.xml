@@ -36,7 +36,7 @@
                                     <field name="employee_id" invisible="1" />
                                     <field name="company_id" invisible="0" />
                                     <field name="account_id" groups="account.group_account_user" domain="[('company_id', '=', parent.company_id), ('internal_type', '=', 'other')]"/>
-                                    <field name="account_analytic_id" groups="analytic.group_analytic_accounting" domain="[('company_id', '=', parent.company_id)]" invisible="0" /> 
+                                    <field name="account_analytic_id" groups="analytic.group_analytic_accounting" domain="[('company_id', '=', parent.company_id)]" invisible="1" /> 
                                     <!-- <field name="analytic_tag_ids" groups="analytic.group_analytic_accounting" widget="many2many_tags"/> -->
                                     <field name="quantity"/>
                                     <field name="uom_id" groups="product.group_uom" invisible="1" />
@@ -44,8 +44,8 @@
                                     <!-- <field name="discount" groups="base.group_no_one"/> -->
                                     <field name="tax_ids" widget="many2many_tags" domain="[('type_tax_use','=','purchase'),('company_id', '=', parent.company_id)]" options="{'no_create': True}"/>
                                     <field name="untaxed_amount"/> 
-                                    <field name="currency_id" invisible="0"/>
-                                    <field name="state" />
+                                    <field name="currency_id" invisible="1"/>
+                                    <field name="state" invisible="1"/>
                                 </tree>
                             </field>
                             <group>
@@ -90,9 +90,13 @@
             <field name="inherit_id" ref="hr_expense.view_hr_expense_sheet_form" />
             <field name="arch" type="xml">
 
-                <xpath expr="//field[@name='company_id']" position="before">
+                <xpath expr="//notebook/page[1]/field[@name='expense_line_ids']/tree/field[@name='tax_ids']" position="replace">
+                    <field name="tax_line_ids" widget="many2many_tags" string="Taxes"/>
+                </xpath>
+
+                <xpath expr="//notebook/page[2]/group/group[2]/field[@name='account_move_id']" position="before">
                     <field name="x_checked_by" />
-                    <field name="x_approved_by" />
+                    <!-- <field name="x_approved_by" /> -->
                     <field name="approver_id" />
                     <field name="current_user" invisible="1"/>
                 </xpath>

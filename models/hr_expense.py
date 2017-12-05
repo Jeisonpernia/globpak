@@ -49,11 +49,11 @@ class HrExpenseSheet(models.Model):
 			for sheet in self:
 				sheet.message_post_with_view('hr_expense.hr_expense_template_refuse_reason', values={'reason': reason ,'is_sheet':True ,'name':self.name})
 
-	# @api.multi
-	# def get_tax_details(self, line, tax):
-	# 	currency = self.currency_id or self.company_id.currency_id
-	# 	amount = tax.compute_all(line.unit_amount, currency, line.quantity, line.product_id, line.employee_id.user_id.partner_id)['taxes'][0]['amount']
-	# 	return amount
+	@api.multi
+	def get_tax_details(self, line, tax):
+		currency = self.currency_id or self.company_id.currency_id
+		amount = tax.compute_all(line.price_unit, currency, line.quantity, line.product_id, line.employee_id.user_id.partner_id)['taxes'][0]['amount']
+		return amount
 
 class HrExpenseTax(models.Model):
 	_name = "hr.expense.tax"
@@ -376,7 +376,7 @@ class HrExpense(models.Model):
 	# NEW FUNCTIONS
 	@api.onchange('ob_id')
 	def _onchange_ob_id(self):
-		self.date = self.ob_id.date
+		self.date = self.ob_id.date_ob
 		
 	@api.depends('employee_id')
 	def _set_employee_details(self):
@@ -467,6 +467,11 @@ class HrExpense(models.Model):
 		
 		if any(line.tax_ids for line in result.line_ids) and not result.tax_line_ids:
 			result.compute_taxes()
+
+		if vals['expense_type'] == 'ob' and vals['ob_id']:
+			# UPDATE OB STATE
+			ob = self.env['hr.employee.official.business'].search([('id','=',vals['ob_id'])])
+			ob.write({'state':'expense'})
 			
 		return result
 
@@ -481,5 +486,20 @@ class HrExpense(models.Model):
 			expense.total_amount = sum(expense.line_ids.mapped('total_amount'))
 			expense.untaxed_amount = sum(expense.line_ids.mapped('untaxed_amount'))
 			expense.tax_amount = sum(line.amount for line in expense.tax_line_ids)
-			
-	
+
+	# @api.multi
+	# def write(self, values):
+	# 	for expense in self:
+	# 		if expense.expense_type == 'ob' and expense.ob_id:
+	# 				ob = self.env['hr.employee.official.business'].search([('id','=',ob_id.id)])
+	# 				if ob.state != 'expense':
+	# 					ob.write({'state':'expense'})
+
+	@api.multi
+	def unlink(self):
+		for expense in self:
+			if expense.expense_type == 'ob' and expense.ob_id:
+					ob = self.env['hr.employee.official.business'].search([('id','=',expense.ob_id.id)])
+					ob.write({'state':'validate'})
+		res = super(HrExpense, self).unlink()
+		return res

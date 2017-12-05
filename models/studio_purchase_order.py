@@ -5,8 +5,8 @@ class StudioPurchaseOrder(models.Model):
 
 	x_approved_by = fields.Many2one('res.partner', 'Approved By', store=True, copy=True)
 	x_prepared_by = fields.Many2one('res.partner', 'Prepared By', store=True, copy=True)
-	x_client_id = fields.Many2one('res.partner', 'Client', store=True, copy=True)
-	x_client_po_no = fields.Char(string='Client PO No.', store=True, copy=True)
+	x_client_id = fields.Many2one('res.partner', 'Client', compute='_get_order_details')
+	x_client_po_no = fields.Char(string='Client PO No.', compute='_get_order_details')
 	x_origin = fields.Many2one('res.country', string='Origin', store=True, copy=True)
 
 	# NEW FIELDS
@@ -31,4 +31,12 @@ class StudioPurchaseOrder(models.Model):
 
 		if self.po_type == 'import':
 			self.notes = import_note
+
+	@api.multi
+	def _get_order_details(self):
+		for record in self:
+			if record.origin:
+				sale_order = self.env['sale.order'].search([('name','=',record.origin)], limit=1)
+				record.x_client_id = sale_order.partner_id
+				record.x_client_po_no = sale_order.x_clientpo
 

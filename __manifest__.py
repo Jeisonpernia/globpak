@@ -52,7 +52,7 @@
 
     # any module necessary for this one to work correctly
     # 'depends': ['base', 'account', 'hr_expense', 'report', 'l10n_us_check_printing'],
-    'depends': ['base', 'web', 'account', 'hr', 'hr_contract', 'hr_expense', 'l10n_us_check_printing', 'sale'],
+    'depends': ['base', 'web', 'account', 'hr', 'hr_contract', 'hr_expense', 'hr_holidays', 'l10n_us_check_printing', 'sale', 'purchase', 'crm'],
 
     # always loaded
     'data': [
@@ -73,9 +73,10 @@
         'views/studio_purchase_order_view.xml',
         'views/studio_sale_order_view.xml',
         'views/studio_stock_picking_view.xml',
+        # 'views/studio_res_partner_view.xml',
         'views/report_expense_sheet.xml',
         'views/report_account_payable_voucher.xml',
-        'views/report_invoice.xml',
+        # 'views/report_invoice.xml',
         'views/report_acknowledgement_receipt.xml',
         'views/report_collection_receipt.xml',
         'views/report_journal_voucher.xml',
@@ -84,12 +85,17 @@
         'views/account_landed_cost_view.xml',
         'views/product_view.xml',
         'views/hr_holidays_view.xml',
+        'views/crm_lead_view.xml',
+        # 'views/hr_holidays_credit_view.xml',
         'report/print_check.xml',
         'report/print_check_top.xml',
         'report/print_check_bottom.xml', 
         'report/report_purchaseorder.xml',
+        'report/report_purchasequotation.xml',
         'report/report_picking.xml',
         'report/report_deliveryslip.xml',
+        'report/report_saleorder.xml',
+        'report/report_invoice.xml',
         'views/report.xml',
         'wizard/account_report_alphalist_payee_view.xml',
         'wizard/account_report_sales_transaction_view.xml',
