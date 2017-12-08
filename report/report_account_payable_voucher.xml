@@ -6,6 +6,7 @@
     <t t-call="globpak.external_layout_accounting">
         <t t-set="o" t-value="o.with_context({'lang':o.partner_id.lang})"/>
         <div class="page">
+
             <div class="row">
                 <div class="text-center">
                     <h2>
@@ -23,12 +24,9 @@
                     <h5><strong>Date: </strong><span t-field="o.date_invoice"/></h5>
                 </div>
                 
-                <div name="invoice_address" class="col-xs-5" style="font-size: 14px">
-                    <!-- <address t-field="o.partner_id" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;, &quot;x_tin&quot;], &quot;no_marker&quot;: True}"/>
-                    <span t-if="o.partner_id.vat">VAT: <span t-field="o.partner_id.vat"/></span>
-                    <span t-if="o.partner_id.x_tin">TIN: <span t-field="o.partner_id.x_tin"/></span> -->
-                    <span t-field="o.partner_id" t-field-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": true}'/>
-                    <span t-if="o.partner_id.vat">TIN: <span t-field="o.partner_id.vat"/></span>
+                <div name="invoice_address" class="col-xs-5" style="font-size: 14px" >
+                    <span t-if="o.type == 'in_invoice'" t-field="o.partner_id" t-field-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": true}'/>
+                    <span t-if="o.partner_id.vat and o.type == 'in_invoice'">TIN: <span t-field="o.partner_id.vat"/></span>
                 </div>
             </div>
 

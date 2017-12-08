@@ -5,6 +5,10 @@
     <t t-call="globpak.external_layout_accounting">
         <t t-set="o" t-value="o.with_context({'lang':o.partner_id.lang})"/>
         <div class="page">
+            <div t-if="o.payment_type != 'inbound'">
+                <h3>This report is for customer invoice payments  only.</h3>
+            </div>
+            
             <div class="row">
                 <div class="text-center">
                     <h3>
@@ -26,7 +30,7 @@
             <br/>
 
             <p t-if="o.payment_type == 'inbound' and o.state == 'posted'">
-                Received from <strong> <span t-field="o.partner_id.name" /> </strong> with TIN <strong> <span t-field="o.partner_id.x_tin" /> </strong> and address at <strong> <span t-esc="o.partner_id.contact_address" /> </strong>, the sum of <strong> <span t-field="o.check_amount_in_words" /> </strong> (<strong> <span t-esc="o.amount" t-options='{"widget": "monetary", "display_currency": o.currency_id}' /> </strong>) in partial/full payment for <strong><span t-esc="o.communication" /></strong>.
+                Received from <strong> <span t-field="o.partner_id.name" /> </strong> with TIN <strong> <span t-field="o.partner_id.vat" /> </strong> and address at <strong> <span t-esc="o.partner_id.contact_address" /> </strong>, the sum of <strong> <span t-field="o.check_amount_in_words" /> </strong> (<strong> <span t-esc="o.amount" t-options='{"widget": "monetary", "display_currency": o.currency_id}' /> </strong>) in partial/full payment for <strong><span t-esc="o.communication" /></strong>.
             </p>
             
             <br/>

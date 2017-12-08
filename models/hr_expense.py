@@ -9,12 +9,22 @@ _logger = logging.getLogger(__name__)
 class HrExpenseSheet(models.Model):
 	_inherit = 'hr.expense.sheet'
 
+	# NEW FIELDS
 	x_checked_by = fields.Many2one('res.partner', string="Checked By")
 	x_approved_by = fields.Many2one('res.partner', string="Approved By")
 	untaxed_amount = fields.Float(string='Subtotal', store=True, compute='_compute_amount_untaxed', digits=dp.get_precision('Account'))
 
 	approver_id = fields.Many2one('hr.employee','Approver', store=True, compute='_set_employee_details')
 	current_user = fields.Many2one('res.users', compute='_get_current_user')
+
+	fund_custodian_id = fields.Many2one('hr.employee', 'Fund Custodian', related='expense_line_ids.fund_custodian_id', readonly=True)
+
+	# OVERRIDE FIELDS
+	payment_mode = fields.Selection([
+		("own_account", "Employee (to reimburse)"),
+		("fund_custodian_account", "Fund Custodian"),
+		("company_account", "Company"),
+	])
 
 	@api.one
 	@api.depends('expense_line_ids', 'expense_line_ids.untaxed_amount')
@@ -110,10 +120,10 @@ class HrExpenseLine(models.Model):
 	# employee_id = fields.Many2one('hr.employee', string="Employee", required=True, readonly=True, states={'submit': [('readonly', False)]}, default=lambda self: self.env['hr.employee'].search([('user_id', '=', self.env.uid)], limit=1))
 	employee_id = fields.Many2one('hr.employee', string="Employee", compute='_compute_employee', store=True)
 	account_id = fields.Many2one('account.account', string='Account', states={'post': [('readonly', True)], 'done': [('readonly', True)]}, default=lambda self: self.env['ir.property'].get('property_account_expense_categ_id', 'product.category'))
-	company_id = fields.Many2one('res.company', string='Company', readonly=True, states={'draft': [('readonly', False)], 'cancel': [('readonly', False)]}, default=lambda self: self.env.user.company_id)
-	currency_id = fields.Many2one('res.currency', string='Currency', readonly=True, states={'draft': [('readonly', False)], 'cancel': [('readonly', False)]}, default=lambda self: self.env.user.company_id.currency_id)
-	# company_id = fields.Many2one('res.company', string='Company', related='expense_id.company_id', store=True, readonly=True)
-	# currency_id = fields.Many2one('res.currency', related='expense_id.currency_id', store=True, readonly=True)
+	# company_id = fields.Many2one('res.company', string='Company', readonly=True, states={'draft': [('readonly', False)], 'cancel': [('readonly', False)]}, default=lambda self: self.env.user.company_id)
+	# currency_id = fields.Many2one('res.currency', string='Currency', readonly=True, states={'draft': [('readonly', False)], 'cancel': [('readonly', False)]}, default=lambda self: self.env.user.company_id.currency_id)
+	company_id = fields.Many2one('res.company', string='Company', related='expense_id.company_id', store=True, readonly=True)
+	currency_id = fields.Many2one('res.currency', related='expense_id.currency_id', store=True, readonly=True)
 	account_analytic_id = fields.Many2one('account.analytic.account', 'Analytic Account', compute='_compute_analytic', store=True)
 	# analytic_tag_ids = fields.Many2many('account.analytic.tag', string='Analytic Tags')
 
@@ -271,10 +281,14 @@ class HrExpenseLine(models.Model):
 					'name': expense.name,
 				})
 				payment_id = payment.id
-			else:
+			elif expense.expense_id.sheet_id.payment_mode == 'own_account':
 				if not expense.employee_id.address_home_id:
 					raise UserError(_("No Home Address found for the employee %s, please configure one.") % (expense.employee_id.name))
 				emp_account = expense.employee_id.address_home_id.property_account_payable_id.id
+			elif expense.expense_id.sheet_id.payment_mode == 'fund_custodian_account':
+				if not expense.fund_custodian_id.address_home_id:
+					raise UserError(_("No Home Address found for the fund custodian %s, please configure one.") % (expense.fund_custodian_id.name))
+				emp_account = expense.fund_custodian_id.address_home_id.property_account_payable_id.id
 				
 			aml_name = expense.employee_id.name + ': ' + expense.name.split('\n')[0][:64]
 			move_lines.append({
@@ -352,7 +366,6 @@ class HrExpense(models.Model):
 	_inherit = 'hr.expense'
 	
 	# NEW FIELDS
-	ob_id = fields.Many2one('hr.employee.official.business', string='Official Business')
 	line_ids = fields.One2many('hr.expense.line', 'expense_id', string='Expense Lines', states={'done': [('readonly', True)], 'post': [('readonly', True)]}, copy=False)
 	tax_line_ids = fields.One2many('hr.expense.tax', 'expense_id', string='Tax Lines', oldname='tax_line', states={'done': [('readonly', True)], 'post': [('readonly', True)]}, copy=True)
 	
@@ -364,7 +377,10 @@ class HrExpense(models.Model):
 	expense_type = fields.Selection([
 		('ob', 'OB Expense'),
 		('direct', 'Direct Expense'),
-		], string='Expense Type', default='ob')
+		], string='Expense Type', default='ob', readonly=True, states={'draft': [('readonly', False)], 'refused': [('readonly', False)]})
+	ob_id = fields.Many2one('hr.employee.official.business', string='Official Business', readonly=True, states={'draft': [('readonly', False)], 'refused': [('readonly', False)]})
+
+	fund_custodian_id = fields.Many2one('hr.employee', 'Fund Custodian', readonly=True, states={'draft': [('readonly', False)], 'refused': [('readonly', False)]})
 	
 	# OVERRIDE FIELDS
 	product_id = fields.Many2one(required=False)
@@ -372,6 +388,11 @@ class HrExpense(models.Model):
 	unit_amount = fields.Float(required=False)
 	quantity = fields.Float(required=False)
 	date = fields.Date(required=True)
+	payment_mode = fields.Selection([
+		("own_account", "Employee (to reimburse)"),
+		("fund_custodian_account", "Fund Custodian"),
+		("company_account", "Company"),
+	])
 	
 	# NEW FUNCTIONS
 	@api.onchange('ob_id')
@@ -451,7 +472,7 @@ class HrExpense(models.Model):
 	@api.onchange('line_ids')
 	def _onchange_line_ids(self):
 		taxes_grouped = self.get_taxes_values()
-		tax_lines = self.tax_line_ids.browse([])
+		tax_lines = self.tax_line_ids.filtered('manual')
 		for tax in taxes_grouped.values():
 			tax_lines += tax_lines.new(tax)
 		self.tax_line_ids = tax_lines
@@ -483,17 +504,41 @@ class HrExpense(models.Model):
 	@api.depends('line_ids', 'line_ids.total_amount', 'tax_line_ids', 'tax_line_ids.amount')
 	def _compute_amount(self):
 		for expense in self:
-			expense.total_amount = sum(expense.line_ids.mapped('total_amount'))
-			expense.untaxed_amount = sum(expense.line_ids.mapped('untaxed_amount'))
-			expense.tax_amount = sum(line.amount for line in expense.tax_line_ids)
+			untaxed_amount = sum(expense.line_ids.mapped('untaxed_amount'))
+			tax_amount = sum(line.amount for line in expense.tax_line_ids)
+			expense.untaxed_amount = untaxed_amount
+			expense.tax_amount = tax_amount
+			expense.total_amount = untaxed_amount + tax_amount
 
-	# @api.multi
-	# def write(self, values):
-	# 	for expense in self:
-	# 		if expense.expense_type == 'ob' and expense.ob_id:
-	# 				ob = self.env['hr.employee.official.business'].search([('id','=',ob_id.id)])
-	# 				if ob.state != 'expense':
-	# 					ob.write({'state':'expense'})
+	@api.multi
+	def write(self, vals):
+		ob_id = self.ob_id
+		expense_type = vals.get('expense_type')
+		new_ob_id =  vals.get('ob_id')
+
+		if not expense_type:
+			expense_type = self.expense_type
+
+		# if ob_id != new_ob_id:
+		if expense_type == 'ob':
+			if ob_id == new_ob_id:
+				new_ob = self.env['hr.employee.official.business'].search([('id','=',new_ob_id)])
+				new_ob.write({'state':'expense'})
+			else:
+				ob = self.env['hr.employee.official.business'].search([('id','=',ob_id.id)])
+				ob.write({'state':'validate'})
+
+				new_ob = self.env['hr.employee.official.business'].search([('id','=',new_ob_id)])
+				new_ob.write({'state':'expense'})
+
+		else:
+			if ob_id:
+				ob = self.env['hr.employee.official.business'].search([('id','=',ob_id.id)])
+				ob.write({'state':'validate'})
+				vals['ob_id'] = False
+
+		result = super(HrExpense, self).write(vals)
+		return result
 
 	@api.multi
 	def unlink(self):

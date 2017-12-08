@@ -11,6 +11,7 @@
             file="globpak.report_account_payable_voucher"
             attachment_use="True"
             attachment="(object.state in ('open','paid')) and ('APV'+(object.number or '').replace('/','')+'.pdf')"
+            menu="False"
         />
         
         <report 
@@ -22,6 +23,7 @@
             file="globpak.report_account_collection_receipt"
             attachment_use="True"
             attachment="(object.state in ('open','paid')) and ('CR'+(object.number or '').replace('/','')+'.pdf')"
+            menu="False"
         />
 
         <report 
@@ -44,6 +46,7 @@
             file="globpak.report_credit_memo"
             attachment_use="True"
             attachment="(object.state in ('open','paid')) and ('CM'+(object.number or '').replace('/','')+'.pdf')"
+            menu="False"
         />
 
         <report 
@@ -55,6 +58,7 @@
             file="globpak.report_debit_memo"
             attachment_use="True"
             attachment="(object.state in ('open','paid')) and ('DM'+(object.number or '').replace('/','')+'.pdf')"
+            menu="False"
         />
 
         <report 
@@ -66,16 +70,17 @@
             file="globpak.report_account_acknowledgement_receipt"
             attachment_use="True"
             attachment="(object.state in ('draft','posted')) and ('AR'+(object.name or '').replace('/','')+'.pdf')"
+            menu="False"
         />
 
-        <report 
+        <!-- <report 
             id="action_report_account_payable_summary"
             model="account.report.payable.summary"
             string="Accounts Payable Summary"
             report_type="qweb-pdf"
             name="globpak.report_account_payable_summary"
             file="globpak.report_account_payable_summary"
-            />        
+            /> -->        
 
     </data>
 </odoo>

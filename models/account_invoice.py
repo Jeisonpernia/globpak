@@ -73,7 +73,8 @@ class AccountInvoice(models.Model):
 
     @api.multi
     def action_print_debit_memo(self):
-        return self.env['report'].get_action(self, 'globpak.report_debit_memo')
+        # return self.env['report'].get_action(self, 'globpak.report_debit_memo')
+        return self.env.ref('globpak.account_debit_memo').report_action(self)
 
     @api.multi
     def action_generate_credit_memo(self):
@@ -83,4 +84,9 @@ class AccountInvoice(models.Model):
 
     @api.multi
     def action_print_credit_memo(self):
-        return self.env['report'].get_action(self, 'globpak.report_credit_memo')
+        # return self.env['report'].get_action(self, 'globpak.report_credit_memo')
+        return self.env.ref('globpak.account_credit_memo').report_action(self)
+
+    @api.multi
+    def action_print_account_payable_voucher(self):
+        return self.env.ref('globpak.account_payable_voucher').report_action(self)

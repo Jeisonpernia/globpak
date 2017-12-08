@@ -96,15 +96,21 @@ class HrEmployeeOfficialBusiness(models.Model):
         @api.multi
         def approve_ob(self):
                 for ob in self:
-                        if ob.approver_id.user_id != ob.current_user:
-                                raise UserError("You're not allowed to approve this OB. OB Approver: %s" % (ob.approver_id.name))
+                        if ob.approver_id:
+                                if ob.approver_id.user_id != ob.current_user:
+                                        raise UserError("You're not allowed to approve this OB. OB Approver: %s" % (ob.approver_id.name))
+                        else:
+                                raise UserError("No Approver was set. Please assign an approver to employee.")
                         ob.state = 'validate'
 
         @api.multi
         def refuse_ob(self):
                 for ob in self:
-                        if ob.approver_id.user_id != ob.current_user:
-                                raise UserError("You're not allowed to refuse this OB. OB Approver: %s" % (ob.approver_id.name))
+                        if ob.approver_id:
+                                if ob.approver_id.user_id != ob.current_user:
+                                        raise UserError("You're not allowed to refuse this OB. OB Approver: %s" % (ob.approver_id.name))
+                        else:
+                                raise UserError("No Approver was set. Please assign an approver to employee.")
                         ob.state = 'cancel'
 
         @api.multi

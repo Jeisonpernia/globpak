@@ -12,6 +12,7 @@
                             <field name="employee_id"/>
                             <field name="payment_mode" widget="radio"/>
                             <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="fund_custodian_id" attrs="{'required':[('payment_mode', '=', 'fund_custodian_account')],'invisible':[('payment_mode', '!=', 'fund_custodian_account')]}"/>
                             <field name="total_amount" invisible="1"/>
                         </group>
                         <group>
@@ -34,7 +35,7 @@
                                     <field name="product_id"/>
                                     <field name="name"/>
                                     <field name="employee_id" invisible="1" />
-                                    <field name="company_id" invisible="0" />
+                                    <field name="company_id" invisible="1" />
                                     <field name="account_id" groups="account.group_account_user" domain="[('company_id', '=', parent.company_id), ('internal_type', '=', 'other')]"/>
                                     <field name="account_analytic_id" groups="analytic.group_analytic_accounting" domain="[('company_id', '=', parent.company_id)]" invisible="1" /> 
                                     <!-- <field name="analytic_tag_ids" groups="analytic.group_analytic_accounting" widget="many2many_tags"/> -->
@@ -90,6 +91,10 @@
             <field name="inherit_id" ref="hr_expense.view_hr_expense_sheet_form" />
             <field name="arch" type="xml">
 
+                <xpath expr="//field[@name='company_id']" position="after">
+                    <field name="fund_custodian_id" />
+                </xpath>
+
                 <xpath expr="//notebook/page[1]/field[@name='expense_line_ids']/tree/field[@name='tax_ids']" position="replace">
                     <field name="tax_line_ids" widget="many2many_tags" string="Taxes"/>
                 </xpath>
@@ -100,11 +105,6 @@
                     <field name="approver_id" />
                     <field name="current_user" invisible="1"/>
                 </xpath>
-
-                <!-- <xpath expr="//button[@name='approve_expense_sheets']" position="attributes">
-                    <attribute name="states"></attribute>
-                    <attribute name="attrs">{'invisible':['|',('approver_id','!=','current_user'),('state','not in',('submit'))]}</attribute> 
-                </xpath> -->
 
             </field>
         </record> 

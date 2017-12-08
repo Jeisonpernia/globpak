@@ -1,12 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data noupdate="0">
+    <data>
+        <report id="l10n_us_check_printing.action_print_check_top"
+            string="Print Check"
+            model="account.payment"
+            name="Print Check"
+            file="l10n_us_check_printing.print_check_top"
+            report_type="qweb-pdf"
+            attachment_use="True"
+            attachment="'check_'+(object.partner_id and object.partner_id.name or 'Internal')+'_'+(object.name)+'_top.pdf'"
+            paperformat="l10n_us_check_printing.paperformat_check_us"
+            print_report_name="'Check - %s' % (object.partner_id.name or '',)"
+        />
 
-        <!-- <record id="l10n_us_check_printing.action_print_check_top" model="ir.actions.report.xml">
-            <field name="name">Print Check</field>
-        </record> -->
+        <report id="l10n_us_check_printing.action_print_check_middle"
+            string="Print Check Voucher"
+            model="account.payment"
+            name="Print Check Voucher"
+            file="l10n_us_check_printing.print_check_middle"
+            report_type="qweb-pdf"
+            attachment_use="True"
+            attachment="'check_'+(object.partner_id and object.partner_id.name or 'Internal')+'_'+(object.name)+'_middle.pdf'"
+            paperformat="l10n_us_check_printing.paperformat_check_us"
+            print_report_name="'Check Voucher - %s' % (object.partner_id.name or '',)"
+        />
 
-        <delete model="ir.actions.report.xml" id="l10n_us_check_printing.action_print_check_middle"/>
-        
+        <report id="l10n_us_check_printing.action_print_check_bottom"
+            string="Print Check (Bottom)"
+            model="account.payment"
+            name="l10n_us_check_printing.print_check_bottom"
+            file="l10n_us_check_printing.print_check_bottom"
+            report_type="qweb-pdf"
+            attachment_use="True"
+            attachment="'check_'+(object.partner_id and object.partner_id.name or 'Internal')+'_'+(object.name)+'_bottom.pdf'"
+            paperformat="l10n_us_check_printing.paperformat_check_us"
+            print_report_name="'Check Bottom - %s' % (object.partner_id.name or '',)"
+            menu="False"
+        />
+
+        <!-- <report id="action_print_check"
+            string="Print Check"
+            model="account.payment"
+            name="l10n_us_check_printing.print_check_top"
+            file="l10n_us_check_printing.print_check_top"
+            report_type="qweb-pdf"
+            attachment_use="True"
+            attachment="'check_'+(object.partner_id and object.partner_id.name or 'Internal')+'_'+(object.name)+'_top.pdf'"
+            paperformat="l10n_us_check_printing.paperformat_check_us"
+            print_report_name="'Check - %s' % (object.partner_id.name or '',)"
+        />
+
+        <report id="action_print_check_voucher"
+            string="Print Check Voucher"
+            model="account.payment"
+            name="l10n_us_check_printing.print_check_middle"
+            file="l10n_us_check_printing.print_check_middle"
+            report_type="qweb-pdf"
+            attachment_use="True"
+            attachment="'check_'+(object.partner_id and object.partner_id.name or 'Internal')+'_'+(object.name)+'_middle.pdf'"
+            paperformat="l10n_us_check_printing.paperformat_check_us"
+            print_report_name="'Check Voucher - %s' % (object.partner_id.name or '',)"
+        /> -->
+
     </data>
+    
 </odoo>

@@ -5,6 +5,11 @@
     <t t-call="globpak.external_layout_accounting">
         <t t-set="o" t-value="o.with_context({'lang':o.partner_id.lang})"/>
         <div class="page">
+
+            <div t-if="o.payment_type != 'inbound'">
+                <h3>This report is for customer invoice payments  only.</h3>
+            </div>
+            
             <div class="row">
                 <div class="text-center">
                     <h3>
@@ -24,10 +29,6 @@
             </div>
                         
             <br/>
-
-            <!-- <p t-if="o.payment_type == 'inbound' and o.state == 'posted'">
-                Received from <strong> <span t-field="o.partner_id.name" /> </strong> with TIN <strong> <span t-field="o.partner_id.x_tin" /> </strong> and address at <strong> <span t-esc="o.partner_id.contact_address" /> </strong>, the sum of <strong> <span t-field="o.check_amount_in_words" /> </strong> (<strong> <span t-esc="o.amount" t-options='{"widget": "monetary", "display_currency": o.currency_id}' /> </strong>) in partial/full payment of our Invoice/Statement as indicated.
-            </p> -->
 
             <p t-if="o.payment_type == 'inbound' and o.state == 'posted'">
                 Received from <strong> <span t-esc="o.partner_id.contact_address" /> </strong>, the sum of <strong> <span t-field="o.check_amount_in_words" /> </strong> (<strong> <span t-esc="o.amount" t-options='{"widget": "monetary", "display_currency": o.currency_id}' /> </strong>) in partial/full payment of our Invoice/Statement as indicated.
@@ -54,26 +55,6 @@
                     </tr>
                 </tbody>
             </table>
-
-            <!-- Payment Form -->
-            <!-- <table class="table table-condensed" t-if="o.payment_type == 'inbound' and o.state == 'posted'" style="font-size: 12px">
-                <thead>
-                    <tr>
-                        <th>FORM OF PAYMENT</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody class="invoice_tbody">
-                    <tr>
-                        <td><span t-field="o.journal_id.name"/></td>
-                        <td><span t-field="o.amount"/></td>
-                    </tr>
-                    <tr>
-                        <td>TOTAL</td>
-                        <td><span t-field="o.amount" /></td>
-                    </tr>
-                </tbody>
-            </table> -->
 
             <!-- Payment Details -->
             <table class="table table-condensed" t-if="o.payment_type == 'inbound' and o.state == 'posted'" style="font-size: 12px">

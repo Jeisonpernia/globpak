@@ -14,7 +14,8 @@ class AccountPayment(models.Model):
 
     @api.multi
     def action_print_collection_receipt(self):
-        return self.env['report'].get_action(self, 'globpak.report_account_collection_receipt')
+        # return self.env['report'].get_action(self, 'globpak.report_account_collection_receipt')
+        return self.env.ref('globpak.account_collection_receipt').report_action(self)
 
     @api.multi
     def action_generate_acknowledgement_receipt(self):
@@ -24,4 +25,5 @@ class AccountPayment(models.Model):
 
     @api.multi
     def action_print_acknowledgement_receipt(self):
-        return self.env['report'].get_action(self, 'globpak.report_account_acknowledgement_receipt')
+        # return self.env['report'].get_action(self, 'globpak.report_account_acknowledgement_receipt')
+        return self.env.ref('globpak.account_acknowledgement_receipt').report_action(self)
