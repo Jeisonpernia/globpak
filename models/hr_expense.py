@@ -17,12 +17,12 @@ class HrExpenseSheet(models.Model):
 	approver_id = fields.Many2one('hr.employee','Approver', store=True, compute='_set_employee_details')
 	current_user = fields.Many2one('res.users', compute='_get_current_user')
 
-	fund_custodian_id = fields.Many2one('hr.employee', 'Fund Custodian', related='expense_line_ids.fund_custodian_id', readonly=True)
+	# fund_custodian_id = fields.Many2one('hr.employee', 'Fund Custodian', related='expense_line_ids.fund_custodian_id', readonly=True)
 
 	# OVERRIDE FIELDS
 	payment_mode = fields.Selection([
 		("own_account", "Employee (to reimburse)"),
-		("fund_custodian_account", "Fund Custodian"),
+		# ("fund_custodian_account", "Fund Custodian"),
 		("company_account", "Company"),
 	])
 
@@ -45,19 +45,24 @@ class HrExpenseSheet(models.Model):
 
 	@api.multi
 	def approve_expense_sheets(self):
-		if self.approver_id.user_id != self.current_user:
-			raise UserError(_("You cannot validate your own epense. Immediate supervisors are responsible for validating this expense."))
+		if self.approver_id:
+			if self.approver_id.user_id != self.current_user:
+				raise UserError(_("You cannot validate your own epense. Immediate supervisors are responsible for validating this expense."))
 		else:
-			self.write({'state': 'approve', 'responsible_id': self.env.user.id})
+			raise UserError("No Approver was set. Please assign an approver to employee.")
+		self.write({'state': 'approve', 'responsible_id': self.env.user.id})
 
 	@api.multi
 	def refuse_sheet(self, reason):
-		if self.approver_id.user_id != self.current_user:
-			raise UserError(_("You cannot refuse your own epense. Immediate supervisors are responsible for refusing this expense."))
+		if self.approver_id:
+			if self.approver_id.user_id != self.current_user:
+				raise UserError(_("You cannot refuse your own epense. Immediate supervisors are responsible for refusing this expense."))
+			else:
+				self.write({'state': 'cancel'})
+				for sheet in self:
+					sheet.message_post_with_view('hr_expense.hr_expense_template_refuse_reason', values={'reason': reason ,'is_sheet':True ,'name':self.name})
 		else:
-			self.write({'state': 'cancel'})
-			for sheet in self:
-				sheet.message_post_with_view('hr_expense.hr_expense_template_refuse_reason', values={'reason': reason ,'is_sheet':True ,'name':self.name})
+			raise UserError("No Approver was set. Please assign an approver to employee.")
 
 	@api.multi
 	def get_tax_details(self, line, tax):
@@ -281,14 +286,15 @@ class HrExpenseLine(models.Model):
 					'name': expense.name,
 				})
 				payment_id = payment.id
-			elif expense.expense_id.sheet_id.payment_mode == 'own_account':
+			# elif expense.expense_id.sheet_id.payment_mode == 'own_account':
+			else:
 				if not expense.employee_id.address_home_id:
 					raise UserError(_("No Home Address found for the employee %s, please configure one.") % (expense.employee_id.name))
 				emp_account = expense.employee_id.address_home_id.property_account_payable_id.id
-			elif expense.expense_id.sheet_id.payment_mode == 'fund_custodian_account':
-				if not expense.fund_custodian_id.address_home_id:
-					raise UserError(_("No Home Address found for the fund custodian %s, please configure one.") % (expense.fund_custodian_id.name))
-				emp_account = expense.fund_custodian_id.address_home_id.property_account_payable_id.id
+			# elif expense.expense_id.sheet_id.payment_mode == 'fund_custodian_account':
+			# 	if not expense.expense_id.fund_custodian_id.address_home_id:
+			# 		raise UserError(_("No Home Address found for the fund custodian %s, please configure one.") % (expense.expense_id.fund_custodian_id.name))
+			# 	emp_account = expense.expense_id.fund_custodian_id.address_home_id.property_account_payable_id.id
 				
 			aml_name = expense.employee_id.name + ': ' + expense.name.split('\n')[0][:64]
 			move_lines.append({
@@ -302,8 +308,8 @@ class HrExpenseLine(models.Model):
 				'payment_id': payment_id,
 			})
 
-			_logger.info('WONDERLAND')
-			_logger.info(move_lines)
+			# _logger.info('WONDERLAND')
+			# _logger.info(move_lines)
 			
 			#convert eml into an osv-valid format
 			lines = map(lambda x: (0, 0, expense._prepare_move_line(x)), move_lines)
@@ -312,7 +318,7 @@ class HrExpenseLine(models.Model):
 			expense.expense_id.sheet_id.write({'account_move_id': move.id})
 			move.post()
 			if expense.expense_id.sheet_id.payment_mode == 'company_account':
-				expense.expense_id.sheet_id.paid_expense()
+				expense.expense_id.sheet_id.paid_expense_sheets()
 		return True
 	
 	@api.multi
@@ -380,7 +386,7 @@ class HrExpense(models.Model):
 		], string='Expense Type', default='ob', readonly=True, states={'draft': [('readonly', False)], 'refused': [('readonly', False)]})
 	ob_id = fields.Many2one('hr.employee.official.business', string='Official Business', readonly=True, states={'draft': [('readonly', False)], 'refused': [('readonly', False)]})
 
-	fund_custodian_id = fields.Many2one('hr.employee', 'Fund Custodian', readonly=True, states={'draft': [('readonly', False)], 'refused': [('readonly', False)]})
+	# fund_custodian_id = fields.Many2one('hr.employee', 'Fund Custodian', readonly=True, states={'draft': [('readonly', False)], 'refused': [('readonly', False)]})
 	
 	# OVERRIDE FIELDS
 	product_id = fields.Many2one(required=False)
@@ -390,7 +396,7 @@ class HrExpense(models.Model):
 	date = fields.Date(required=True)
 	payment_mode = fields.Selection([
 		("own_account", "Employee (to reimburse)"),
-		("fund_custodian_account", "Fund Custodian"),
+		# ("fund_custodian_account", "Fund Custodian"),
 		("company_account", "Company"),
 	])
 	
@@ -499,6 +505,9 @@ class HrExpense(models.Model):
 	@api.multi
 	def action_move_create(self):
 		res = self.mapped('line_ids').action_move_create()
+		for expense in self:
+			ob = self.env['hr.employee.official.business'].search([('id','=',expense.ob_id.id)])
+			ob.write({'state':'done'})
 		return res
 	
 	@api.depends('line_ids', 'line_ids.total_amount', 'tax_line_ids', 'tax_line_ids.amount')
@@ -525,11 +534,12 @@ class HrExpense(models.Model):
 				new_ob = self.env['hr.employee.official.business'].search([('id','=',new_ob_id)])
 				new_ob.write({'state':'expense'})
 			else:
-				ob = self.env['hr.employee.official.business'].search([('id','=',ob_id.id)])
-				ob.write({'state':'validate'})
+				if new_ob_id:
+					ob = self.env['hr.employee.official.business'].search([('id','=',ob_id.id)])
+					ob.write({'state':'validate'})
 
-				new_ob = self.env['hr.employee.official.business'].search([('id','=',new_ob_id)])
-				new_ob.write({'state':'expense'})
+					new_ob = self.env['hr.employee.official.business'].search([('id','=',new_ob_id)])
+					new_ob.write({'state':'expense'})
 
 		else:
 			if ob_id:

@@ -30,8 +30,8 @@
                         
             <br/>
 
-            <p t-if="o.payment_type == 'inbound' and o.state == 'posted'">
-                Received from <strong> <span t-esc="o.partner_id.contact_address" /> </strong>, the sum of <strong> <span t-field="o.check_amount_in_words" /> </strong> (<strong> <span t-esc="o.amount" t-options='{"widget": "monetary", "display_currency": o.currency_id}' /> </strong>) in partial/full payment of our Invoice/Statement as indicated.
+            <p t-if="o.payment_type == 'inbound' and o.state == 'posted'" style="font-size: 14px">
+                Received from <strong> <span t-esc="o.partner_id.contact_address" /> </strong> with TIN <strong> <span t-field="o.partner_id.vat" /></strong>, the sum of <strong> <span t-field="o.check_amount_in_words" /> </strong> (<strong> <span t-esc="o.amount" t-options='{"widget": "monetary", "display_currency": o.currency_id}' /> </strong>) in partial/full payment of our Invoice/Statement as indicated.
             </p>
             
             <br/>
@@ -57,43 +57,50 @@
             </table>
 
             <!-- Payment Details -->
-            <table class="table table-condensed" t-if="o.payment_type == 'inbound' and o.state == 'posted'" style="font-size: 12px">
-                <thead>
-                    <tr>
-                        <th>PAYMENT DETAILS</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody class="invoice_tbody">
-                    <tr>
-                        <td>Cash:</td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td>Check No.:</td>
-                        <td><span t-if="o.check_number" t-field="o.check_number" /></td>
-                    </tr>
-                    <tr>
-                        <td>Check Date:</td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td>Bank / Branch:</td>
-                        <td><span t-esc="o.journal_id.bank_id.name"/></td>
-                    </tr>
-                    <tr>
-                        <td>Amount:</td>
-                        <td><span t-field="o.amount" /></td>
-                    </tr>
-                </tbody>
-            </table>
-            
-            <div style="position: absolute; top: 800px; width: 100%" t-if="o.payment_type == 'inbound' and o.state == 'posted'">
-                <div class="col-xs-6 pull-right">
-                    <strong>By: </strong>
-                    <!-- <span t-field="o.x_checked_by"/>                     -->
+            <div class="row">
+                <div class="col-xs-4">
+                    <table class="table table-condensed" t-if="o.payment_type == 'inbound' and o.state == 'posted'" style="font-size: 12px">
+                        <thead>
+                            <tr>
+                                <th>PAYMENT DETAILS</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody class="invoice_tbody">
+                            <tr>
+                                <td>Cash:</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>Check No.:</td>
+                                <td><span t-if="o.check_number" t-field="o.check_number" /></td>
+                            </tr>
+                            <tr>
+                                <td>Check Date:</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>Bank / Branch:</td>
+                                <td><span t-esc="o.journal_id.bank_id.name"/></td>
+                            </tr>
+                            <tr>
+                                <td>Amount:</td>
+                                <td><span t-field="o.amount" /></td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
+
+            <div class="col-xs-6 pull-right">
+                <strong>By: </strong>
+            </div>
+            
+            <!-- <div style="position: absolute; top: 800px; width: 100%" t-if="o.payment_type == 'inbound' and o.state == 'posted'">
+                <div class="col-xs-6 pull-right">
+                    <strong>By: </strong>
+                </div>
+            </div> -->
             
         </div>
     </t>
