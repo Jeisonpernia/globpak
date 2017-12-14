@@ -56,18 +56,29 @@
                             <group>
                                 <field name="supplier_invoice_no"/>
                                 <field name="bl_awb_no"/>
+                                <!-- <field name="landed_cost_line_id"/> -->
+                                <field name="broker_id"/>
                             </group>
                             <group>
-                                <field name="landed_cost_line_id"/>
+                                <field name="total_inland_cost"/>
+                                <field name="total_landed_cost"/>
                             </group>
                         </group>
                         <group>
                             <group string="Customs">
                                 <field name="assessment_date"/>
                                 <field name="import_entry_no"/>
+                                <field name="customs_duties"/>
                             </group>
-                            <group string="Brokerage">
-                                <field name="landed_cost_line_id"/>
+                            <group string="Forwarding Charges">
+                                <field name="brokerage_fee"/>
+                                <field name="trucking_demurrage_mano"/>
+                                <field name="arrastre_storage_wharfage"/>
+                                <field name="other_charges_with_vat"/>
+                                <field name="input_tax"/>
+                                <field name="bank_charges"/>
+                                <field name="shipping_demurrage"/>
+                                <field name="other_charges_without_vat"/>
                             </group>
                         </group>
                     </page>

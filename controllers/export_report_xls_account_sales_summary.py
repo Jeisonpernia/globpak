@@ -96,7 +96,7 @@ class ExportReportXlsSalesSummary(http.Controller):
             worksheet.write(row_count, 1, account.date, style_table_row) 
             worksheet.write(row_count, 2, account.partner_id.name, style_table_row)
             worksheet.write(row_count, 3, '%s %s %s %s %s %s'%(account.partner_id.street or '',account.partner_id.street2 or '',account.partner_id.city or '',account.partner_id.state_id.name or '',account.partner_id.zip or '',account.partner_id.country_id.name or ''), style_table_row)
-            worksheet.write(row_count, 4, account.partner_id.x_tin, style_table_row)
+            worksheet.write(row_count, 4, account.partner_id.vat or '', style_table_row)
 
             worksheet.write(row_count, 5, account.number, style_table_row)
             worksheet.write(row_count, 6, '', style_table_row)

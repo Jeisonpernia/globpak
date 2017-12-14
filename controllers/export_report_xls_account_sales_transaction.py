@@ -30,10 +30,11 @@ class ExportReportXlsAccountSalesTransaction(http.Controller):
         style_header_right = xlwt.easyxf("font: name Calibri;align: horiz right, wrap no")
         style_table_header_bold = xlwt.easyxf("font: bold on;font: name Calibri;align: horiz centre, vert centre, wrap on;borders: top thin, bottom thin, right thin;")
         style_table_row = xlwt.easyxf("font: name Calibri;align: horiz left, wrap no;borders: top thin, bottom thin, right thin;")
-        style_table_row_amount = xlwt.easyxf("font: name Calibri;align: horiz right, wrap no;borders: top thin, bottom thin, right thin;")
+        style_table_row_amount = xlwt.easyxf("font: name Calibri;align: horiz right, wrap no;borders: top thin, bottom thin, right thin;", num_format_str="#,##0.00")
         style_table_total = xlwt.easyxf("pattern: pattern solid, fore_colour pale_blue;font: bold on;font: name Calibri;align: horiz left, wrap no;borders: top thin, bottom medium, right thin;")
-        style_table_total_value = xlwt.easyxf("pattern: pattern solid, fore_colour pale_blue;font: bold on;font: name Calibri;align: horiz right, wrap no;borders: top thin, bottom medium, right thin;")
+        style_table_total_value = xlwt.easyxf("pattern: pattern solid, fore_colour pale_blue;font: bold on;font: name Calibri;align: horiz right, wrap no;borders: top thin, bottom medium, right thin;", num_format_str="#,##0.00")
         style_end_report = xlwt.easyxf("font: bold on;font: name Calibri;align: horiz left, wrap no;")
+
         worksheet.col(0).width = 500*12
         worksheet.col(1).width = 500*12
         worksheet.col(2).width = 500*12
@@ -80,19 +81,32 @@ class ExportReportXlsAccountSalesTransaction(http.Controller):
         total_zero_rated_sales = 0
         total_vat_sales = 0
         total_amount_tax = 0
+        total_gross_taxable_sales = 0
+        registered_name = ''
+        customer_name = ''
         for account in account_invoice_sales:
+            if account.partner_id.company_type == 'company':
+                registered_name = account.partner_id.name
+                customer_name = ''
+            else:
+                registered_name = account.partner_id.parent_id.name
+                customer_name = account.partner_id.name
+
+            # COMPUTE AMOUNT OF GROSS TAXABLE SALES (Vat Sales + Tax)
+            gross_taxable_sales = account.vat_sales + account.amount_tax
+
             worksheet.write(row_count, 0, account.date, style_table_row) 
-            worksheet.write(row_count, 1, account.partner_id.x_tin, style_table_row)
-            worksheet.write(row_count, 2, account.partner_id.name, style_table_row)
-            worksheet.write(row_count, 3, '', style_table_row)
+            worksheet.write(row_count, 1, account.partner_id.vat or '', style_table_row)
+            worksheet.write(row_count, 2, registered_name, style_table_row)
+            worksheet.write(row_count, 3, customer_name, style_table_row)
             worksheet.write(row_count, 4, '%s %s %s %s %s %s'%(account.partner_id.street or '',account.partner_id.street2 or '',account.partner_id.city or '',account.partner_id.state_id.name or '',account.partner_id.zip or '',account.partner_id.country_id.name or ''), style_table_row)
             
             worksheet.write(row_count, 5, account.amount_untaxed, style_table_row_amount)
             worksheet.write(row_count, 6, account.vat_exempt_sales, style_table_row_amount)
-            worksheet.write(row_count, 7, account.zero_rated_sales or '', style_table_row_amount)
+            worksheet.write(row_count, 7, account.zero_rated_sales, style_table_row_amount)
             worksheet.write(row_count, 8, account.vat_sales, style_table_row_amount)
             worksheet.write(row_count, 9, account.amount_tax, style_table_row_amount)
-            worksheet.write(row_count, 10, '-', style_table_row_amount)
+            worksheet.write(row_count, 10, gross_taxable_sales, style_table_row_amount)
 
             row_count +=1
             transaction_count +=1
@@ -102,6 +116,7 @@ class ExportReportXlsAccountSalesTransaction(http.Controller):
             total_zero_rated_sales +=  account.zero_rated_sales
             total_vat_sales += account.vat_sales
             total_amount_tax += account.amount_tax
+            total_gross_taxable_sales += gross_taxable_sales
 
         table_total_start = row_count
 
@@ -114,7 +129,7 @@ class ExportReportXlsAccountSalesTransaction(http.Controller):
         worksheet.write(table_total_start, 7, total_zero_rated_sales, style_table_total_value)
         worksheet.write(table_total_start, 8, total_vat_sales, style_table_total_value)
         worksheet.write(table_total_start, 9, total_amount_tax, style_table_total_value)
-        worksheet.write(table_total_start, 10, '-', style_table_total_value)
+        worksheet.write(table_total_start, 10, total_gross_taxable_sales, style_table_total_value)
         worksheet.write(end_report, 0, 'END OF REPORT', style_end_report)
         
 

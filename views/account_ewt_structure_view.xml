@@ -32,6 +32,9 @@
                         <group>
                             <field name="name"/>
                             <field name="description"/>
+                            <field name="tax_type"/>
+                            <field name="tax_rate"/>
+                            <field name="bir_form"/>
                         </group>
                     </group>
                     </sheet>

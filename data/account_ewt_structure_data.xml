@@ -2,15 +2,670 @@
 <odoo>
     <data noupdate="0">
 
-        <record model="account.ewt.structure" id="account_tax_rate_data_wc158">
-            <field name="name">WC158</field>
-            <field name="description">Income payments made by top 20,000 private corporations to their local/resident suppliers of goods - Corporate</field>
+        <record model="account.ewt.structure" id="account_tax_rate_data_0">
+            <field name="name">/</field>
+            <field name="description">MONTHLY REMITTANCE RETURN OF CREDITABLE INCOME TAXES WITHHELD (EXPANDED)</field>
+            <field name="tax_type">/</field>
+            <field name="tax_rate">0.00</field>
+            <field name="bir_form">BIR FORM NO. 1601-E</field>
         </record>
 
-        <record model="account.ewt.structure" id="account_tax_rate_data_wc160">
+        <record model="account.ewt.structure" id="account_tax_rate_data_WI010">
+            <field name="name">WI010</field>
+            <field name="description">Professionals (lawyers, CPAs, engineers, etc.), talent fees paid to individuals - If the current year’s gross income is P720,000 and below</field>
+            <field name="tax_type">WE</field>
+            <field name="tax_rate">10.00</field>
+            <field name="bir_form">1601-E/2307</field>
+        </record>
+
+        <record model="account.ewt.structure" id="account_tax_rate_data_WI011">
+            <field name="name">WI011</field>
+            <field name="description">Professionals (lawyers, CPAs, engineers, etc.), talent fees paid to individuals - If the current year’s gross income exceeds P 720,000</field>
+            <field name="tax_type">WE</field>
+            <field name="tax_rate">15.00</field>
+            <field name="bir_form">1601-E/2307</field>
+        </record>
+
+        <record model="account.ewt.structure" id="account_tax_rate_data_WC010">
+            <field name="name">WC010</field>
+            <field name="description">Professionals/ talent fees paid to juridical persons - If the current year’s gross income is P720,000 and below</field>
+            <field name="tax_type">WE</field>
+            <field name="tax_rate">10.00</field>
+            <field name="bir_form">1601-E/2307</field>
+        </record>
+
+        <record model="account.ewt.structure" id="account_tax_rate_data_WC011">
+            <field name="name">WC011</field>
+            <field name="description">Professionals/ talent fees paid to juridical persons - If the current year’s gross income exceeds P 720,000</field>
+            <field name="tax_type">WE</field>
+            <field name="tax_rate">15.00</field>
+            <field name="bir_form">1601-E/2307</field>
+        </record>
+
+        <record model="account.ewt.structure" id="account_tax_rate_data_WI020">
+            <field name="name">WI020</field>
+            <field name="description">Professional entertainers, such as, but not limited to, actors and actresses, singers, lyricist, composers, emcees - If the current year’s gross income is P 720,000 and below</field>
+            <field name="tax_type">WE</field>
+            <field name="tax_rate">10.00</field>
+            <field name="bir_form">1601-E/2307</field>
+        </record>
+
+        <record model="account.ewt.structure" id="account_tax_rate_data_WI021">
+            <field name="name">WI021</field>
+            <field name="description">Professional entertainers, such as, but not limited to, actors and actresses, singers, lyricist, composers, emcees - If the current year’s gross income exceeds P 720,000</field>
+            <field name="tax_type">WE</field>
+            <field name="tax_rate">15.00</field>
+            <field name="bir_form">1601-E/2307</field>
+        </record>
+
+        <record model="account.ewt.structure" id="account_tax_rate_data_WI030">
+            <field name="name">WI030</field>
+            <field name="description">Professional athletes, including basketball players, pelotaris and jockeys - If the current year’s gross income is P 720,000 and below</field>
+            <field name="tax_type">WE</field>
+            <field name="tax_rate">10.00</field>
+            <field name="bir_form">1601-E/2307</field>
+        </record>
+
+        <record model="account.ewt.structure" id="account_tax_rate_data_WI031">
+            <field name="name">WI031</field>
+            <field name="description">Professional athletes including basketball players, pelotaris and jockeys - If the current year’s gross income exceeds P720,000</field>
+            <field name="tax_type">WE</field>
+            <field name="tax_rate">15.00</field>
+            <field name="bir_form">1601-E/2307</field>
+        </record>
+
+        <record model="account.ewt.structure" id="account_tax_rate_data_WI040">
+            <field name="name">WI040</field>
+            <field name="description">Movie, stage, radio, television and musical directors and producers - If the current year’s gross income is P720,000 and below</field>
+            <field name="tax_type">WE</field>
+            <field name="tax_rate">10.00</field>
+            <field name="bir_form">1601-E/2307</field>
+        </record>
+
+        <record model="account.ewt.structure" id="account_tax_rate_data_WI041">
+            <field name="name">WI041</field>
+            <field name="description">Movie, stage, radio, television and musical directors and producers - If the current year’s gross income exceeds P 720,000</field>
+            <field name="tax_type">WE</field>
+            <field name="tax_rate">15.00</field>
+            <field name="bir_form">1601-E/2307</field>
+        </record>
+
+        <record model="account.ewt.structure" id="account_tax_rate_data_WI050">
+            <field name="name">WI050</field>
+            <field name="description">Management and technical consultants paid to individuals. If the current year’s gross income is P 720,000 and below</field>
+            <field name="tax_type">WE</field>
+            <field name="tax_rate">10.00</field>
+            <field name="bir_form">1601-E/2307</field>
+        </record>
+
+        <record model="account.ewt.structure" id="account_tax_rate_data_WI051">
+            <field name="name">WI051</field>
+            <field name="description">Management and technical consultants paid to individuals - If the current year’s gross income exceeds P 720,000</field>
+            <field name="tax_type">WE</field>
+            <field name="tax_rate">15.00</field>
+            <field name="bir_form">1601-E/2307</field>
+        </record>
+
+        <record model="account.ewt.structure" id="account_tax_rate_data_WC050">
+            <field name="name">WC050</field>
+            <field name="description">Management and technical consultants paid to juridical person - If the current year’s gross income is P 720,000 and below</field>
+            <field name="tax_type">WE</field>
+            <field name="tax_rate">15.00</field>
+            <field name="bir_form">1601-E/2307</field>
+        </record>
+
+        <record model="account.ewt.structure" id="account_tax_rate_data_WC051">
+            <field name="name">WC051</field>
+            <field name="description">Management and technical consultants paid to juridical person - If the currents year’s gross income exceeds P720,000</field>
+            <field name="tax_type">WE</field>
+            <field name="tax_rate">15.00</field>
+            <field name="bir_form">1601-E/2307</field>
+        </record>
+
+        <record model="account.ewt.structure" id="account_tax_rate_data_WI060">
+            <field name="name">WI060</field>
+            <field name="description">Business and bookkeeping agents and agencies - If the current year’s gross income is P 720,000 and below</field>
+            <field name="tax_type">WE</field>
+            <field name="tax_rate">10.00</field>
+            <field name="bir_form">1601-E/2307</field>
+        </record>
+
+        <record model="account.ewt.structure" id="account_tax_rate_data_WI061">
+            <field name="name">WI061</field>
+            <field name="description">Business and bookkeeping agents and agencies - If the current year’s gross income exceeds P 720,000</field>
+            <field name="tax_type">WE</field>
+            <field name="tax_rate">15.00</field>
+            <field name="bir_form">1601-E/2307</field>
+        </record>
+
+        <record model="account.ewt.structure" id="account_tax_rate_data_WI070">
+            <field name="name">WI070</field>
+            <field name="description">Insurance agents and insurance adjusters - If the current year’s gross income is P 720,000 and below</field>
+            <field name="tax_type">WE</field>
+            <field name="tax_rate">10.00</field>
+            <field name="bir_form">1601-E/2307</field>
+        </record>
+
+        <record model="account.ewt.structure" id="account_tax_rate_data_WI071">
+            <field name="name">WI071</field>
+            <field name="description">Insurance agents and insurance adjusters - If the current year’s gross income exceeds P 720,000</field>
+            <field name="tax_type">WE</field>
+            <field name="tax_rate">15.00</field>
+            <field name="bir_form">1601-E/2307</field>
+        </record>
+
+        <record model="account.ewt.structure" id="account_tax_rate_data_WI080">
+            <field name="name">WI080</field>
+            <field name="description">Other recipients of talent fees - If the current year’s gross income is P 720,000 and below</field>
+            <field name="tax_type">WE</field>
+            <field name="tax_rate">10.00</field>
+            <field name="bir_form">1601-E/2307</field>
+        </record>
+
+        <record model="account.ewt.structure" id="account_tax_rate_data_WI081">
+            <field name="name">WI081</field>
+            <field name="description">Other recipients of talent fees - If the current year’s gross income exceeds P 720,000</field>
+            <field name="tax_type">WE</field>
+            <field name="tax_rate">15.00</field>
+            <field name="bir_form">1601-E/2307</field>
+        </record>
+
+        <record model="account.ewt.structure" id="account_tax_rate_data_WI090">
+            <field name="name">WI090</field>
+            <field name="description">Fees of directors who are not employees of the company - If the current year’s gross income is P 720,000 and below</field>
+            <field name="tax_type">WE</field>
+            <field name="tax_rate">10.00</field>
+            <field name="bir_form">1601-E/2307</field>
+        </record>
+
+        <record model="account.ewt.structure" id="account_tax_rate_data_WI091">
+            <field name="name">WI091</field>
+            <field name="description">Fees of directors who are not employees of the company - If the current year’s gross income exceeds P 720,000</field>
+            <field name="tax_type">WE</field>
+            <field name="tax_rate">15.00</field>
+            <field name="bir_form">1601-E/2307</field>
+        </record>
+
+        <record model="account.ewt.structure" id="account_tax_rate_data_WI100">
+            <field name="name">WI100</field>
+            <field name="description">Rentals- real/personal properties, poles, satellites &amp; transmission facilities, billboards - Individual</field>
+            <field name="tax_type">WE</field>
+            <field name="tax_rate">5.00</field>
+            <field name="bir_form">1601-E/2307</field>
+        </record>
+
+        <record model="account.ewt.structure" id="account_tax_rate_data_WC100">
+            <field name="name">WC100</field>
+            <field name="description">Rentals- real/personal properties, poles, satellites &amp; transmission facilities, billboards - Corporate</field>
+            <field name="tax_type">WE</field>
+            <field name="tax_rate">5.00</field>
+            <field name="bir_form">1601-E/2307</field>
+        </record>
+
+        <record model="account.ewt.structure" id="account_tax_rate_data_WI110">
+            <field name="name">WI110</field>
+            <field name="description">Cinematographic film rentals - Individual</field>
+            <field name="tax_type">WE</field>
+            <field name="tax_rate">5.00</field>
+            <field name="bir_form">1601-E/2307</field>
+        </record>
+
+        <record model="account.ewt.structure" id="account_tax_rate_data_WC110">
+            <field name="name">WC110</field>
+            <field name="description">Cinematographic film rentals - Corporate</field>
+            <field name="tax_type">WE</field>
+            <field name="tax_rate">5.00</field>
+            <field name="bir_form">1601-E/2307</field>
+        </record>
+
+        <record model="account.ewt.structure" id="account_tax_rate_data_WI120">
+            <field name="name">WI120</field>
+            <field name="description">Income payments to prime contractors/sub-contractors - Individual</field>
+            <field name="tax_type">WE</field>
+            <field name="tax_rate">2.00</field>
+            <field name="bir_form">1601-E/2307</field>
+        </record>
+
+        <record model="account.ewt.structure" id="account_tax_rate_data_WC120">
+            <field name="name">WC120</field>
+            <field name="description">Income payments to prime contractors/sub-contractors - Corporate</field>
+            <field name="tax_type">WE</field>
+            <field name="tax_rate">2.00</field>
+            <field name="bir_form">1601-E/2307</field>
+        </record>
+
+        <record model="account.ewt.structure" id="account_tax_rate_data_WI130">
+            <field name="name">WI130</field>
+            <field name="description">Income distribution to beneficiaries of estates and trusts</field>
+            <field name="tax_type">WE</field>
+            <field name="tax_rate">15.00</field>
+            <field name="bir_form">1601-E/2307</field>
+        </record>
+
+        <record model="account.ewt.structure" id="account_tax_rate_data_WI140">
+            <field name="name">WI140</field>
+            <field name="description">Gross commission or service fees of custom, insurance, stock, real estate, immigration and commercial brokers &amp; fees of agents of professional entertainers - Individual</field>
+            <field name="tax_type">WE</field>
+            <field name="tax_rate">10.00</field>
+            <field name="bir_form">1601-E/2307</field>
+        </record>
+
+        <record model="account.ewt.structure" id="account_tax_rate_data_WC140">
+            <field name="name">WC140</field>
+            <field name="description">Gross commission or service fees of custom, insurance, stock, real estate, immigration and commercial brokers &amp; fees of agents of professional entertainers - Corporate</field>
+            <field name="tax_type">WE</field>
+            <field name="tax_rate">10.00</field>
+            <field name="bir_form">1601-E/2307</field>
+        </record>
+
+        <record model="account.ewt.structure" id="account_tax_rate_data_WI141">
+            <field name="name">WI141</field>
+            <field name="description">Payments to medical practitioners by a duly registered professional partnership for the practice of the medical profession - If the currents year's income payments to the medical practitioner is P720,000 and below</field>
+            <field name="tax_type">WE</field>
+            <field name="tax_rate">10.00</field>
+            <field name="bir_form">1601-E/2307</field>
+        </record>
+
+        <record model="account.ewt.structure" id="account_tax_rate_data_WI142">
+            <field name="name">WI142</field>
+            <field name="description">Payments to medical practitioners by a duly registered professional partnership for the practice of the medical profession - If the currents year's income payments to the medical practitioner exceeds P720,000</field>
+            <field name="tax_type">WE</field>
+            <field name="tax_rate">15.00</field>
+            <field name="bir_form">1601-E/2307</field>
+        </record>
+
+        <record model="account.ewt.structure" id="account_tax_rate_data_WI150">
+            <field name="name">WI150</field>
+            <field name="description">Payments for medical/dental/veterinary services thru Hospitals/ Clinics/Health Maintenance Organizations, including direct payments to service providers - If the current year's income payments for the medical/dental/veterinary services exceeds P 720,000</field>
+            <field name="tax_type">WE</field>
+            <field name="tax_rate">15.00</field>
+            <field name="bir_form">1601-E/2307</field>
+        </record>
+
+        <record model="account.ewt.structure" id="account_tax_rate_data_WI151">
+            <field name="name">WI151</field>
+            <field name="description">Payments for medical/dental/veterinary services thru Hospitals/ Clinics/Health Maintenance Organizations, including direct payments to service providers - If the current year's income payments for the medical/dental/veterinary services is P 720,000 and below</field>
+            <field name="tax_type">WE</field>
+            <field name="tax_rate">10.00</field>
+            <field name="bir_form">1601-E/2307</field>
+        </record>
+
+        <record model="account.ewt.structure" id="account_tax_rate_data_WI152">
+            <field name="name">WI152</field>
+            <field name="description">Payment by the general professional partnerships GPP) to its partners - If the current year's income payments to the partners is P 720,000 and below</field>
+            <field name="tax_type">WE</field>
+            <field name="tax_rate">10.00</field>
+            <field name="bir_form">1601-E/2307</field>
+        </record>
+
+        <record model="account.ewt.structure" id="account_tax_rate_data_WI153">
+            <field name="name">WI153</field>
+            <field name="description">Payment by the general professional partnerships GPP) to its partners - If the current year's income payments to the partners exceeds P 720,000</field>
+            <field name="tax_type">WE</field>
+            <field name="tax_rate">15.00</field>
+            <field name="bir_form">1601-E/2307</field>
+        </record>
+
+        <record model="account.ewt.structure" id="account_tax_rate_data_WI156">
+            <field name="name">WI156</field>
+            <field name="description">Payments made by credit card companies - Individual</field>
+            <field name="tax_type">WE</field>
+            <field name="tax_rate">1.00</field> <!--1% of 1/2 -->
+            <field name="bir_form">1601-E/2307</field>
+        </record>
+
+        <record model="account.ewt.structure" id="account_tax_rate_data_WC156">
+            <field name="name">WC156</field>
+            <field name="description">Payments made by credit card companies - Corporate</field>
+            <field name="tax_type">WE</field>
+            <field name="tax_rate">1.00</field> <!--1% of 1/2 -->
+            <field name="bir_form">1601-E/2307</field>
+        </record>
+
+        <record model="account.ewt.structure" id="account_tax_rate_data_WI640">
+            <field name="name">WI640</field>
+            <field name="description">Income payments made by the government to its local/resident suppliers of goods - Individual</field>
+            <field name="tax_type">WE</field>
+            <field name="tax_rate">1.00</field>
+            <field name="bir_form">1601-E/2307</field>
+        </record>
+
+        <record model="account.ewt.structure" id="account_tax_rate_data_WC640">
+            <field name="name">WC640</field>
+            <field name="description">Income payments made by the government to its local/resident suppliers of goods - Corporate</field>
+            <field name="tax_type">WE</field>
+            <field name="tax_rate">1.00</field>
+            <field name="bir_form">1601-E/2307</field>
+        </record>
+
+        <record model="account.ewt.structure" id="account_tax_rate_data_WI157">
+            <field name="name">WI157</field>
+            <field name="description">Income payments made by the government to its local/resident suppliers of service - Individual</field>
+            <field name="tax_type">WE</field>
+            <field name="tax_rate">2.00</field>
+            <field name="bir_form">1601-E/2307</field>
+        </record>
+
+        <record model="account.ewt.structure" id="account_tax_rate_data_WC157">
+            <field name="name">WC157</field>
+            <field name="description">Income payments made by the government to its local/resident suppliers of services - Corporate</field>
+            <field name="tax_type">WE</field>
+            <field name="tax_rate">2.00</field>
+            <field name="bir_form">1601-E/2307</field>
+        </record>
+
+        <record model="account.ewt.structure" id="account_tax_rate_data_WI158">
+            <field name="name">WI158</field>
+            <field name="description">Income payments made by top 20,000 private corporations to their local/resident suppliers of goods - Individual</field>
+            <field name="tax_type">WE</field>
+            <field name="tax_rate">1.00</field>
+            <field name="bir_form">1601-E/2307</field>
+        </record>
+
+        <record model="account.ewt.structure" id="account_tax_rate_data_WC158">
+            <field name="name">WC158</field>
+            <field name="description">Income payments made by top 20,000 private corporations to their local/resident suppliers of goods - Corporate</field>
+            <field name="tax_type">WE</field>
+            <field name="tax_rate">1.00</field>
+            <field name="bir_form">1601-E/2307</field>
+        </record>
+
+        <record model="account.ewt.structure" id="account_tax_rate_data_WI160">
+            <field name="name">WI160</field>
+            <field name="description">Income payments made by top 20,000 private corporations to their local/resident suppliers of services - Individual</field>
+            <field name="tax_type">WE</field>
+            <field name="tax_rate">2.00</field>
+            <field name="bir_form">1601-E/2307</field>
+        </record>
+
+        <record model="account.ewt.structure" id="account_tax_rate_data_WC160">
             <field name="name">WC160</field>
             <field name="description">Income payments made by top 20,000 private corporations to their local/resident suppliers of services - Corporate</field>
+            <field name="tax_type">WE</field>
+            <field name="tax_rate">2.00</field>
+            <field name="bir_form">1601-E/2307</field>
+        </record>
+
+        <record model="account.ewt.structure" id="account_tax_rate_data_WI159">
+            <field name="name">WI159</field>
+            <field name="description">Additional payments to government personnel from importers, shipping and airline companies or their agents for overtime services</field>
+            <field name="tax_type">WE</field>
+            <field name="tax_rate">15.00</field>
+            <field name="bir_form">1601-E/2307</field>
+        </record>
+
+        <record model="account.ewt.structure" id="account_tax_rate_data_WI515">
+            <field name="name">WI515</field>
+            <field name="description">Commission, rebates, discounts and other similar considerations paid/granted to independent &amp; exclusive distributors, medical/technical &amp; sales representatives &amp; marketing agents &amp; sub-agents of multi-level marketing companies - Individual</field>
+            <field name="tax_type">WE</field>
+            <field name="tax_rate">10.00</field>
+            <field name="bir_form">1601-E/2307</field>
+        </record>
+
+        <record model="account.ewt.structure" id="account_tax_rate_data_WC515">
+            <field name="name">WC515</field>
+            <field name="description">Commission, rebates, discounts and other similar considerations paid/granted to independent &amp; exclusive distributors, medical/technical &amp; sales representatives &amp; marketing agents and sub-agents of multi-level marketing companies - Corporate</field>
+            <field name="tax_type">WE</field>
+            <field name="tax_rate">10.00</field>
+            <field name="bir_form">1601-E/2307</field>
+        </record>
+
+        <record model="account.ewt.structure" id="account_tax_rate_data_WI530">
+            <field name="name">WI530</field>
+            <field name="description">Gross payments to embalmers by funeral parlors</field>
+            <field name="tax_type">WE</field>
+            <field name="tax_rate">1.00</field>
+            <field name="bir_form">1601-E/2307</field>
+        </record>
+
+        <record model="account.ewt.structure" id="account_tax_rate_data_WI535">
+            <field name="name">WI535</field>
+            <field name="description">Payments made by pre-need companies to funeral parlors - Individual</field>
+            <field name="tax_type">WE</field>
+            <field name="tax_rate">1.00</field>
+            <field name="bir_form">1601-E/2307</field>
+        </record>
+
+        <record model="account.ewt.structure" id="account_tax_rate_data_WC535">
+            <field name="name">WC535</field>
+            <field name="description">Payments made by pre-need companies to funeral parlors - Corporate</field>
+            <field name="tax_type">WE</field>
+            <field name="tax_rate">1.00</field>
+            <field name="bir_form">1601-E/2307</field>
+        </record>
+
+        <record model="account.ewt.structure" id="account_tax_rate_data_WI540">
+            <field name="name">WI540</field>
+            <field name="description">Tolling fee paid to refineries - Individual</field>
+            <field name="tax_type">WE</field>
+            <field name="tax_rate">5.00</field>
+            <field name="bir_form">1601-E/2307</field>
+        </record>
+
+        <record model="account.ewt.structure" id="account_tax_rate_data_WC540">
+            <field name="name">WC540</field>
+            <field name="description">Tolling fee paid to refineries - Corporate</field>
+            <field name="tax_type">WE</field>
+            <field name="tax_rate">5.00</field>
+            <field name="bir_form">1601-E/2307</field>
+        </record>
+
+        <record model="account.ewt.structure" id="account_tax_rate_data_WI610">
+            <field name="name">WI610</field>
+            <field name="description">Income payments made to suppliers of Agricultural products - Individual</field>
+            <field name="tax_type">WE</field>
+            <field name="tax_rate">1.00</field>
+            <field name="bir_form">1601-E/2307</field>
+        </record>
+
+        <record model="account.ewt.structure" id="account_tax_rate_data_WC610">
+            <field name="name">WC610</field>
+            <field name="description">Income payments made to suppliers of Agricultural products - Corporate</field>
+            <field name="tax_type">WE</field>
+            <field name="tax_rate">1.00</field>
+            <field name="bir_form">1601-E/2307</field>
+        </record>
+
+        <record model="account.ewt.structure" id="account_tax_rate_data_WI630">
+            <field name="name">WI630</field>
+            <field name="description">Income payments on purchases of minerals, mineral products &amp; quarry resources - Individual</field>
+            <field name="tax_type">WE</field>
+            <field name="tax_rate">5.00</field>
+            <field name="bir_form">1601-E/2307</field>
+        </record>
+
+        <record model="account.ewt.structure" id="account_tax_rate_data_WC630">
+            <field name="name">WC630</field>
+            <field name="description">Income payments on purchases of minerals, mineral products &amp; quarry resources - Corporate</field>
+            <field name="tax_type">WE</field>
+            <field name="tax_rate">5.00</field>
+            <field name="bir_form">1601-E/2307</field>
+        </record>
+
+        <record model="account.ewt.structure" id="account_tax_rate_data_WI632">
+            <field name="name">WI632</field>
+            <field name="description">Income payments on purchases of gold by Bangko Sentral ng Pilipinas (BSP) from gold miners/suppliers under PD 1899, as amended by RA No. 7076- Individual</field>
+            <field name="tax_type">WE</field>
+            <field name="tax_rate">5.00</field>
+            <field name="bir_form">1601-E/2307</field>
+        </record>
+
+        <record model="account.ewt.structure" id="account_tax_rate_data_WC632">
+            <field name="name">WC632</field>
+            <field name="description">Income payments on purchases of gold by Bangko Sentral ng Pilipinas (BSP) from gold miners/suppliers under PD 1899, as amended by RA No. 7076 - Corporate</field>
+            <field name="tax_type">WE</field>
+            <field name="tax_rate">5.00</field>
+            <field name="bir_form">1601-E/2307</field>
+        </record>
+
+        <record model="account.ewt.structure" id="account_tax_rate_data_WI650">
+            <field name="name">WI650</field>
+            <field name="description">On gross amount of refund given by Meralco to customers with active contracts as classified by Meralco - Individual</field>
+            <field name="tax_type">WE</field>
+            <field name="tax_rate">25.00</field>
+            <field name="bir_form">1601-E/2307</field>
+        </record>
+
+        <record model="account.ewt.structure" id="account_tax_rate_data_WC650">
+            <field name="name">WC650</field>
+            <field name="description">On gross amount of refund given by Meralco to customers with active contracts as classified by Meralco - Corporate</field>
+            <field name="tax_type">WE</field>
+            <field name="tax_rate">25.00</field>
+            <field name="bir_form">1601-E/2307</field>
+        </record>
+
+        <record model="account.ewt.structure" id="account_tax_rate_data_WI651">
+            <field name="name">WI651</field>
+            <field name="description">On gross amount of refund given by Meralco to customers with terminated contracts as classified by Meralco - Individual</field>
+            <field name="tax_type">WE</field>
+            <field name="tax_rate">32.00</field>
+            <field name="bir_form">1601-E/2307</field>
+        </record>
+
+        <record model="account.ewt.structure" id="account_tax_rate_data_WC651">
+            <field name="name">WC651</field>
+            <field name="description">On gross amount of refund given by Meralco to customers with terminated contracts as classified by Meralco - Corporate</field>
+            <field name="tax_type">WE</field>
+            <field name="tax_rate">32.00</field>
+            <field name="bir_form">1601-E/2307</field>
+        </record>
+
+        <record model="account.ewt.structure" id="account_tax_rate_data_WI660">
+            <field name="name">WI660</field>
+            <field name="description">Withholding on gross amount of interest on the refund of meter deposit whether paid directly to the customers or applied against customer's billing - Residential and General Service customers whose monthly electricity consumption exceeds 200 kwh as classified by MERALCO - Individual</field>
+            <field name="tax_type">WE</field>
+            <field name="tax_rate">10.00</field>
+            <field name="bir_form">1601-E/2307</field>
+        </record>
+
+        <record model="account.ewt.structure" id="account_tax_rate_data_WC660">
+            <field name="name">WC660</field>
+            <field name="description">Withholding on gross amount of interest on the refund of meter deposit whether paid directly to the customers or applied against customer's billing - Residential and General Service customers whose monthly electricity consumption exceeds 200 kwh as classified by MERALCO - Corporate</field>
+            <field name="tax_type">WE</field>
+            <field name="tax_rate">10.00</field>
+            <field name="bir_form">1601-E/2307</field>
+        </record>
+
+        <record model="account.ewt.structure" id="account_tax_rate_data_WI661">
+            <field name="name">WI661</field>
+            <field name="description">Withholding on gross amount of interest on the refund of meter deposit whether paid directly to the customers or applied against customer's billing - Non-Residential customers whose monthly electricity consumption exceeds 200 kwh as classified by MERALCO - Individual</field>
+            <field name="tax_type">WE</field>
+            <field name="tax_rate">10.00</field>
+            <field name="bir_form">1601-E/2307</field>
         </record>
         
+        <record model="account.ewt.structure" id="account_tax_rate_data_WC661">
+            <field name="name">WC661</field>
+            <field name="description">Withholding on gross amount of interest on the refund of meter deposit whether paid directly to the customers or applied against customer's billing - Non-Residential customers whose monthly electricity consumption exceeds 200 kwh as classified by MERALCO - Corporate</field>
+            <field name="tax_type">WE</field>
+            <field name="tax_rate">10.00</field>
+            <field name="bir_form">1601-E/2307</field>
+        </record>
+
+        <record model="account.ewt.structure" id="account_tax_rate_data_WI662">
+            <field name="name">WI662</field>
+            <field name="description">Withholding on gross amount of interest on the refund of meter deposit whether paid directly to the customers or applied against customer's billing - Residential and General Service customers whose monthly electricity consumption exceeds 200 kwh as classified by other electric Distribution Utilities (DU) - Individual</field>
+            <field name="tax_type">WE</field>
+            <field name="tax_rate">10.00</field>
+            <field name="bir_form">1601-E/2307</field>
+        </record>
+
+        <record model="account.ewt.structure" id="account_tax_rate_data_WC662">
+            <field name="name">WC662</field>
+            <field name="description">Withholding on gross amount of interest on the refund of meter deposit whether paid directly to the customers or applied against customer's billing - Residential and General Service customers whose monthly electricity consumption exceeds 200 kwh as classified by other electric Distribution Utilities (DU) - Corporate</field>
+            <field name="tax_type">WE</field>
+            <field name="tax_rate">10.00</field>
+            <field name="bir_form">1601-E/2307</field>
+        </record>
+
+        <record model="account.ewt.structure" id="account_tax_rate_data_WI663">
+            <field name="name">WI663</field>
+            <field name="description">Withholding on gross amount of interest on the refund of meter deposit whether paid directly to the customers or applied against customer's billing - Non-Residential customers whose monthly electricity consumption exceeds 200 kwh as classified by other electric Distribution Utilities (DU) - Individual</field>
+            <field name="tax_type">WE</field>
+            <field name="tax_rate">20.00</field>
+            <field name="bir_form">1601-E/2307</field>
+        </record>
+
+        <record model="account.ewt.structure" id="account_tax_rate_data_WC663">
+            <field name="name">WC663</field>
+            <field name="description">Withholding on gross amount of interest on the refund of meter deposit whether paid directly to the customers or applied against customer's billing - Non-Residential customers whose monthly electricity consumption exceeds 200 kwh as classified by other electric Distribution Utilities (DU) - Corporate</field>
+            <field name="tax_type">WE</field>
+            <field name="tax_rate">20.00</field>
+            <field name="bir_form">1601-E/2307</field>
+        </record>
+
+        <record model="account.ewt.structure" id="account_tax_rate_data_WI670">
+            <field name="name">WI670</field>
+            <field name="description">Income payments made by the top five thousand (5,000) individual taxpayers to their local/resident suppliers of goods other than those covered by other rates of withholding tax - Individual</field>
+            <field name="tax_type">WE</field>
+            <field name="tax_rate">1.00</field>
+            <field name="bir_form">1601-E/2307</field>
+        </record>
+
+        <record model="account.ewt.structure" id="account_tax_rate_data_WC670">
+            <field name="name">WC670</field>
+            <field name="description">Income payments made by the top five thousand (5,000) individual taxpayers to their local/resident suppliers of goods other than those covered by other rates of withholding tax - Corporation</field>
+            <field name="tax_type">WE</field>
+            <field name="tax_rate">1.00</field>
+            <field name="bir_form">1601-E/2307</field>
+        </record>
+
+        <record model="account.ewt.structure" id="account_tax_rate_data_WI672">
+            <field name="name">WI672</field>
+            <field name="description">Income payments made by the top five thousand (5,000) individual taxpayers to their local/resident suppliers of services other than those covered by other rates of withholding tax - i) Individual</field>
+            <field name="tax_type">WE</field>
+            <field name="tax_rate">2.00</field>
+            <field name="bir_form">1601-E/2307</field>
+        </record>
+
+        <record model="account.ewt.structure" id="account_tax_rate_data_WC672">
+            <field name="name">WC672</field>
+            <field name="description">Income payments made by the top five thousand (5,000) individual taxpayers to their local/resident suppliers of services other than those covered by other rates of withholding tax - ii) Corporation</field>
+            <field name="tax_type">WE</field>
+            <field name="tax_rate">2.00</field>
+            <field name="bir_form">1601-E/2307</field>
+        </record>
+
+        <record model="account.ewt.structure" id="account_tax_rate_data_WI680">
+            <field name="name">WI680</field>
+            <field name="description">Income payments made by political parties and candidates of local and national elections of all their purchase of goods and services as campaign expenditures, and income payments made by individuals or juridical persons for their purchases of goods and services intended to be given as campaign contribution to political parties and candidates - Individual</field>
+            <field name="tax_type">WE</field>
+            <field name="tax_rate">5.00</field>
+            <field name="bir_form">1601-E/2307</field>
+        </record>
+
+        <record model="account.ewt.structure" id="account_tax_rate_data_WC680">
+            <field name="name">WC680</field>
+            <field name="description">Income payments made by political parties and candidates of local and national elections of all their purchase of goods and services as campaign expenditures, and income payments made by individuals or juridical persons for their purchases of goods and services intended to be given as campaign contribution to political parties and candidates - Corporation</field>
+            <field name="tax_type">WE</field>
+            <field name="tax_rate">5.00</field>
+            <field name="bir_form">1601-E/2307</field>
+        </record>
+
+        <record model="account.ewt.structure" id="account_tax_rate_data_WC690">
+            <field name="name">WC690</field>
+            <field name="description">Income payments received by Real Estate Investment Trust (REIT)</field>
+            <field name="tax_type">WE</field>
+            <field name="tax_rate">1.00</field>
+            <field name="bir_form">1601-E/2307</field>
+        </record>
+
+        <record model="account.ewt.structure" id="account_tax_rate_data_WI710">
+            <field name="name">WI710</field>
+            <field name="description">Interest income derived from any other debt instruments not within the coverage of deposit substitutes and Revenue Regulations No. 14-2012 subject to Creditable/ Expanded Withholding Tax - Individual</field>
+            <field name="tax_type">WE</field>
+            <field name="tax_rate">20.00</field>
+            <field name="bir_form">1601-E/2307</field>
+        </record>
+
+        <record model="account.ewt.structure" id="account_tax_rate_data_WC710">
+            <field name="name">WC710</field>
+            <field name="description">Interest income derived from any other debt instruments not within the coverage of deposit substitutes and Revenue Regulations No. 14-2012 subject to Creditable/ Expanded Withholding Tax - Corporate</field>
+            <field name="tax_type">WE</field>
+            <field name="tax_rate">20.00</field>
+            <field name="bir_form">1601-E/2307</field>
+        </record>
+
     </data>
 </odoo>
+

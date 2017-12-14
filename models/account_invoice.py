@@ -46,11 +46,29 @@ class AccountInvoice(models.Model):
     dr_no = fields.Char(string='DR No.')
     dr_date = fields.Datetime(string='DR Date')
 
+    # IMPORTATION
     assessment_date = fields.Date(string='Assessment Date')
     supplier_invoice_no = fields.Char(string='Supplier Invoice No')
     bl_awb_no = fields.Char(string='BL/AWB No.')
     import_entry_no = fields.Char(string='Import Entry No.')
-    landed_cost_line_id = fields.Many2one('account.landed.cost', 'Landed Cost')
+    # landed_cost_line_id = fields.Many2one('account.landed.cost', 'Landed Cost')
+    lc_no = fields.Char(string='LC#')
+    # Customs
+    customs_duties = fields.Float(string='Duties (inc. IPF & CSF)')
+    # Broker
+    broker_id = fields.Many2one('res.partner', 'Broker')
+    # Forwarding Charges
+    brokerage_fee = fields.Float()
+    trucking_demurrage_mano = fields.Float(string='Trucking / Demurrage / Mano')
+    arrastre_storage_wharfage = fields.Float(string='Arrastre / Storage / Wharfage')
+    other_charges_with_vat = fields.Float()
+    input_tax = fields.Float()
+    bank_charges = fields.Float()
+    shipping_demurrage = fields.Float(string='Shipping / Demurrage')
+    other_charges_without_vat = fields.Float()
+    # Totals
+    total_inland_cost = fields.Float(help='Custom Duties + Total Charges')
+    total_landed_cost = fields.Float(help='Inland Cost + Invoice Total')
 
     # STUDIO
     x_description = fields.Text('Description', store=True, copy=True)

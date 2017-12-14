@@ -6,3 +6,6 @@ class EwtStructure(models.Model):
 
     name = fields.Char(string='ATC Code')
     description = fields.Text()
+    tax_type = fields.Char()
+    tax_rate = fields.Float()
+    bir_form = fields.Char(string='BIR Form')
