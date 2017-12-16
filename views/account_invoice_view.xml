@@ -56,10 +56,13 @@
                             <group>
                                 <field name="supplier_invoice_no"/>
                                 <field name="bl_awb_no"/>
-                                <!-- <field name="landed_cost_line_id"/> -->
                                 <field name="broker_id"/>
+                                <field name="po_type"/>
+                                <field name="x_origin"/>
+                                <field name="importation_date"/>
                             </group>
                             <group>
+                                <field name="total_charges_custom"/>
                                 <field name="total_inland_cost"/>
                                 <field name="total_landed_cost"/>
                             </group>
@@ -75,9 +78,7 @@
                                 <field name="trucking_demurrage_mano"/>
                                 <field name="arrastre_storage_wharfage"/>
                                 <field name="other_charges_with_vat"/>
-                                <field name="input_tax"/>
                                 <field name="bank_charges"/>
-                                <field name="shipping_demurrage"/>
                                 <field name="other_charges_without_vat"/>
                             </group>
                         </group>

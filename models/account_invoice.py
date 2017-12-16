@@ -33,25 +33,69 @@ class AccountInvoice(models.Model):
         self.vat_exempt_sales_signed = vat_exempt * sign
         self.zero_rated_sales_signed = zero_rated * sign
 
+    @api.one
+    @api.depends('invoice_line_ids', 'invoice_line_ids.product_id', 'invoice_line_ids.price_subtotal')
+    def _compute_amount_product_type(self):
+        amount_services = 0
+        amount_capital = 0
+        amount_goods = 0
+        for line in self.invoice_line_ids:
+            if line.product_id.type == 'service':
+                amount_services += line.price_subtotal
+
+            if line.product_id.type == 'consu' or line.product_id.type == 'product':
+                amount_goods += line.price_subtotal
+
+        self.amount_services = amount_services
+        self.amount_goods = amount_goods
+
+    @api.one
+    @api.depends('amount_total', 'customs_duties', 'brokerage_fee', 'trucking_demurrage_mano', 'arrastre_storage_wharfage', 'other_charges_without_vat', 'bank_charges', 'other_charges_with_vat')
+    def _compute_landed_cost(self):
+        total_charges_custom = self.brokerage_fee + self.trucking_demurrage_mano + self.arrastre_storage_wharfage + self.other_charges_without_vat + self.bank_charges + self.other_charges_with_vat
+        total_inland_cost = self.customs_duties + self.brokerage_fee + self.trucking_demurrage_mano + self.arrastre_storage_wharfage + self.other_charges_without_vat + self.bank_charges + self.other_charges_with_vat
+        self.total_charges_custom = total_charges_custom
+        self.total_inland_cost = total_inland_cost
+        self.total_landed_cost = total_inland_cost + self.amount_total
+
+    @api.one
+    @api.depends('origin')
+    def _compute_import_details(self):
+        if self.origin:
+            purchase_order = self.env['purchase.order'].search([('name','=',self.origin)], limit=1)
+            if purchase_order:
+                self.x_origin = purchase_order.x_origin
+                self.po_type = purchase_order.po_type
+                self.importation_date = purchase_order.date_planned
+
     # NEW FIELDS
     vat_sales = fields.Monetary(string='Vatable Sales', store=True, readonly=True, compute='_compute_amount_sales', track_visibility='always')
     vat_exempt_sales = fields.Monetary(string='Vat Exempt Sales', store=True, readonly=True, compute='_compute_amount_sales', track_visibility='always')
     zero_rated_sales = fields.Monetary(string='Zero Rated Sales', store=True, readonly=True, compute='_compute_amount_sales', track_visibility='always')
 
-    vat_sales_signed = fields.Monetary(string='Vatable Sales Signed', store=True, readonly=True, compute='_compute_amount_sales', track_visibility='always')
-    vat_exempt_sales_signed = fields.Monetary(string='Vat Exempt Sales Signed', store=True, readonly=True, compute='_compute_amount_sales', track_visibility='always')
-    zero_rated_sales_signed = fields.Monetary(string='Zero Rated Sales Signed', store=True, readonly=True, compute='_compute_amount_sales', track_visibility='always')
+    vat_sales_signed = fields.Monetary(string='Vatable Sales Signed', store=True, readonly=True, compute='_compute_amount_sales')
+    vat_exempt_sales_signed = fields.Monetary(string='Vat Exempt Sales Signed', store=True, readonly=True, compute='_compute_amount_sales')
+    zero_rated_sales_signed = fields.Monetary(string='Zero Rated Sales Signed', store=True, readonly=True, compute='_compute_amount_sales')
+
+    amount_services = fields.Monetary(string='Amount of Services', store=True, readonly=True, compute='_compute_amount_product_type', track_visibility='always')
+    amount_capital = fields.Monetary(string='Amount of Capital', store=True, readonly=True, compute='_compute_amount_product_type', track_visibility='always')
+    amount_goods = fields.Monetary(string='Amount of Goods', store=True, readonly=True, compute='_compute_amount_product_type', track_visibility='always')
 
     po_no = fields.Char(string='PO No.')
     dr_no = fields.Char(string='DR No.')
     dr_date = fields.Datetime(string='DR Date')
 
     # IMPORTATION
+    x_origin = fields.Many2one('res.country', string='Country of Origin', store=True, readonly=True, compute='_compute_import_details')
+    po_type = fields.Selection([
+        ('local', 'Local'),
+        ('import', 'Import'),
+    ], string='Purchase Order Type', default='local', store=True, readonly=True, compute='_compute_import_details')
+    importation_date = fields.Datetime(store=True, readonly=True, compute='_compute_import_details')
     assessment_date = fields.Date(string='Assessment Date')
     supplier_invoice_no = fields.Char(string='Supplier Invoice No')
     bl_awb_no = fields.Char(string='BL/AWB No.')
     import_entry_no = fields.Char(string='Import Entry No.')
-    # landed_cost_line_id = fields.Many2one('account.landed.cost', 'Landed Cost')
     lc_no = fields.Char(string='LC#')
     # Customs
     customs_duties = fields.Float(string='Duties (inc. IPF & CSF)')
@@ -62,13 +106,13 @@ class AccountInvoice(models.Model):
     trucking_demurrage_mano = fields.Float(string='Trucking / Demurrage / Mano')
     arrastre_storage_wharfage = fields.Float(string='Arrastre / Storage / Wharfage')
     other_charges_with_vat = fields.Float()
-    input_tax = fields.Float()
     bank_charges = fields.Float()
-    shipping_demurrage = fields.Float(string='Shipping / Demurrage')
     other_charges_without_vat = fields.Float()
+
     # Totals
-    total_inland_cost = fields.Float(help='Custom Duties + Total Charges')
-    total_landed_cost = fields.Float(help='Inland Cost + Invoice Total')
+    total_charges_custom = fields.Float(string='Total Charges Before Release From Custom', help='Total Charges Before Release From Custom', store=True, readonly=True, compute='_compute_landed_cost')
+    total_inland_cost = fields.Float(help='Custom Duties + Total Charges', store=True, readonly=True, compute='_compute_landed_cost')
+    total_landed_cost = fields.Float(help='Inland Cost + Invoice Total', store=True, readonly=True, compute='_compute_landed_cost')
 
     # STUDIO
     x_description = fields.Text('Description', store=True, copy=True)
