@@ -135,7 +135,7 @@ class ExportReportXlsSalesSummary(http.Controller):
             worksheet.write(row_count, 6, official_receipt, style_table_row)
             worksheet.write(row_count, 7, delivery_receipt, style_table_row)
             worksheet.write(row_count, 8, '', style_table_row)
-            worksheet.write(row_count, 9, account.amount_untaxed, style_table_row_amount)
+            worksheet.write(row_count, 9, account.amount_total, style_table_row_amount)
 
             worksheet.write(row_count, 10, account.amount_goods, style_table_row_amount) 
             worksheet.write(row_count, 11, account.amount_services, style_table_row_amount)

@@ -18,7 +18,7 @@ class ExportReportXlsAccountEwtDeduction(http.Controller):
     def export_xls(self, filename, title, company_id, date_from, date_to, account_id, **kw):
         company = request.env['res.company'].search([('id', '=', company_id)])
         # journal = request.env['account.journal'].search([('id', '=', journal_id)])
-        # account_ewt = request.env['account.account'].search([('name','=','Withholding Tax Expanded')], limit=1)
+        account_ewt = request.env['account.account'].search([('name','=','Withholding Tax Expanded')], limit=1)
         # account_vendor_bill = request.env['account.invoice'].search([('journal_id.id', '=', journal_id),('state','in',('open','paid')),('date','>=',date_from),('date','<=',date_to)])
         account_vendor_bill = request.env['account.move.line'].search([('account_id.id', '=', account_id),('date','>=',date_from),('date','<=',date_to)])
         date_processed = date.today().strftime('%m-%d-%Y')
@@ -37,19 +37,27 @@ class ExportReportXlsAccountEwtDeduction(http.Controller):
         style_table_row_amount = xlwt.easyxf("font: name Calibri;align: horiz right, wrap no;borders: top thin, bottom thin, right thin;", num_format_str="#,##0.00")
         style_table_total = xlwt.easyxf("pattern: pattern solid, fore_colour pale_blue;font: bold on;font: name Calibri;align: horiz left, wrap no;borders: top thin, bottom medium, right thin;")
         style_table_total_value = xlwt.easyxf("pattern: pattern solid, fore_colour pale_blue;font: bold on;font: name Calibri;align: horiz right, wrap no;borders: top thin, bottom medium, right thin;", num_format_str="#,##0.00")
-        worksheet.col(0).width = 500*12
-        worksheet.col(1).width = 500*12
-        worksheet.col(2).width = 500*12
+        worksheet.col(0).width = 350*12
+        worksheet.col(1).width = 350*12
+        worksheet.col(2).width = 350*12
         worksheet.col(3).width = 500*12
         worksheet.col(4).width = 500*12
-        worksheet.col(5).width = 500*12
-        worksheet.col(8).width = 500*12
-        worksheet.col(9).width = 500*12
-        worksheet.col(10).width = 500*12
-        worksheet.col(11).width = 500*12
-        worksheet.col(12).width = 500*12
-        worksheet.col(13).width = 500*12
-        worksheet.col(14).width = 500*12
+        worksheet.col(5).width = 350*12
+        worksheet.col(7).width = 350*12
+        worksheet.col(6).width = 350*12
+        worksheet.col(8).width = 350*12
+        worksheet.col(9).width = 350*12
+        worksheet.col(10).width = 350*12
+        worksheet.col(11).width = 350*12
+        worksheet.col(12).width = 350*12
+        worksheet.col(13).width = 350*12
+        worksheet.col(14).width = 350*12
+        worksheet.col(15).width = 350*12
+        worksheet.col(16).width = 350*12
+        worksheet.col(17).width = 350*12
+        worksheet.col(18).width = 350*12
+        worksheet.col(19).width = 350*12
+        worksheet.col(20).width = 350*12
 
         # TEMPLATE HEADERS
         worksheet.write(0, 0, company.name, style_header_bold) # Company Name
@@ -95,6 +103,7 @@ class ExportReportXlsAccountEwtDeduction(http.Controller):
         for account in account_vendor_bill:
             amount_income = 0
             amount_tax = 0
+            account_title = ''
             for tax in account.invoice_id.tax_line_ids:
                 if tax.account_id == account.account_id:
                     amount_income = tax.base
@@ -106,6 +115,13 @@ class ExportReportXlsAccountEwtDeduction(http.Controller):
                 else:
                     amount_tax = account.credit
 
+            if account.move_id:
+                for move in account.move_id.line_ids:
+                    for tax in move.tax_ids:
+                        if tax.account_id.id == account_ewt.id:
+                            account_title = move.account_id.name
+
+
             worksheet.write(row_count, 0, account.date, style_table_row)
             worksheet.write(row_count, 1, '', style_table_row) 
             worksheet.write(row_count, 2, account.move_id.journal_id.name, style_table_row)
@@ -116,13 +132,13 @@ class ExportReportXlsAccountEwtDeduction(http.Controller):
 
             worksheet.write(row_count, 7, '', style_table_row)
             worksheet.write(row_count, 8, '', style_table_row)
-            worksheet.write(row_count, 9, account.invoice_id.amount_untaxed, style_table_row_amount)
+            worksheet.write(row_count, 9, account.invoice_id.amount_total, style_table_row_amount)
             worksheet.write(row_count, 10, account.invoice_id.vat_exempt_sales, style_table_row_amount) 
 
             worksheet.write(row_count, 11, account.invoice_id.vat_sales, style_table_row_amount)
             worksheet.write(row_count, 12, account.invoice_id.amount_tax, style_table_row_amount) 
             worksheet.write(row_count, 13, '', style_table_row)
-            worksheet.write(row_count, 14, '', style_table_row)
+            worksheet.write(row_count, 14, account_title, style_table_row)
             worksheet.write(row_count, 15, account.invoice_id.x_description or '', style_table_row_amount) 
 
             worksheet.write(row_count, 16, account.invoice_id.amount_untaxed, style_table_row_amount)
@@ -151,9 +167,9 @@ class ExportReportXlsAccountEwtDeduction(http.Controller):
         # worksheet.write(table_total_start, 17, '-', style_table_total_value)
         # worksheet.write(table_total_start, 18, '-', style_table_total_value)
 
-        worksheet.write(0, 18, 'No. of Transaction: %s'%(transaction_count), style_header_right)
-        worksheet.write(1, 18, 'Date Processed: %s'%(date_processed), style_header_right)
-        worksheet.write(2, 18, 'Processed By: %s'%(user_id), style_header_right)
+        worksheet.write(0, 20, 'No. of Transaction: %s'%(transaction_count), style_header_right)
+        worksheet.write(1, 20, 'Date Processed: %s'%(date_processed), style_header_right)
+        worksheet.write(2, 20, 'Processed By: %s'%(user_id), style_header_right)
         # worksheet.write(3, 18, '%s'%(account_invoice_payable), style_header_right)
 
         response = request.make_response(None,

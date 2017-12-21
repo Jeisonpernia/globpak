@@ -184,7 +184,7 @@ class ExportReportXlsPurchaseExpenseSummary(http.Controller):
 				'si_ref': '', #6
 				'or_ref': '', #7
 				'other_ref': '', #8
-				'gross_amount': account.amount_untaxed, #9
+				'gross_amount': account.amount_total, #9
 				'input_tax_amount': input_tax_amount, #10
 				'net_vat_amount': account.vat_sales, #11
 				'purchase_goods_gt_1m_amount': amount_goods_gt_1m, #12
@@ -278,7 +278,7 @@ class ExportReportXlsPurchaseExpenseSummary(http.Controller):
 						'si_ref': '', #6
 						'or_ref': '', #7
 						'other_ref': '', #8
-						'gross_amount': line.untaxed_amount, #9
+						'gross_amount': line.total_amount, #9
 						'input_tax_amount': input_tax_amount, #10
 						'net_vat_amount': line.vat_sales, #11
 						'purchase_goods_gt_1m_amount': amount_goods_gt_1m, #12
