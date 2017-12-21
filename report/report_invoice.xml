@@ -134,17 +134,24 @@
                                 </td>
                             </tr>
                             <t t-foreach="o._get_tax_amount_by_group()" t-as="amount_by_group">
-                                <tr style="border-bottom:1px solid #dddddd;">
+                                <tr>
                                     <td>
                                         <span t-esc="amount_by_group[0] if len(o.tax_line_ids) > 1 else (o.tax_line_ids.tax_id.description or o.tax_line_ids.tax_id.name)"/>
-                                        <!-- <span t-if="o.tax_line_ids.tax_id.amount == 12.0">VAT</span> -->
                                     </td>
                                     <td class="text-right">
-                                        <!-- <span t-esc="'%.2f'%(amount_by_group[1])" /> -->
-                                        <span t-if="o.tax_line_ids.tax_id.amount == 12.0" t-esc="amount_by_group[1]" t-options='{"widget": "monetary", "display_currency": o.currency_id}' />
+                                        <span t-esc="amount_by_group[1] * -1" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
                                     </td>
                                 </tr>
                             </t>
+                            <t t-if="len(o.tax_line_ids) &lt; 1">
+                            <t t-set='vat' t-value='0'/>
+                            <tr>
+                                <td>VAT 12.00%</td>
+                                <td class="text-right">
+                                    <span t-esc="vat" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                </td>
+                            </tr>
+                        </t>
                             <tr class="border-black">
                                 <td><strong>Total</strong></td>
                                 <td class="text-right">

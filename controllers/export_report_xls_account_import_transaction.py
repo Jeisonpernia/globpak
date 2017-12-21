@@ -17,7 +17,7 @@ class ExportReportXlsAccountImportTransaction(http.Controller):
     def export_xls(self, filename, title, subtitle, company_id, date_from, date_to, journal_id, **kw):
         company = request.env['res.company'].search([('id', '=', company_id)])
         journal = request.env['account.journal'].search([('id', '=', journal_id)])
-        account_invoice_purchase = request.env['account.invoice'].search([('journal_id.id', '=', journal_id),('po_type','=','import'),('type','=','in_invoice'),('state','in',('open','paid')),('date','>=',date_from),('date','<=',date_to)],order='date asc')
+        account_invoice_purchase = request.env['account.invoice'].search([('journal_id.id', '=', journal_id),('is_purchase','=',True),('po_type','=','import'),('type','=','in_invoice'),('state','in',('open','paid')),('date','>=',date_from),('date','<=',date_to)],order='date asc')
         date_processed = date.today().strftime('%m-%d-%Y')
         user_id = request.env.user.name
 

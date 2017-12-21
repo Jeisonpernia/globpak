@@ -41,6 +41,8 @@ class ExportReportXlsAccountSalesTransaction(http.Controller):
         worksheet.col(3).width = 500*12
         worksheet.col(4).width = 500*12
         worksheet.col(5).width = 500*12
+        worksheet.col(6).width = 500*12
+        worksheet.col(7).width = 500*12
         worksheet.col(8).width = 500*12
         worksheet.col(9).width = 500*12
         worksheet.col(10).width = 500*12

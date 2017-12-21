@@ -18,9 +18,14 @@ class AccountReportImportTransaction(models.TransientModel):
             date_today += datetime.timedelta(7)
         return date_today.replace(day=1)
 
+    def _default_date_to(self):
+        date_today = datetime.date.today()
+        next_month = date_today.replace(day=28) + datetime.timedelta(days=4)
+        return next_month - datetime.timedelta(days=next_month.day)
+
     company_id = fields.Many2one('res.company', string='Company', readonly=True, default=lambda self: self.env.user.company_id)
     date_from = fields.Date(string='Start Date', required=True, default=lambda self: self._default_date_from())
-    date_to = fields.Date(string='End Date', required=True)
+    date_to = fields.Date(string='End Date', required=True, default=lambda self: self._default_date_to())
     journal_id = fields.Many2one('account.journal', string='Journal', required=True, default=lambda self: self._default_journal_id())
 
     def _print_report(self, data):

@@ -9,6 +9,7 @@ from odoo.http import request
 from odoo.tools import ustr
 from odoo.tools.misc import xlwt
 
+from datetime import datetime
 from datetime import date
 
 class ExportReportXlsSalesSummary(http.Controller):
@@ -17,9 +18,10 @@ class ExportReportXlsSalesSummary(http.Controller):
     def export_xls(self, filename, title, company_id, date_from, date_to, journal_id, **kw):
         company = request.env['res.company'].search([('id', '=', company_id)])
         journal = request.env['account.journal'].search([('id', '=', journal_id)])
-        # account_ewt = request.env['account.account'].search([('name','=','Withholding Tax Expanded')], limit=1)
-        account_invoice = request.env['account.invoice'].search([('journal_id.id', '=', journal_id),('state','in',('open','paid')),('date','>=',date_from),('date','<=',date_to)])
+        account_invoice = request.env['account.invoice'].search([('journal_id.id', '=', journal_id),('type','=','out_invoice'),('state','in',('open','paid')),('date','>=',date_from),('date','<=',date_to)])
         date_processed = date.today().strftime('%m-%d-%Y')
+        from_report_month = datetime.strptime(date_from, '%Y-%m-%d')
+        to_report_month = datetime.strptime(date_to, '%Y-%m-%d')
         user_id = request.env.user.name
 
         workbook = xlwt.Workbook()
@@ -30,22 +32,33 @@ class ExportReportXlsSalesSummary(http.Controller):
         style_header_right = xlwt.easyxf("font: name Calibri;align: horiz right, wrap no")
         style_table_header_bold = xlwt.easyxf("font: bold on;font: name Calibri;align: horiz centre, vert centre, wrap on;borders: top thin, bottom thin, right thin;")
         style_table_row = xlwt.easyxf("font: name Calibri;align: horiz left, wrap no;borders: top thin, bottom thin, right thin;")
-        style_table_row_amount = xlwt.easyxf("font: name Calibri;align: horiz right, wrap no;borders: top thin, bottom thin, right thin;")
+        style_table_row_amount = xlwt.easyxf("font: name Calibri;align: horiz right, wrap no;borders: top thin, bottom thin, right thin;", num_format_str="#,##0.00")
         style_table_total = xlwt.easyxf("pattern: pattern solid, fore_colour pale_blue;font: bold on;font: name Calibri;align: horiz left, wrap no;borders: top thin, bottom medium, right thin;")
-        style_table_total_value = xlwt.easyxf("pattern: pattern solid, fore_colour pale_blue;font: bold on;font: name Calibri;align: horiz right, wrap no;borders: top thin, bottom medium, right thin;")
+        style_table_total_value = xlwt.easyxf("pattern: pattern solid, fore_colour pale_blue;font: bold on;font: name Calibri;align: horiz right, wrap no;borders: top thin, bottom medium, right thin;", num_format_str="#,##0.00")
         worksheet.col(0).width = 500*12
         worksheet.col(1).width = 500*12
         worksheet.col(2).width = 500*12
         worksheet.col(3).width = 500*12
         worksheet.col(4).width = 500*12
-        worksheet.col(5).width = 500*12
-        worksheet.col(8).width = 500*12
-        worksheet.col(9).width = 500*12
-        worksheet.col(10).width = 500*12
-        worksheet.col(11).width = 500*12
-        worksheet.col(12).width = 500*12
-        worksheet.col(13).width = 500*12
-        worksheet.col(14).width = 500*12
+        worksheet.col(5).width = 350*12
+        worksheet.col(6).width = 350*12
+        worksheet.col(7).width = 350*12
+        worksheet.col(8).width = 350*12
+        worksheet.col(9).width = 350*12
+        worksheet.col(10).width = 350*12
+        worksheet.col(11).width = 350*12
+        worksheet.col(12).width = 350*12
+        worksheet.col(13).width = 350*12
+        worksheet.col(14).width = 350*12
+        worksheet.col(15).width = 350*12
+        worksheet.col(16).width = 350*12
+        worksheet.col(17).width = 350*12
+        worksheet.col(18).width = 350*12
+        worksheet.col(19).width = 350*12
+        worksheet.col(20).width = 350*12
+        worksheet.col(21).width = 350*12
+        worksheet.col(22).width = 350*12
+        worksheet.col(23).width = 350*12
 
         # TEMPLATE HEADERS
         worksheet.write(0, 0, company.name, style_header_bold) # Company Name
@@ -53,7 +66,7 @@ class ExportReportXlsSalesSummary(http.Controller):
         worksheet.write(2, 0, company.vat, style_header_bold) # Company TIN
 
         worksheet.write(4, 0, title, style_header_bold) # Report Title
-        worksheet.write(5, 0, '%s to %s'%(date_from,date_to), style_header_bold) # Report Date
+        worksheet.write(5, 0, '%s to %s'%(from_report_month.strftime('%B %d, %Y'),to_report_month.strftime('%B %d, %Y')), style_header_bold) # Report Date
 
         # TABLE HEADER
         worksheet.write_merge(7, 8, 0, 0, 'BRANCH', style_table_header_bold) # HEADER
@@ -92,6 +105,26 @@ class ExportReportXlsSalesSummary(http.Controller):
         row_count = 9
         transaction_count = 0
         for account in account_invoice:
+
+            official_receipt = ''
+            delivery_receipt = ''
+
+            for payment in account.payment_ids:
+                if official_receipt == '':
+                    official_receipt += payment.name
+                else:
+                    official_receipt += ', ' + payment.name
+
+            if account.origin:
+                sale_order = request.env['sale.order'].search([('name','=',account.origin)], limit=1)
+                if sale_order:
+                    if sale_order.picking_ids:
+                        for pick in  sale_order.picking_ids:
+                            if delivery_receipt == '':
+                                delivery_receipt += pick.name
+                            else:
+                                delivery_receipt += ', ' + pick.name
+            
             worksheet.write(row_count, 0, '', style_table_row)
             worksheet.write(row_count, 1, account.date, style_table_row) 
             worksheet.write(row_count, 2, account.partner_id.name, style_table_row)
@@ -99,22 +132,22 @@ class ExportReportXlsSalesSummary(http.Controller):
             worksheet.write(row_count, 4, account.partner_id.vat or '', style_table_row)
 
             worksheet.write(row_count, 5, account.number, style_table_row)
-            worksheet.write(row_count, 6, '', style_table_row)
-            worksheet.write(row_count, 7, '', style_table_row)
+            worksheet.write(row_count, 6, official_receipt, style_table_row)
+            worksheet.write(row_count, 7, delivery_receipt, style_table_row)
             worksheet.write(row_count, 8, '', style_table_row)
             worksheet.write(row_count, 9, account.amount_untaxed, style_table_row_amount)
 
-            worksheet.write(row_count, 10, '', style_table_row_amount) 
-            worksheet.write(row_count, 11, '', style_table_row)
+            worksheet.write(row_count, 10, account.amount_goods, style_table_row_amount) 
+            worksheet.write(row_count, 11, account.amount_services, style_table_row_amount)
 
             worksheet.write(row_count, 12, '', style_table_row_amount) 
-            worksheet.write(row_count, 13, account.vat_sales, style_table_row)
-            worksheet.write(row_count, 14, account.zero_rated_sales, style_table_row)
+            worksheet.write(row_count, 13, account.vat_sales, style_table_row_amount)
+            worksheet.write(row_count, 14, account.zero_rated_sales, style_table_row_amount)
             worksheet.write(row_count, 15, account.vat_exempt_sales, style_table_row_amount) 
-            worksheet.write(row_count, 16, account.vat_sales, style_table_row)
+            worksheet.write(row_count, 16, account.vat_sales, style_table_row_amount)
 
-            worksheet.write(row_count, 17, account.amount_tax, style_table_row)
-            worksheet.write(row_count, 18, account.amount_total, style_table_row)
+            worksheet.write(row_count, 17, account.amount_tax, style_table_row_amount)
+            worksheet.write(row_count, 18, account.amount_total, style_table_row_amount)
             worksheet.write(row_count, 19, '', style_table_row)
             worksheet.write(row_count, 20, '', style_table_row)
             worksheet.write(row_count, 21, '', style_table_row)

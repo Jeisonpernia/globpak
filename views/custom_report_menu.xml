@@ -2,7 +2,7 @@
 <odoo>
 <data>
     <!-- REPORTS -->
-    <menuitem id="menu_account_alphalist_payee" name="Alphabetical List of Payees from whom Taxes are Withheld" parent="account.menu_finance_reports" action="action_account_report_alphalist_payee_menu" groups="account.group_account_manager,account.group_account_user" sequence="96" />
+    <menuitem id="menu_account_alphalist_payee" name="Alphabetical List of Payees" parent="account.menu_finance_reports" action="action_account_report_alphalist_payee_menu" groups="account.group_account_manager,account.group_account_user" sequence="96" />
     <menuitem id="menu_account_sales_transaction" name="Sales Transaction" parent="account.menu_finance_reports" action="action_account_sales_transaction_summary_menu" groups="account.group_account_manager,account.group_account_user" sequence="97" />
     <menuitem id="menu_account_purchase_transaction" name="Purchase Transaction" parent="account.menu_finance_reports" action="action_account_purchase_transaction_summary_menu" groups="account.group_account_manager,account.group_account_user" sequence="98" />
     <menuitem id="menu_account_import_transaction" name="Imports Transaction" parent="account.menu_finance_reports" action="action_account_import_transaction_summary_menu" groups="account.group_account_manager,account.group_account_user" sequence="99" />

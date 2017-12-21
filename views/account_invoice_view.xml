@@ -23,6 +23,12 @@
                     <field name="x_approved_by" />
                 </xpath> -->
 
+                <xpath expr="//field[@name='amount_tax']" position="before">
+                    <field name="vat_sales"/>
+                    <field name="vat_exempt_sales" />
+                    <field name="zero_rated_sales"/>
+                </xpath>
+
             </field>
         </record> 
 
@@ -40,6 +46,7 @@
 
                 <xpath expr="//field[@name='currency_id']" position="after">
                     <field name="debit_memo_id" attrs="{'invisible':[('type', '!=', 'in_refund')]}" readonly="1" /> 
+                    <field name="is_purchase" />
                 </xpath>
 
                 <xpath expr="//notebook/page[2]/group/group[1]" position="inside">
@@ -94,6 +101,12 @@
                     <field name="x_checked_by" />
                     <field name="x_approved_by" />
                 </xpath> -->
+
+                <xpath expr="//field[@name='amount_tax']" position="before">
+                    <field name="vat_sales"/>
+                    <field name="vat_exempt_sales" />
+                    <field name="zero_rated_sales"/>
+                </xpath>
 
             </field>
         </record>

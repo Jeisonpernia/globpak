@@ -69,6 +69,9 @@
                                 </group>
                                 <group class="oe_subtotal_footer oe_right">
                                     <field name="untaxed_amount"/>
+                                    <field name="amount_services"/>
+                                    <field name="amount_capital"/>
+                                    <field name="amount_goods"/>
                                     <field name="tax_amount"/>
                                     <field name="total_amount" class="oe_subtotal_footer_separator"/>
                                 </group>

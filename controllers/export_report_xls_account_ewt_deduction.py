@@ -9,17 +9,21 @@ from odoo.http import request
 from odoo.tools import ustr
 from odoo.tools.misc import xlwt
 
+from datetime import datetime
 from datetime import date
 
 class ExportReportXlsAccountEwtDeduction(http.Controller):
 
     @http.route('/web/export_xls/ewt_deduction', type='http', auth="user")
-    def export_xls(self, filename, title, company_id, date_from, date_to, journal_id, **kw):
+    def export_xls(self, filename, title, company_id, date_from, date_to, account_id, **kw):
         company = request.env['res.company'].search([('id', '=', company_id)])
-        journal = request.env['account.journal'].search([('id', '=', journal_id)])
-        account_ewt = request.env['account.account'].search([('name','=','Withholding Tax Expanded')], limit=1)
-        account_vendor_bill = request.env['account.invoice'].search([('journal_id.id', '=', journal_id),('state','in',('open','paid')),('date','>=',date_from),('date','<=',date_to)])
+        # journal = request.env['account.journal'].search([('id', '=', journal_id)])
+        # account_ewt = request.env['account.account'].search([('name','=','Withholding Tax Expanded')], limit=1)
+        # account_vendor_bill = request.env['account.invoice'].search([('journal_id.id', '=', journal_id),('state','in',('open','paid')),('date','>=',date_from),('date','<=',date_to)])
+        account_vendor_bill = request.env['account.move.line'].search([('account_id.id', '=', account_id),('date','>=',date_from),('date','<=',date_to)])
         date_processed = date.today().strftime('%m-%d-%Y')
+        from_report_month = datetime.strptime(date_from, '%Y-%m-%d')
+        to_report_month = datetime.strptime(date_to, '%Y-%m-%d')
         user_id = request.env.user.name
 
         workbook = xlwt.Workbook()
@@ -30,9 +34,9 @@ class ExportReportXlsAccountEwtDeduction(http.Controller):
         style_header_right = xlwt.easyxf("font: name Calibri;align: horiz right, wrap no")
         style_table_header_bold = xlwt.easyxf("font: bold on;font: name Calibri;align: horiz centre, vert centre, wrap on;borders: top thin, bottom thin, right thin;")
         style_table_row = xlwt.easyxf("font: name Calibri;align: horiz left, wrap no;borders: top thin, bottom thin, right thin;")
-        style_table_row_amount = xlwt.easyxf("font: name Calibri;align: horiz right, wrap no;borders: top thin, bottom thin, right thin;")
+        style_table_row_amount = xlwt.easyxf("font: name Calibri;align: horiz right, wrap no;borders: top thin, bottom thin, right thin;", num_format_str="#,##0.00")
         style_table_total = xlwt.easyxf("pattern: pattern solid, fore_colour pale_blue;font: bold on;font: name Calibri;align: horiz left, wrap no;borders: top thin, bottom medium, right thin;")
-        style_table_total_value = xlwt.easyxf("pattern: pattern solid, fore_colour pale_blue;font: bold on;font: name Calibri;align: horiz right, wrap no;borders: top thin, bottom medium, right thin;")
+        style_table_total_value = xlwt.easyxf("pattern: pattern solid, fore_colour pale_blue;font: bold on;font: name Calibri;align: horiz right, wrap no;borders: top thin, bottom medium, right thin;", num_format_str="#,##0.00")
         worksheet.col(0).width = 500*12
         worksheet.col(1).width = 500*12
         worksheet.col(2).width = 500*12
@@ -50,10 +54,10 @@ class ExportReportXlsAccountEwtDeduction(http.Controller):
         # TEMPLATE HEADERS
         worksheet.write(0, 0, company.name, style_header_bold) # Company Name
         worksheet.write(1, 0, '%s %s %s %s %s %s'%(company.street,company.street2,company.city,company.state_id.name,company.zip,company.country_id.name), style_header_bold) # Company Address
-        worksheet.write(2, 0, company.vat, style_header_bold) # Company TIN
+        worksheet.write(2, 0, 'TIN %s'%(company.vat), style_header_bold) # Company TIN
 
         worksheet.write(4, 0, title, style_header_bold) # Report Title
-        worksheet.write(5, 0, '%s to %s'%(date_from,date_to), style_header_bold) # Report Date
+        worksheet.write(5, 0, '%s to %s'%(from_report_month.strftime('%B %d, %Y'),to_report_month.strftime('%B %d, %Y')), style_header_bold) # Report Date
 
         # TABLE HEADER
         worksheet.write_merge(7, 8, 0, 0, 'REFERENCE DATE', style_table_header_bold) # HEADER
@@ -87,38 +91,48 @@ class ExportReportXlsAccountEwtDeduction(http.Controller):
         # table_row_start = 9
         row_count = 9
         transaction_count = 0
+        
         for account in account_vendor_bill:
-            # for line in account.invoice_line_ids:
-            # for tax in account.invoice_line_tax_ids:
-            for tax in account.tax_line_ids:
-                if tax.account_id == account_ewt:
-                    worksheet.write(row_count, 0, account.date, style_table_row)
-                    worksheet.write(row_count, 1, '', style_table_row) 
-                    worksheet.write(row_count, 2, account.journal_id.name, style_table_row)
-                    worksheet.write(row_count, 3, account.number, style_table_row)
-                    worksheet.write(row_count, 4, account.partner_id.name, style_table_row)
-                    worksheet.write(row_count, 5, '%s %s %s %s %s %s'%(account.partner_id.street or '',account.partner_id.street2 or '',account.partner_id.city or '',account.partner_id.state_id.name or '',account.partner_id.zip or '',account.partner_id.country_id.name or ''), style_table_row)
-                    worksheet.write(row_count, 6, account.partner_id.x_tin, style_table_row)
+            amount_income = 0
+            amount_tax = 0
+            for tax in account.invoice_id.tax_line_ids:
+                if tax.account_id == account.account_id:
+                    amount_income = tax.base
+                    amount_tax = tax.amount_total
 
-                    worksheet.write(row_count, 7, '', style_table_row)
-                    worksheet.write(row_count, 8, account.origin or '', style_table_row)
-                    worksheet.write(row_count, 9, account.amount_untaxed, style_table_row_amount)
-                    worksheet.write(row_count, 10, account.vat_exempt_sales, style_table_row_amount) 
+            if amount_tax <= 0:
+                if account.debit > 0:
+                    amount_tax = account.debit
+                else:
+                    amount_tax = account.credit
 
-                    worksheet.write(row_count, 11, '', style_table_row)
-                    worksheet.write(row_count, 12, account.amount_tax, style_table_row_amount) 
-                    worksheet.write(row_count, 13, '', style_table_row)
-                    worksheet.write(row_count, 14, '', style_table_row)
-                    worksheet.write(row_count, 15, account.x_description, style_table_row_amount) 
+            worksheet.write(row_count, 0, account.date, style_table_row)
+            worksheet.write(row_count, 1, '', style_table_row) 
+            worksheet.write(row_count, 2, account.move_id.journal_id.name, style_table_row)
+            worksheet.write(row_count, 3, account.move_id.name, style_table_row)
+            worksheet.write(row_count, 4, account.partner_id.name, style_table_row)
+            worksheet.write(row_count, 5, '%s %s %s %s %s %s'%(account.partner_id.street or '',account.partner_id.street2 or '',account.partner_id.city or '',account.partner_id.state_id.name or '',account.partner_id.zip or '',account.partner_id.country_id.name or ''), style_table_row)
+            worksheet.write(row_count, 6, account.partner_id.vat or '', style_table_row)
 
-                    worksheet.write(row_count, 16, account.amount_total, style_table_row)
-                    worksheet.write(row_count, 17, tax.tax_id.ewt_structure_id.name, style_table_row)
-                    worksheet.write(row_count, 18, tax.tax_id.amount, style_table_row)
-                    worksheet.write(row_count, 19, tax.amount, style_table_row)
-                    worksheet.write(row_count, 20, '', style_table_row)
+            worksheet.write(row_count, 7, '', style_table_row)
+            worksheet.write(row_count, 8, '', style_table_row)
+            worksheet.write(row_count, 9, account.invoice_id.amount_untaxed, style_table_row_amount)
+            worksheet.write(row_count, 10, account.invoice_id.vat_exempt_sales, style_table_row_amount) 
 
-                    row_count +=1
-                    transaction_count +=1
+            worksheet.write(row_count, 11, account.invoice_id.vat_sales, style_table_row_amount)
+            worksheet.write(row_count, 12, account.invoice_id.amount_tax, style_table_row_amount) 
+            worksheet.write(row_count, 13, '', style_table_row)
+            worksheet.write(row_count, 14, '', style_table_row)
+            worksheet.write(row_count, 15, account.invoice_id.x_description or '', style_table_row_amount) 
+
+            worksheet.write(row_count, 16, account.invoice_id.amount_untaxed, style_table_row_amount)
+            worksheet.write(row_count, 17, account.tax_line_id.ewt_structure_id.name, style_table_row)
+            worksheet.write(row_count, 18, account.tax_line_id.amount, style_table_row_amount)
+            worksheet.write(row_count, 19, amount_tax, style_table_row_amount)
+            worksheet.write(row_count, 20, '', style_table_row)
+
+            row_count +=1
+            transaction_count +=1
 
         table_total_start = row_count
 

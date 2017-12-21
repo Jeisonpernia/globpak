@@ -13,7 +13,7 @@ class AccountInvoice(models.Model):
             if line.invoice_line_tax_ids:
                 for tax in line.invoice_line_tax_ids:
                     # Check if zero rated sales or vatable sales
-                    if tax.amount <= 0:
+                    if tax.amount == 0:
                         # Zero Rated Sales
                         zero_rated += line.price_subtotal
                     else:
@@ -60,10 +60,21 @@ class AccountInvoice(models.Model):
 
     @api.one
     @api.depends('origin')
-    def _compute_import_details(self):
+    def _compute_purchase_details(self):
         if self.origin:
+            # is_purchase = False
+            # x_origin = ''
+            # po_type = ''
+            # importation_date = ''
+            
             purchase_order = self.env['purchase.order'].search([('name','=',self.origin)], limit=1)
+            # if not purchase_order:
+            #     for x in self.origin.split(','):
+            #         origin = x.strip()
+            #     purchase_order = self.env['purchase.order'].search([('name','=',origin)], limit=1)
+
             if purchase_order:
+                self.is_purchase = True
                 self.x_origin = purchase_order.x_origin
                 self.po_type = purchase_order.po_type
                 self.importation_date = purchase_order.date_planned
@@ -86,12 +97,14 @@ class AccountInvoice(models.Model):
     dr_date = fields.Datetime(string='DR Date')
 
     # IMPORTATION
-    x_origin = fields.Many2one('res.country', string='Country of Origin', store=True, readonly=True, compute='_compute_import_details')
+    is_purchase = fields.Boolean(store=True, readonly=True, compute='_compute_purchase_details')
+    x_origin = fields.Many2one('res.country', string='Country of Origin', store=True, readonly=True, compute='_compute_purchase_details')
     po_type = fields.Selection([
         ('local', 'Local'),
         ('import', 'Import'),
-    ], string='Purchase Order Type', default='local', store=True, readonly=True, compute='_compute_import_details')
-    importation_date = fields.Datetime(store=True, readonly=True, compute='_compute_import_details')
+    ], string='Purchase Order Type', default='local', store=True, readonly=True, compute='_compute_purchase_details')
+    importation_date = fields.Datetime(store=True, readonly=True, compute='_compute_purchase_details')
+
     assessment_date = fields.Date(string='Assessment Date')
     supplier_invoice_no = fields.Char(string='Supplier Invoice No')
     bl_awb_no = fields.Char(string='BL/AWB No.')

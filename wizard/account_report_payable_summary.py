@@ -4,6 +4,7 @@ from odoo.tools.misc import xlwt
 from xlsxwriter.workbook import Workbook
 # from cStringIO import StringIO
 import base64
+import datetime
 
 class AccountReportPayableSummary(models.TransientModel):
     _name = 'account.report.payable.summary'
@@ -13,9 +14,20 @@ class AccountReportPayableSummary(models.TransientModel):
         journal_id = self.env['account.account'].search([('name','=','Account Payable')], limit=1)
         return journal_id
 
+    def _default_date_from(self):
+        date_today = datetime.date.today()
+        if date_today.day > 25:
+            date_today += datetime.timedelta(7)
+        return date_today.replace(day=1)
+
+    def _default_date_to(self):
+        date_today = datetime.date.today()
+        next_month = date_today.replace(day=28) + datetime.timedelta(days=4)
+        return next_month - datetime.timedelta(days=next_month.day)
+
     company_id = fields.Many2one('res.company', string='Company', readonly=True, default=lambda self: self.env.user.company_id)
-    date_from = fields.Date(string='Start Date', required=True)
-    date_to = fields.Date(string='End Date', required=True)
+    date_from = fields.Date(string='Start Date', required=True, default=lambda self: self._default_date_from())
+    date_to = fields.Date(string='End Date', required=True, default=lambda self: self._default_date_to())
     account_id = fields.Many2one('account.account', string='Account', required=True, default=lambda self: self._default_journal_id())
     # account_moves_ids = fields.Many2many('account.move', string='Account Moves', required=True, default=lambda self: self.env['account.move'].search([]))
 

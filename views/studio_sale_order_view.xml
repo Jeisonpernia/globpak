@@ -52,22 +52,21 @@
                     <field name="create_uid"/>
                     <field name="create_date"/>
                 </xpath>
+
+                <xpath expr="//field[@name='amount_tax']" position="before">
+                    <field name="vat_sales" widget='monetary' options="{'currency_field': 'currency_id'}" invisible="1"/>
+                    <field name="vat_exempt_sales" widget='monetary' options="{'currency_field': 'currency_id'}" invisible="1"/>
+                    <field name="zero_rated_sales" widget='monetary' options="{'currency_field': 'currency_id'}" invisible="1"/>
+                </xpath>
+
+                <xpath expr="//field[@name='amount_tax']" position="after">
+                    <field name="amount_services" widget='monetary' options="{'currency_field': 'currency_id'}" invisible="1"/>
+                    <field name="amount_capital" widget='monetary' options="{'currency_field': 'currency_id'}" invisible="1"/>
+                    <field name="amount_goods" widget='monetary' options="{'currency_field': 'currency_id'}" invisible="1"/>
+                </xpath>
 								  
             </field>
         </record>
 
-        <!-- <record id="view_sale_order_form_price_hidden_extend" model="ir.ui.view">
-            <field name="name">sale.order.form.price.hidden.extend</field>
-            <field name="model">sale.order</field>
-            <field name="inherit_id" ref="sale.view_order_form" />
-            <field name="groups_id" eval="[(6, 0, [ref('sales_team.group_sale_salesman_all_leads') ])]" />
-            <field name="arch" type="xml">
-
-                <xpath expr="//field[@name='order_line']/form/group/group[1]/field[@name='price_unit']" position="attributes">
-                    <attribute name="readonly">0</attribute>
-                </xpath>
-
-            </field>
-        </record>  -->
     </data>
 </odoo>
