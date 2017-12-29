@@ -31,7 +31,7 @@
             <br/>
 
             <p t-if="o.payment_type == 'inbound' and o.state == 'posted'" style="font-size: 14px">
-                Received from <strong> <span t-esc="o.partner_id.contact_address" /> </strong> with TIN <strong> <span t-field="o.partner_id.vat" /></strong>, the sum of <strong> <span t-field="o.check_amount_in_words" /> </strong> (<strong> <span t-esc="o.amount" t-options='{"widget": "monetary", "display_currency": o.currency_id}' /> </strong>) in partial/full payment of our Invoice/Statement as indicated.
+                Received from <strong> <span t-field="o.partner_id.name" /> </strong> with TIN <strong> <span t-field="o.partner_id.vat" /> </strong> and address at <strong> <span t-esc="o.partner_id.contact_address" /> </strong>, the sum of <strong> <span t-field="o.check_amount_in_words" /> </strong> (<strong> <span t-esc="o.amount" t-options='{"widget": "monetary", "display_currency": o.currency_id}' /> </strong>) in partial/full payment of our Invoice/Statement as indicated.
             </p>
             
             <br/>
@@ -93,7 +93,10 @@
             </div>
 
             <div class="col-xs-6 pull-right">
-                <strong>By: </strong>
+                <strong><span style="font-size: 14px">By: </span></strong> 
+                <span style="font-size: 14px">__________________________</span><br/>
+                <span style="font-size: 14px">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</span>
+                <span style="font-size: 14px">Authorized Signature</span>
             </div>
             
             <!-- <div style="position: absolute; top: 800px; width: 100%" t-if="o.payment_type == 'inbound' and o.state == 'posted'">

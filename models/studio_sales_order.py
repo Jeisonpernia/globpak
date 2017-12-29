@@ -68,22 +68,25 @@ class StudioSalesOrder(models.Model):
 	amount_capital = fields.Monetary(string='Amount of Capital', store=True, readonly=True, compute='_compute_amount_product_type', track_visibility='always')
 	amount_goods = fields.Monetary(string='Amount of Goods', store=True, readonly=True, compute='_compute_amount_product_type', track_visibility='always')
 
-	@api.multi
-	def action_confirm(self):
-		for record in self:
-			if not record.x_clientpo:
-				raise UserError('Cannot confirm sale. Client PO number is required.')
+	account_name = fields.Char(compute='_get_customer_details')
+	contact_name = fields.Char(compute='_get_customer_details')
 
-		res = super(StudioSalesOrder, self).action_confirm()
-		return res
+	# @api.multi
+	# def action_confirm(self):
+	# 	for record in self:
+	# 		if not record.x_clientpo:
+	# 			raise UserError('Cannot confirm sale. Client PO number is required.')
+
+	# 	res = super(StudioSalesOrder, self).action_confirm()
+	# 	return res
 
 	@api.multi
 	def action_validate(self):
 		for record in self:
-			if not record.x_clientpo:
-				raise UserError('Cannot validate sale. Client PO number is required.')
-			else:
-				record.write({'state': 'validate'})
+			# if not record.x_clientpo:
+			# 	raise UserError('Cannot validate sale. Client PO number is required.')
+			# else:
+			record.write({'state': 'validate'})
 
 	@api.depends('partner_id')
 	def _compute_group(self):
@@ -94,6 +97,26 @@ class StudioSalesOrder(models.Model):
 			
 			if user.has_group('account.group_account_manager'):
 				record.is_allowed_sale_validate_confirm = True
+
+	@api.multi
+	def _get_customer_details(self):
+		for record in self:
+			account_name = ''
+			contact_name = ''
+
+			if record.partner_id.company_type == 'company':
+				account_name = record.partner_id.name
+				contact_name = ''
+			else:
+				account_name = record.partner_id.parent_id.name
+				contact_name = record.partner_id.name
+
+				if not record.partner_id.parent_id:
+					account_name = record.partner_id.name
+					contact_name = ''
+
+			record.account_name = account_name
+			record.contact_name = contact_name
 
 class StudioSalesOrderLine(models.Model):
 	_inherit = 'sale.order.line'

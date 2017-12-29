@@ -16,6 +16,7 @@
                 <xpath expr="//field[@name='payment_date']" position="after">
                     <field name="collection_receipt_id" attrs="{'invisible':['|','|',('state', '!=', 'posted'),('collection_receipt_id','=',False),('payment_type','!=','inbound')]}" readonly="1"/> 
                     <field name="acknowledgement_receipt_id" attrs="{'invisible':['|','|',('state', '!=', 'posted'),('acknowledgement_receipt_id','=',False),('payment_type','!=','inbound')]}" readonly="1"/>
+                    <!-- <field name="vendor_bill_description"/> -->
                 </xpath>
                 
             </field>

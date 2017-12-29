@@ -85,7 +85,8 @@
                         <t t-if="not stub_line.get('header')">
                             <tr>
                                 <td class="text-left"><t t-if="stub_line['due_date']" t-esc="stub_line['due_date']"/></td>
-                                <td class="text-left"><t t-esc="stub_line['number']"/></td>
+                                <td class="text-left"><div style="width: 250px"><t t-esc="stub_line['number']"/></div></td>
+                                <!-- <td class="text-left"><t t-esc="stub_line['vendor_bill_description']"/></td> -->
                                 <td class="text-right"><t t-esc="stub_line['amount_total']"/></td>
                                 <td class="text-right">
                                     <t t-esc="stub_line['amount_residual']"/>
@@ -102,7 +103,6 @@
             <br/>
 
             <div class="text-right" style="font-weight:bold">Check Amount:
-                <t t-if="page['amount']"><t t-esc="page['amount']"/></t>
                 <t t-if="page['amount']"><t t-esc="page['amount']"/></t>
             </div>
              <div class="row zero_min_height">

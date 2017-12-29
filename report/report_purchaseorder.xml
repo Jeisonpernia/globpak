@@ -37,7 +37,7 @@
                         <div t-if="o.x_client_id">
                             <strong>Customer:</strong>
                             <p t-field="o.x_client_id"/>
-                            <p t-field="o.x_client_id.contact_address"/>
+                            <p t-field="o.x_client_delivery_address.contact_address"/>
                         </div>
                     </div>
                 </div>

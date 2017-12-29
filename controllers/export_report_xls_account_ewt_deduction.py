@@ -122,8 +122,8 @@ class ExportReportXlsAccountEwtDeduction(http.Controller):
                             account_title = move.account_id.name
 
 
-            worksheet.write(row_count, 0, account.date, style_table_row)
-            worksheet.write(row_count, 1, '', style_table_row) 
+            worksheet.write(row_count, 0, '', style_table_row)
+            worksheet.write(row_count, 1, account.date, style_table_row) 
             worksheet.write(row_count, 2, account.move_id.journal_id.name, style_table_row)
             worksheet.write(row_count, 3, account.move_id.name, style_table_row)
             worksheet.write(row_count, 4, account.partner_id.name, style_table_row)
@@ -142,7 +142,7 @@ class ExportReportXlsAccountEwtDeduction(http.Controller):
             worksheet.write(row_count, 15, account.invoice_id.x_description or '', style_table_row_amount) 
 
             worksheet.write(row_count, 16, account.invoice_id.amount_untaxed, style_table_row_amount)
-            worksheet.write(row_count, 17, account.tax_line_id.ewt_structure_id.name, style_table_row)
+            worksheet.write(row_count, 17, account.tax_line_id.ewt_structure_id.name  or '', style_table_row)
             worksheet.write(row_count, 18, account.tax_line_id.amount, style_table_row_amount)
             worksheet.write(row_count, 19, amount_tax, style_table_row_amount)
             worksheet.write(row_count, 20, '', style_table_row)

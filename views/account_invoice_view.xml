@@ -46,7 +46,7 @@
 
                 <xpath expr="//field[@name='currency_id']" position="after">
                     <field name="debit_memo_id" attrs="{'invisible':[('type', '!=', 'in_refund')]}" readonly="1" /> 
-                    <field name="is_purchase" />
+                    <field name="is_purchase" invisible="1"/>
                 </xpath>
 
                 <xpath expr="//notebook/page[2]/group/group[1]" position="inside">

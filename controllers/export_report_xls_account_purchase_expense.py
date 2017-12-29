@@ -152,13 +152,13 @@ class ExportReportXlsPurchaseExpenseSummary(http.Controller):
 			for tax in account.tax_line_ids:
 				if tax.account_id.id == account_ewt.id:
 					has_ewt = True
-					ewt_tax_base += tax.base
-					ewt_atc += tax.tax_id.ewt_structure_id.name
-					ewt_rate += tax.tax_id.amount
-					ewt_tax_amount += tax.amount_total
+					ewt_tax_base = tax.base
+					ewt_atc = tax.tax_id.ewt_structure_id.name
+					ewt_rate = tax.tax_id.amount
+					ewt_tax_amount = tax.amount_total
 				else:
 					if tax.amount == 12.00:
-						input_tax_amount += tax.amount_total
+						input_tax_amount = tax.amount_total
 
 			# EXPENSESE NOT SUBJECTED TO EWT
 			if has_ewt == False:
@@ -199,7 +199,7 @@ class ExportReportXlsPurchaseExpenseSummary(http.Controller):
 				'particulars': account.x_description or '', #21
 				'expense_amount': account.amount_total, #22
 				'ewt_tax_base': ewt_tax_base, #23
-				'ewt_atc': ewt_atc, #24
+				'ewt_atc': ewt_atc or '', #24
 				'ewt_rate': ewt_rate, #25
 				'ewt_tax_amount': ewt_tax_amount, #26
 				'expense_non_ewt': expense_non_ewt, #27
@@ -246,13 +246,13 @@ class ExportReportXlsPurchaseExpenseSummary(http.Controller):
 						tax_amount = (base * tax.amount) / 100
 						if tax.account_id.id == account_ewt.id:
 							has_ewt = True
-							ewt_tax_base += base
-							ewt_atc += tax.ewt_structure_id.name
-							ewt_rate += tax.amount
-							ewt_tax_amount += tax_amount
+							ewt_tax_base = base
+							ewt_atc = tax.ewt_structure_id.name
+							ewt_rate = tax.amount
+							ewt_tax_amount = tax_amount
 						else:
 							if tax.amount == 12.00:
-								input_tax_amount += tax_amount
+								input_tax_amount = tax_amount
 
 
 					if has_ewt == False:
@@ -293,7 +293,7 @@ class ExportReportXlsPurchaseExpenseSummary(http.Controller):
 						'particulars': line.name or '', #21
 						'expense_amount': line.total_amount, #22
 						'ewt_tax_base': ewt_tax_base, #23
-						'ewt_atc': ewt_atc, #24
+						'ewt_atc': ewt_atc or '', #24
 						'ewt_rate': ewt_rate, #25
 						'ewt_tax_amount': ewt_tax_amount, #26
 						'expense_non_ewt': expense_non_ewt, #27

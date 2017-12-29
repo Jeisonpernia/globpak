@@ -5,7 +5,7 @@ from odoo.exceptions import UserError
 class FleetTripTicket(models.Model):
 	_name = 'fleet.trip.ticket'
 	_descrription = 'Fleet Trip Ticket'
-	_inherit = ['mail.thread']
+	_inherit = ['mail.thread','mail.activity.mixin']
 
 	@api.multi
 	def _get_manager(self):
@@ -14,11 +14,11 @@ class FleetTripTicket(models.Model):
 		return approver_id
 
 	name = fields.Char(string='Trip Ticket #', required=True, copy=False, readonly=True, index=True, default=lambda self: _('New'))
-	ticket_date = fields.Date(string='Date', required=True, default=fields.Datetime.now())
-	driver_id = fields.Many2one('res.partner', 'Vehicle Driver Name', required=True)
-	vehicle_id = fields.Many2one('fleet.vehicle', 'Type of Vehicle Used', required=True)
+	ticket_date = fields.Date(string='Date', required=True, default=fields.Datetime.now(), track_visibility='always')
+	driver_id = fields.Many2one('res.partner', 'Vehicle Driver Name', required=True, track_visibility='always')
+	vehicle_id = fields.Many2one('fleet.vehicle', 'Type of Vehicle Used', required=True, track_visibility='always')
 	license_plate = fields.Char(string='Plate No.', related='vehicle_id.license_plate')
-	destination = fields.Char(string='Place of Destination', required=True)
+	destination = fields.Char(string='Place of Destination', required=True, track_visibility='always')
 	purpose = fields.Text(string='Purpose/Details')
 	estimate_kilometers = fields.Char(string='Estimate Kilometers')
 	gas_diesel = fields.Float(string='Gas/Diesel', default=1.00)
@@ -31,7 +31,7 @@ class FleetTripTicket(models.Model):
 	employee_id = fields.Many2one('hr.employee', 'Created By', required=True, default=lambda self: self.env['hr.employee'].search([('user_id', '=', self.env.uid)], limit=1))
 	passenger_id = fields.Many2one('res.partner', 'Passenger')
 
-	approver_id = fields.Many2one('hr.employee', 'Procurement & Logistics Manager', required=True, default=_get_manager)
+	approver_id = fields.Many2one('hr.employee', 'Procurement & Logistics Manager', required=True, default=_get_manager, track_visibility='always')
 	president_id = fields.Many2one('res.partner', 'President')
 	
 	state = fields.Selection([
@@ -40,7 +40,7 @@ class FleetTripTicket(models.Model):
 		('validate', 'Approved'),
 		('done', 'Done'),
 		('cancel', 'Canceled'),
-	], default='draft')
+	], default='draft', track_visibility='onchange')
 
 	current_user = fields.Many2one('res.users', compute='_get_current_user')
 
@@ -56,6 +56,8 @@ class FleetTripTicket(models.Model):
 			values['name'] = self.env['ir.sequence'].next_by_code('fleet.trip.ticket') or 'New'
 
 		result = super(FleetTripTicket, self).create(values)
+		result._add_followers()
+
 		return result
 
 	@api.multi
@@ -81,3 +83,17 @@ class FleetTripTicket(models.Model):
 	def done_trip(self):
 		for trip in self:
 			trip.state = 'done'
+
+	def _add_followers(self):
+		user_ids = []
+		employee = self.employee_id
+		approver = self.approver_id
+		if employee.user_id:
+			user_ids.append(employee.user_id.id)
+		if employee.parent_id:
+			user_ids.append(employee.parent_id.user_id.id)
+		if employee.department_id and employee.department_id.manager_id and employee.parent_id != employee.department_id.manager_id:
+			user_ids.append(employee.department_id.manager_id.user_id.id)
+		if approver.user_id:
+			user_ids.append(approver.user_id.id)
+		self.message_subscribe_users(user_ids=user_ids)

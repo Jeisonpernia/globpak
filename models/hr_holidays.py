@@ -11,7 +11,12 @@ class HrHolidays(models.Model):
 	@api.depends('employee_id')
 	def _set_employee_details(self):
 		for holiday in self:
-			holiday.approver_id = holiday.employee_id.parent_id
+			if holiday.holiday_type == 'category':
+				job_id = self.env['hr.job'].search([('name','=','Managing Director')], limit=1)
+				employee_id = self.env['hr.employee'].search([('job_id','=',job_id.id)], limit=1)
+				holiday.approver_id = employee_id
+			if holiday.holiday_type == 'employee' and holiday.type == 'remove':
+				holiday.approver_id = holiday.employee_id.parent_id
 
 	@api.depends()
 	def _get_current_user(self):
@@ -23,28 +28,29 @@ class HrHolidays(models.Model):
 	# EXTEND FUNCTIONS
 	@api.multi
 	def action_approve(self):
-		user = self.env['res.users'].browse(self.env.uid)
+		# user = self.env['res.users'].browse(self.env.uid)
 		for holiday in self:
 			# Leave Batch Allocation
 			if holiday.holiday_type == 'category':
-				if not user.has_group('hr_holidays.group_hr_holidays_manager'):
-					raise UserError("You're not allowed to approve this leave. Leave Managers can approve leave allocations.")
+				if holiday.approver_id.user_id != holiday.current_user:
+					raise UserError("You're not allowed to approve this allocation. Leave Allocation Approver: %s" % (holiday.approver_id.name))
 			# Leave Approval per Employee
 			if holiday.holiday_type == 'employee' and holiday.type == 'remove':
 				if holiday.approver_id.user_id != holiday.current_user:
-					raise UserError("You're not allowed to approve this leave. Leave Approver: %s" % (holiday.approver_id.name))			
+					raise UserError("You're not allowed to approve this leave. Leave Approver: %s" % (holiday.approver_id.name))
+	
 		
 		res = super(HrHolidays, self).action_approve()
 		return res
 
 	@api.multi
 	def action_refuse(self):
-		user = self.env['res.users'].browse(self.env.uid)
+		# user = self.env['res.users'].browse(self.env.uid)
 		for holiday in self:
 			# Leave Batch Allocation
 			if holiday.holiday_type == 'category':
-				if not user.has_group('hr_holidays.group_hr_holidays_manager'):
-					raise UserError("You're not allowed to approve this leave. Leave Managers can approve leave allocations")
+				if holiday.approver_id.user_id != holiday.current_user:
+					raise UserError("You're not allowed to approve this allocation. Leave Allocation Approver: %s" % (holiday.approver_id.name))
 			# Leave Approval per Employee
 			if holiday.holiday_type == 'employee' and holiday.type == 'remove':
 				if holiday.approver_id.user_id != holiday.current_user:

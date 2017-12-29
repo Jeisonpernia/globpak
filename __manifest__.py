@@ -27,6 +27,7 @@
                 - Summary of Accounts Payable
                 - SUmmary of Accounts Receivable 
                 - Summary of Taxes and Licenses
+                - Asset Summary Report
             - Landed Cost
 
         Purchasing and Inventory Customizations
@@ -51,7 +52,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'web', 'account', 'hr', 'hr_contract', 'hr_expense', 'hr_holidays', 'l10n_us_check_printing', 'sale', 'purchase', 'crm'],
+    'depends': ['base', 'web', 'account', 'hr', 'hr_contract', 'hr_expense', 'hr_holidays', 'l10n_us_check_printing', 'sale', 'purchase', 'crm', 'account_asset'],
 
     # always loaded
     'data': [
@@ -111,7 +112,7 @@
         'wizard/account_report_sales_summary_view.xml',
         'wizard/account_report_purchase_expense_summary_view.xml',
         'wizard/account_report_ewt_deduction_summary_view.xml',
-        # 'wizard/account_report_asset_summary_view.xml',
+        'wizard/account_report_asset_summary_view.xml',
         'wizard/account_report_payable_summary_view.xml',
         'wizard/account_report_receivable_summary_view.xml',
         'wizard/account_report_taxes_licenses_summary_view.xml',

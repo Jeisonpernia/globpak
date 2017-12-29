@@ -51,7 +51,7 @@
                     <div t-if="o.x_client_id">
                         <strong>Customer:</strong>
                         <p t-field="o.x_client_id"/>
-                        <p t-field="o.x_client_id.contact_address"/>
+                        <p t-field="o.x_client_delivery_address.contact_address"/>
                     </div>
                 </div>
             </div>
@@ -128,10 +128,10 @@
                             <span t-field="line.product_uom.name" groups="product.group_uom"/>
                         </td>
                         <td class="text-right">
-                            <span t-field="line.price_unit"/>
+                            <!-- <span t-field="line.price_unit"/> -->
                         </td>
                         <td class="text-right">
-                            <span t-field="line.price_subtotal" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}"/>
+                            <!-- <span t-field="line.price_subtotal" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}"/> -->
                         </td>
                     </tr>
                 </tbody>
@@ -149,13 +149,13 @@
                         <tr class="border-black">
                             <td>Taxes</td>
                             <td class="text-right">
-                                <span t-field="o.amount_tax" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}"/>
+                                <!-- <span t-field="o.amount_tax" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}"/> -->
                             </td>
                         </tr>
                         <tr class="border-black">
                             <td><strong>Total</strong></td>
                             <td class="text-right">
-                                <span t-field="o.amount_total" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}"/>
+                                <!-- <span t-field="o.amount_total" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}"/> -->
                             </td>
                         </tr>
                     </table>

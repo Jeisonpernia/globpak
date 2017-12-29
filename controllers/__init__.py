@@ -10,6 +10,7 @@ from . import export_report_xls_account_ewt_deduction
 from . import export_report_xls_account_payable
 from . import export_report_xls_account_receivable
 from . import export_report_xls_account_taxes_licenses
+from . import export_report_xls_account_asset_summary
 
 # TRIP TICKET
 from . import export_report_xls_trip_ticket

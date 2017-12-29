@@ -36,8 +36,10 @@
                 </xpath>
                 
 				<xpath expr="//field[@name='payment_term_id']" position="after">
-                    <field name="x_clientpo"/>
+                    <field name="x_clientpo" attrs="{'required': [('state', 'not in', ('draft'))]}"/>
                     <field name="is_allowed_sale_validate_confirm" invisible="1"/>
+                    <field name="account_name" invisible="1"/>
+                    <field name="contact_name" invisible="1"/>
 				</xpath>
 
                 <xpath expr="//field[@name='order_line']/tree/field[@name='price_unit']" position="before">

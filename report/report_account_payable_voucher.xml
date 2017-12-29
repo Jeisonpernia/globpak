@@ -40,6 +40,9 @@
             
             <br/>
             <br/>
+
+            <t t-set='debit_total' t-value='0'/>
+            <t t-set='credit_total' t-value='0'/>
             
             <!-- ACCOUNT PAYABLE VOUCHER -->
             <table class="table table-condensed" t-if="o.move_id and o.type == 'in_invoice'" style="font-size: 12px">
@@ -53,41 +56,113 @@
                     </tr>
                 </thead>
                 <tbody class="invoice_tbody">
-                    <t t-set='debit_total' t-value='0'/>
-                    <t t-set='credit_total' t-value='0'/>
+                    <!-- <t t-set='debit_total' t-value='0'/>
+                    <t t-set='credit_total' t-value='0'/> -->
                     <tr t-foreach="o.move_id.line_ids" t-as="l">
                         <td><span t-field="l.account_id.code"/></td>
                         <td><span t-field="l.account_id.name"/></td>
                         <td><span t-field="l.name"/></td>
-                        <td class="text-right"><span t-field="l.debit" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/></td>
-                        <td class="text-right"><span t-field="l.credit" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/></td>
+                        <td class="text-right" style="width: 120px">
+                            <span t-field="l.debit" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                        </td>
+                        <td class="text-right" style="width: 120px">
+                            <span t-field="l.credit" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                        </td>
                         <!-- <td class="text-right"><span t-esc="'%.2f'%(l.debit)" /></td> -->
                         <!-- <td class="text-right"><span t-esc="'%.2f'%(l.credit)" /></td> -->
                         <t t-set='debit_total' t-value='debit_total + l.debit'/>
                         <t t-set='credit_total' t-value='credit_total + l.credit'/>
                     </tr>
-                    <tr>
+                    <!-- <tr>
                         <td></td>
                         <td></td>
                         <td class="text-right"><strong>Total</strong></td>
-                        <!-- <td class="text-right"><span t-esc="'%.2f'%(debit_total)" /></td>
-                        <td class="text-right"><span t-esc="'%.2f'%(credit_total)" /></td> -->
                         <td class="text-right" style="border-bottom:1px solid #000000;border-top:1px solid #000000;"><span t-esc="debit_total" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/></td>
                         <td class="text-right" style="border-bottom:1px solid #000000;border-top:1px solid #000000;"><span t-esc="credit_total" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/></td>
-                    </tr>
+                    </tr> -->
                 </tbody>
             </table>
+
+            <div class="clearfix">
+                <div class="row pull-right" name="total">
+                    <div class="col-xs-12">
+                        <table class="table-condensed" style="min-width: 200px;max-width: 350px;font-size: 12px">
+                            <tr>
+                                <td>
+                                    <div class="row zero_min_height">
+                                        <div class="col-xs-12">
+                                            <div style="margin-bottom: 7px;"></div>
+                                        </div>
+                                    </div>
+                                    <strong>Total</strong>
+                                    <div class="row zero_min_height">
+                                        <div class="col-xs-12">
+                                            <div style="margin-top: 7px;"></div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="text-right" style="width: 120px">
+                                    <!-- <div style="width: 75px"> -->
+                                        <div class="row zero_min_height">
+                                            <div class="col-xs-12">
+                                                <div style="border-bottom: 1px solid black;margin-bottom: 7px;"></div>
+                                            </div>
+                                        </div>
+                                        <!-- <span t-esc="debit_total" t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"/> -->
+                                        <span t-esc="debit_total" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                        <div class="row zero_min_height">
+                                            <div class="col-xs-12">
+                                                <div style="border-bottom: 1px solid black;margin-top: 7px;margin-bottom: 5px;"></div>
+                                            </div>
+                                        </div>
+                                        <div class="row zero_min_height">
+                                            <div class="col-xs-12">
+                                                <div style="border-bottom: 1px solid black;"></div>
+                                            </div>
+                                        </div>
+                                    <!-- </div> -->
+                                </td>
+                                <td class="text-right" style="width: 120px">
+                                    <!-- <div style="width: 75px"> -->
+                                        <div class="row zero_min_height">
+                                            <div class="col-xs-12">
+                                                <div style="border-bottom: 1px solid black;margin-bottom: 7px;"></div>
+                                            </div>
+                                        </div>
+                                        <!-- <span t-esc="credit_total" t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"/> -->
+                                        <span t-esc="credit_total" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                        <div class="row zero_min_height">
+                                            <div class="col-xs-12">
+                                                <div style="border-bottom: 1px solid black;margin-top: 7px;margin-bottom: 5px;"></div>
+                                            </div>
+                                        </div>
+                                        <div class="row zero_min_height">
+                                            <div class="col-xs-12">
+                                                <div style="border-bottom: 1px solid black;"></div>
+                                            </div>
+                                        </div>
+                                    <!-- </div> -->
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
             
             <br/>
             
             <div style="position: absolute; top: 800px; width: 100%">
                 <div class="col-xs-4">
-                    <strong>Prepared By: </strong><br/>
-                    <span t-field="o.user_id"/>    
+                    <span style="font-size: 14px">_________________________</span><br/>
+                    <span style="font-size: 14px">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</span>
+                    <strong><span style="font-size: 14px">Prepared By: </span></strong>
+                    <!-- <span t-field="o.user_id"/> -->
                 </div>
                 <div class="col-xs-4">
-                    <strong>Checked By: </strong><br/>
-                    <span t-field="o.x_checked_by"/>                    
+                    <span>_________________________</span><br/>
+                    <span style="font-size: 14px">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</span>
+                    <strong><span style="font-size: 14px">Checked By: </span></strong>
+                    <!-- <span t-field="o.x_checked_by"/> -->                    
                 </div>
                 <!-- <div class="col-xs-4 pull-right">
                     <strong>Approved By: </strong><br/>
