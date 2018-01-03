@@ -1,0 +1,48 @@
+<templates id="template" xml:space="preserve">
+
+    <t t-name="globpak.portal_sale_validate">
+        <form id="o_portal_sale_validate" method="POST">
+            <div id="o_portal_sale_validate_details">
+                <input type="hidden" name="csrf_token" t-att-value="widget.options.csrf_token"/>
+
+                <!-- <div class="form-group">
+                    <label class="control-label" for="client_po">Purchase Order</label>
+                    <input type="file" name="client_po" id="o_portal_client_po" class="form-control"/>
+                </div> -->
+
+                <div class="form-group">
+                    <label class="control-label" for="client_po_no">Purchase Order Number</label>
+                    <input type="text" name="client_po_no" id="o_portal_client_po_no" class="form-control" required="required"/>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label" for="name">Your Name</label>
+                    <input type="text" name="partner_name" id="o_portal_sign_name" class="form-control" t-att-value="widget.options.partnerName"/>
+                </div>
+
+                <div class="panel panel-default mt16 mb0" id="o_portal_sign_draw">
+                    <div class="panel-heading">
+                        <div class="pull-right">
+                            <a id="o_portal_sign_clear" class="btn btn-xs">Clear</a>
+                        </div>
+                        <strong>Draw your signature</strong>
+                    </div>
+                    <div id="o_portal_signature" class="panel-body" style="padding: 0"/>
+                </div>
+     
+                <div class="mt16 pull-right">
+                  <button type="submit" class="btn btn-primary o_portal_sale_validate_submit"><t t-esc="widget.options.signLabel or 'Accept &amp; Sign'"/></button>
+                </div>
+            </div>
+        </form>
+    </t>
+
+    <t t-name="globpak.portal_validate_success">
+        <div class="alert alert-success" role="alert">
+            <strong>Thank You!</strong><br />
+            <span t-esc="widget.success"/>
+            <a t-att-href="widget.redirect_url">Click here to see your document.</a>
+        </div>
+    </t>
+
+</templates>

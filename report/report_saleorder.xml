@@ -10,18 +10,18 @@
                         <!-- <div clas="col-xs-6 pull-right"> -->
                             <h2>
                                 <t t-if="not (env.context.get('proforma', False) or is_pro_forma)">
-                                    <span t-if="doc.state not in ['draft','sent','validate']">Order</span>
-                                    <span t-if="doc.state in ['draft','sent','validate']">Quote</span>
+                                    <span t-if="doc.state not in ['draft','sent']">Order</span>
+                                    <span t-if="doc.state in ['draft','sent']">Quote</span>
                                 </t>
                                 <t t-if="env.context.get('proforma', False) or is_pro_forma">
                                     <span>Pro-Forma Invoice</span>
                                 </t>
                                 
                             </h2>
-                            <span t-if="doc.confirmation_date and doc.state not in ['draft','sent','validate']">Date: <span t-field="doc.confirmation_date" t-options='{"format": "MM/dd/yyyy"}'/></span>
-                            <span t-if="doc.date_order and doc.state in ['draft','sent','validate']">Date: <span t-field="doc.date_order" t-options='{"format": "MM/dd/yyyy"}'/></span><br/>
-                            <span t-if="doc.state not in ['draft','sent','validate']">Order Number: <span t-field="doc.name"/></span>
-                            <span t-if="doc.state in ['draft','sent','validate']">Quote Number: <span t-field="doc.name"/></span>
+                            <span t-if="doc.confirmation_date and doc.state not in ['draft','sent']">Date: <span t-field="doc.confirmation_date" t-options='{"format": "MM/dd/yyyy"}'/></span>
+                            <span t-if="doc.date_order and doc.state in ['draft','sent']">Date: <span t-field="doc.date_order" t-options='{"format": "MM/dd/yyyy"}'/></span><br/>
+                            <span t-if="doc.state not in ['draft','sent']">Order Number: <span t-field="doc.name"/></span>
+                            <span t-if="doc.state in ['draft','sent']">Quote Number: <span t-field="doc.name"/></span>
                         <!-- </div> -->
                     </div>
 

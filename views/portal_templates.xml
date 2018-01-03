@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_sale_validate" name="Portal Sale Validate">
+        <div t-att-class="'o_portal_sale_validate_form'"
+            t-att-data-partner-name="partner_name"
+            t-att-data-res-model="object._name"
+            t-att-data-res-id="object.id"
+            t-att-data-call-url="callUrl"
+            t-att-data-sign-label="signLabel"
+            t-att-data-access-token="accessToken"/>
+    </template>
+</odoo>

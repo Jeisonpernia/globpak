@@ -12,7 +12,7 @@
                             <field name="employee_id"/>
                             <field name="payment_mode" widget="radio"/>
                             <field name="company_id" groups="base.group_multi_company"/>
-                            <!-- <field name="fund_custodian_id" attrs="{'required':[('payment_mode', '=', 'fund_custodian_account')],'invisible':[('payment_mode', '!=', 'fund_custodian_account')]}"/> -->
+                            <field name="fund_custodian_id" attrs="{'required':[('payment_mode', '=', 'fund_custodian_account')],'invisible':[('payment_mode', '!=', 'fund_custodian_account')]}"/>
                             <field name="total_amount" invisible="1"/>
                         </group>
                         <group>
@@ -94,9 +94,9 @@
             <field name="inherit_id" ref="hr_expense.view_hr_expense_sheet_form" />
             <field name="arch" type="xml">
 
-                <!-- <xpath expr="//field[@name='company_id']" position="after">
+                <xpath expr="//field[@name='company_id']" position="after">
                     <field name="fund_custodian_id" />
-                </xpath> -->
+                </xpath>
 
                 <xpath expr="//notebook/page[1]/field[@name='expense_line_ids']/tree/field[@name='tax_ids']" position="replace">
                     <field name="tax_line_ids" widget="many2many_tags" string="Taxes"/>

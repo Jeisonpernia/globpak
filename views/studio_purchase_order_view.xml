@@ -34,6 +34,7 @@
 						<group>
 				    		<field name="x_prepared_by"/>
 				    		<field name="x_approved_by"/>
+				    		<field name="current_user"/>
 						</group>
 					</group>
 				</xpath>

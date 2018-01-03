@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+		<template id="so_quotation_extend" inherit_id="website_quote.so_quotation">
+			<!-- <xpath expr="//form[@id='accept']" position="before">
+				<t t-if="not quotation.x_clientpo">
+					<form id="validate" method="POST" t-att-data-order-id="quotation.id" t-att-data-token="quotation.access_token" class="js_accept_json modal-content js_website_submit_form">
+						<input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&amp;times;</button>
+							<h4 class="modal-title">Validate Order</h4>
+						</div>
+						<div class="modal-body" id="sign-dialog">
+			            	<t t-call="globpak.portal_sale_validate">
+			            		<t t-set="object" t-value="quotation"/>
+			            		<t t-set="partner_name" t-value="quotation.partner_id.name"/>
+			            		<t t-set="callUrl" t-value="'/my/quotes/validate'"/>
+			            		<t t-set="accessToken" t-value="quotation.access_token"/>
+			            	</t>
+						</div>
+					</form>
+				</t>
+			</xpath> -->
+			<xpath expr="//form[@id='accept']" position="replace">
+				<!-- <t t-if="quotation.x_clientpo"> -->
+					<form id="accept" method="POST" t-att-data-order-id="quotation.id" t-att-data-token="quotation.access_token" class="js_accept_json modal-content js_website_submit_form">
+                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                            <div class="modal-header">
+                              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&amp;times;</button>
+                              <h4 class="modal-title">Validate Order</h4>
+                            </div>
+                            <div class="modal-body" id="sign-dialog">
+                                <p>
+                                    <span>I agree that by signing this proposal, I
+                                    accept it on the behalf of </span><b t-field="quotation.partner_id.commercial_partner_id"/><span>, for an amount of </span>
+                                    <b data-id="total_amount" t-field="quotation.amount_total"
+                                        t-options='{"widget": "monetary", "display_currency": quotation.pricelist_id.currency_id}'/>
+                                    <span>with payment terms: </span><b t-field="quotation.payment_term_id"/>.
+                                </p>
+
+                                <t t-if="not quotation.x_clientpo">
+                                	<t t-call="globpak.portal_sale_validate">
+					            		<t t-set="object" t-value="quotation"/>
+					            		<t t-set="partner_name" t-value="quotation.partner_id.name"/>
+					            		<t t-set="callUrl" t-value="'/my/quotes/validate'"/>
+					            		<t t-set="accessToken" t-value="quotation.access_token"/>
+			            			</t>
+                                </t>
+
+                                <t t-if="quotation.x_clientpo">
+	                                <t t-call="portal.portal_signature">
+	                                    <t t-set="object" t-value="quotation"/>
+	                                    <t t-set="partner_name" t-value="quotation.partner_id.name"/>
+	                                    <t t-set="callUrl" t-value="'/my/quotes/accept'"/>
+	                                    <t t-set="accessToken" t-value="quotation.access_token"/>
+	                                </t>
+                            	</t>
+                            	
+                            </div>
+                    </form>
+				<!-- </t> -->
+				
+			</xpath>
+		</template>
+	</data>
+</odoo>
+

@@ -13,30 +13,31 @@
                         <button name="action_quotation_send" type="object" string="Send PRO-FORMA Invoice" groups="sale.group_proforma_sales" class="btn-primary" attrs="{'invisible': ['|', ('state', '!=', 'draft'), ('invoice_count','&gt;=',1)]}" context="{'proforma': True}"/>
                         <button name="print_quotation" string="Print" type="object" states="draft" class="btn-primary o_sale_print"/>
 
-                        <button name="action_confirm" id="action_confirm" string="Confirm Sale" class="btn-primary" type="object" attrs="{'invisible': ['|',('state', 'not in', ['validate']),('is_allowed_sale_validate_confirm', '!=', True)]}"/>
-                        <button name="action_confirm" string="Confirm Sale" type="object" attrs="{'invisible': ['|',('state', 'not in', ['validate']),('is_allowed_sale_validate_confirm', '!=', True)]}"/>
+                        <button name="action_confirm" id="action_confirm" string="Confirm Sale" class="btn-primary" type="object" attrs="{'invisible': ['|',('state', 'not in', ['sent']),('is_allowed_sale_validate_confirm', '!=', True)]}"/>
+                        <button name="action_confirm" string="Confirm Sale" type="object" attrs="{'invisible': ['|',('state', 'not in', ['draft']),('is_allowed_sale_validate_confirm', '!=', True)]}"/>
 
-                        <button name="action_validate" id="action_validate" string="Validate Sale" class="btn-primary" type="object" attrs="{'invisible': ['|',('state', 'not in', ['sent']),('is_allowed_sale_validate_confirm', '!=', True)]}"/>
-                        <button name="action_validate" string="Validate Sale" type="object" attrs="{'invisible': ['|',('state', 'not in', ['draft']),('is_allowed_sale_validate_confirm', '!=', True)]}"/>
+                        <!-- <button name="action_validate" id="action_validate" string="Validate Sale" class="btn-primary" type="object" attrs="{'invisible': ['|',('state', 'not in', ['sent']),('is_allowed_sale_validate_confirm', '!=', True)]}"/> -->
+                        <!-- <button name="action_validate" string="Validate Sale" type="object" attrs="{'invisible': ['|',('state', 'not in', ['draft']),('is_allowed_sale_validate_confirm', '!=', True)]}"/> -->
 
                         <button name="action_quotation_send" type="object" string="Send PRO-FORMA Invoice" groups="sale.group_proforma_sales" attrs="{'invisible': ['|', ('state', '=', 'draft'), ('invoice_count','&gt;=',1)]}" context="{'proforma': True}"/>
-                        <button name="print_quotation" string="Print" type="object" states="sent,validate,sale" class="o_sale_print"/>
-                        <button name="action_quotation_send" string="Send by Email" type="object" states="sent,validate,sale"/>
-                        <button name="action_cancel" states="draft,sent,validate,sale" type="object" string="Cancel"/>
+                        <button name="print_quotation" string="Print" type="object" states="sent,sale" class="o_sale_print"/>
+                        <button name="action_quotation_send" string="Send by Email" type="object" states="sent,sale"/>
+                        <button name="action_cancel" states="draft,sent,sale" type="object" string="Cancel"/>
                         <button name="action_draft" states="cancel" type="object" string="Set to Quotation"/>
                         <button name="action_done" type="object" string="Lock" states="sale" help="If the sale is locked, you can not modify it anymore. However, you will still be able to invoice or deliver."/>
                         <button name="action_unlock" type="object" string="Unlock" states="done" groups="sales_team.group_sale_manager"/>
-                        <field name="state" widget="statusbar" statusbar_visible="draft,sent,validate,sale"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,sent,sale"/>
                     </header>
                 </xpath>
 
                 <xpath expr="//field[@name='partner_shipping_id']" position="after">
-                    <field name="subject"/>
-                    <field name="description"/>
+                    <field name="subject" attrs="{'readonly': [('state', '=', ('sale'))]}"/>
+                    <field name="description" attrs="{'readonly': [('state', '=', ('sale'))]}"/>
                 </xpath>
                 
 				<xpath expr="//field[@name='payment_term_id']" position="after">
-                    <field name="x_clientpo" attrs="{'required': [('state', 'not in', ('draft'))]}"/>
+                    <!-- <field name="x_clientpo" attrs="{'required': [('state', 'not in', ('draft'))]}"/> -->
+                    <field name="x_clientpo" attrs="{'readonly': [('state', '=', ('sale'))]}"/>
                     <field name="is_allowed_sale_validate_confirm" invisible="1"/>
                     <field name="account_name" invisible="1"/>
                     <field name="contact_name" invisible="1"/>

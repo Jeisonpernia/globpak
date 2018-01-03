@@ -17,12 +17,12 @@ class HrExpenseSheet(models.Model):
 	approver_id = fields.Many2one('hr.employee','Approver', store=True, compute='_set_employee_details')
 	current_user = fields.Many2one('res.users', compute='_get_current_user')
 
-	# fund_custodian_id = fields.Many2one('hr.employee', 'Fund Custodian', related='expense_line_ids.fund_custodian_id', readonly=True)
+	fund_custodian_id = fields.Many2one('hr.employee', 'Fund Custodian', related='expense_line_ids.fund_custodian_id', readonly=True)
 
 	# OVERRIDE FIELDS
 	payment_mode = fields.Selection([
 		("own_account", "Employee (to reimburse)"),
-		# ("fund_custodian_account", "Fund Custodian"),
+		("fund_custodian_account", "Fund Custodian"),
 		("company_account", "Company"),
 	])
 
@@ -467,7 +467,7 @@ class HrExpense(models.Model):
 		], string='Expense Type', default='ob', readonly=True, states={'draft': [('readonly', False)], 'refused': [('readonly', False)]})
 	ob_id = fields.Many2one('hr.employee.official.business', string='Official Business', readonly=True, states={'draft': [('readonly', False)], 'refused': [('readonly', False)]})
 
-	# fund_custodian_id = fields.Many2one('hr.employee', 'Fund Custodian', readonly=True, states={'draft': [('readonly', False)], 'refused': [('readonly', False)]})
+	fund_custodian_id = fields.Many2one('hr.employee', 'Fund Custodian', readonly=True, states={'draft': [('readonly', False)], 'refused': [('readonly', False)]})
 	
 	# OVERRIDE FIELDS
 	product_id = fields.Many2one(required=False)
@@ -477,7 +477,7 @@ class HrExpense(models.Model):
 	date = fields.Date(required=True)
 	payment_mode = fields.Selection([
 		("own_account", "Employee (to reimburse)"),
-		# ("fund_custodian_account", "Fund Custodian"),
+		("fund_custodian_account", "Fund Custodian"),
 		("company_account", "Company"),
 	])
 	

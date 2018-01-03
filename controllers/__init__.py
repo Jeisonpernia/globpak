@@ -14,3 +14,5 @@ from . import export_report_xls_account_asset_summary
 
 # TRIP TICKET
 from . import export_report_xls_trip_ticket
+
+from . import portal

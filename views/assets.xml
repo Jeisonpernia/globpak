@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="assets_frontend_extend" inherit_id="web.assets_frontend" name="Portal Assets">
+        <xpath expr="//script[last()]" position="after">
+            <script type="text/javascript" src="/globpak/static/src/js/portal_sale_validate.js"></script>
+        </xpath>
+    </template>
+    <!-- <template id="assets_common_extend" inherit_id="web.assets_common" name="Portal Common Assets">
+        <xpath expr="script[last()]" position="after">
+            <script type="text/javascript" src="/web/static/lib/jSignature/jSignatureCustom.js"></script>
+        </xpath>
+    </template> -->
+</odoo>

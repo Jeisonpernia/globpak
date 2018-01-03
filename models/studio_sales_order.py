@@ -52,7 +52,7 @@ class StudioSalesOrder(models.Model):
 	state = fields.Selection([
 		('draft', 'Quotation'),
 		('sent', 'Quotation Sent'),
-		('validate', 'Validated'),
+		# ('validate', 'Validated'),
 		('sale', 'Sales Order'),
 		('done', 'Locked'),
 		('cancel', 'Cancelled'),
@@ -71,22 +71,22 @@ class StudioSalesOrder(models.Model):
 	account_name = fields.Char(compute='_get_customer_details')
 	contact_name = fields.Char(compute='_get_customer_details')
 
-	# @api.multi
-	# def action_confirm(self):
-	# 	for record in self:
-	# 		if not record.x_clientpo:
-	# 			raise UserError('Cannot confirm sale. Client PO number is required.')
-
-	# 	res = super(StudioSalesOrder, self).action_confirm()
-	# 	return res
-
 	@api.multi
-	def action_validate(self):
+	def action_confirm(self):
 		for record in self:
+			if not record.x_clientpo:
+				raise UserError('Cannot confirm sale. Client PO number is required.')
+
+		res = super(StudioSalesOrder, self).action_confirm()
+		return res
+
+	# @api.multi
+	# def action_validate(self):
+	# 	for record in self:
 			# if not record.x_clientpo:
 			# 	raise UserError('Cannot validate sale. Client PO number is required.')
 			# else:
-			record.write({'state': 'validate'})
+			# record.write({'state': 'validate'})
 
 	@api.depends('partner_id')
 	def _compute_group(self):
