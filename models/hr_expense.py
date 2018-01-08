@@ -17,12 +17,16 @@ class HrExpenseSheet(models.Model):
 	approver_id = fields.Many2one('hr.employee','Approver', store=True, compute='_set_employee_details')
 	current_user = fields.Many2one('res.users', compute='_get_current_user')
 
-	fund_custodian_id = fields.Many2one('hr.employee', 'Fund Custodian', related='expense_line_ids.fund_custodian_id', readonly=True)
+	# reimbursement_mode = fields.Selection([
+	# 	('petty_cash', 'Petty Cash'),
+	# 	('none','None'),
+	# ], related='expense_line_ids.reimbursement_mode', readonly=True, string='Reimbursement')
+	# fund_custodian_id = fields.Many2one('hr.employee', 'Fund Custodian', related='expense_line_ids.fund_custodian_id', readonly=True)
 
 	# OVERRIDE FIELDS
 	payment_mode = fields.Selection([
 		("own_account", "Employee (to reimburse)"),
-		("fund_custodian_account", "Fund Custodian"),
+		# ("fund_custodian_account", "Fund Custodian"),
 		("company_account", "Company"),
 	])
 
@@ -69,6 +73,17 @@ class HrExpenseSheet(models.Model):
 		currency = self.currency_id or self.company_id.currency_id
 		amount = tax.compute_all(line.price_unit, currency, line.quantity, line.product_id, line.employee_id.user_id.partner_id)['taxes'][0]['amount']
 		return amount
+
+	# def _get_users_to_subscribe(self, employee=False):
+	# 	users = self.env['res.users']
+	# 	employee = employee or self.employee_id
+	# 	if employee.user_id:
+	# 		users |= employee.user_id
+	# 	if employee.parent_id:
+	# 		users |= employee.parent_id.user_id
+	# 	if employee.department_id and employee.department_id.manager_id and employee.parent_id != employee.department_id.manager_id:
+	# 		users |= employee.department_id.manager_id.user_id
+	# 	return users
 
 class HrExpenseTax(models.Model):
 	_name = "hr.expense.tax"
@@ -145,7 +160,7 @@ class HrExpenseLine(models.Model):
 	zero_rated_sales = fields.Monetary(string='Zero Rated Sales', store=True, readonly=True, compute='_compute_amount_sales')
 
 	expense_id = fields.Many2one('hr.expense', string="Expense", readonly=True, copy=False)
-	partner_id = fields.Many2one('res.partner', 'Vendor', required=True)
+	partner_id = fields.Many2one('res.partner', 'Vendor')
 	reference = fields.Char(string='Receipt #')
 	date = fields.Date(compute='_compute_date', store=True)
 	
@@ -216,7 +231,11 @@ class HrExpenseLine(models.Model):
 		'''
 		This function prepares move line of account.move related to an expense
 		'''
-		partner_id = self.employee_id.address_home_id.commercial_partner_id.id
+		if self.expense_id.reimbursement_mode == 'petty_cash':
+			partner_id = self.expense_id.fund_custodian_id.address_home_id.commercial_partner_id.id
+		else:
+			partner_id = self.employee_id.address_home_id.commercial_partner_id.id
+
 		return {
 			'date_maturity': line.get('date_maturity'),
 			'partner_id': partner_id,
@@ -319,9 +338,14 @@ class HrExpenseLine(models.Model):
 				})
 				payment_id = payment.id
 			else:
-				if not expense.expense_id.employee_id.address_home_id:
-					raise UserError(_("No Home Address found for the employee %s, please configure one.") % (expense.expense_id.employee_id.name))
-				emp_account = expense.expense_id.employee_id.address_home_id.property_account_payable_id.id
+				if expense.expense_id.reimbursement_mode == 'petty_cash':
+					if not expense.expense_id.fund_custodian_id.address_home_id:
+						raise UserError(_("No Home Address found for the fund custodian %s, please configure one.") % (expense.expense_id.fund_custodian_id.name))
+					emp_account = expense.expense_id.fund_custodian_id.address_home_id.property_account_payable_id.id
+				else:
+					if not expense.expense_id.employee_id.address_home_id:
+						raise UserError(_("No Home Address found for the employee %s, please configure one.") % (expense.expense_id.employee_id.name))
+					emp_account = expense.expense_id.employee_id.address_home_id.property_account_payable_id.id
 
 			aml_name = expense.expense_id.employee_id.name + ': ' + expense.name.split('\n')[0][:64]
 			move_lines.append({
@@ -467,7 +491,11 @@ class HrExpense(models.Model):
 		], string='Expense Type', default='ob', readonly=True, states={'draft': [('readonly', False)], 'refused': [('readonly', False)]})
 	ob_id = fields.Many2one('hr.employee.official.business', string='Official Business', readonly=True, states={'draft': [('readonly', False)], 'refused': [('readonly', False)]})
 
-	fund_custodian_id = fields.Many2one('hr.employee', 'Fund Custodian', readonly=True, states={'draft': [('readonly', False)], 'refused': [('readonly', False)]})
+	reimbursement_mode = fields.Selection([
+		('petty_cash', 'Petty Cash'),
+		('none','None'),
+	], default='petty_cash',readonly=True, states={'draft': [('readonly', False)], 'refused': [('readonly', False)]})
+	fund_custodian_id = fields.Many2one('hr.employee', 'Fund Custodian', domain=[('is_fund_custodian', '=', True)], readonly=True, states={'draft': [('readonly', False)], 'refused': [('readonly', False)]})
 	
 	# OVERRIDE FIELDS
 	product_id = fields.Many2one(required=False)
@@ -477,7 +505,7 @@ class HrExpense(models.Model):
 	date = fields.Date(required=True)
 	payment_mode = fields.Selection([
 		("own_account", "Employee (to reimburse)"),
-		("fund_custodian_account", "Fund Custodian"),
+		# ("fund_custodian_account", "Fund Custodian"),
 		("company_account", "Company"),
 	])
 	

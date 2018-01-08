@@ -9,6 +9,8 @@
                 
 				<xpath expr="//field[@name='origin']" position="after">
 					<field name="x_end_user_po"/>
+                    <field name="x_client_billing_address"/>
+                    <field name="x_client_delivery_address"/>
 				</xpath>
 
                 <!-- <xpath expr="//field[@name='picking_type_id']" position="after">

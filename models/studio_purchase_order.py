@@ -49,6 +49,7 @@ class StudioPurchaseOrder(models.Model):
 	x_approved_by = fields.Many2one('hr.employee', 'Approver', compute='_set_employee_details')
 	x_prepared_by = fields.Many2one('res.partner', 'Prepared By', store=True, copy=True)
 	x_client_id = fields.Many2one('res.partner', 'Client', compute='_get_order_details')
+	x_client_billing_address = fields.Many2one('res.partner', 'Client Billing Address', compute='_get_order_details')
 	x_client_delivery_address = fields.Many2one('res.partner', 'Client Delivery Address', compute='_get_order_details')
 	x_client_po_no = fields.Char(string='Client PO No.', compute='_get_order_details')
 	x_origin = fields.Many2one('res.country', string='Origin', store=True, copy=True)
@@ -100,6 +101,7 @@ class StudioPurchaseOrder(models.Model):
 			if record.origin:
 				sale_order = self.env['sale.order'].search([('name','=',record.origin)], limit=1)
 				record.x_client_id = sale_order.partner_id
+				record.x_client_billing_address = sale_order.partner_invoice_id
 				record.x_client_delivery_address = sale_order.partner_shipping_id
 				record.x_client_po_no = sale_order.x_clientpo
 
@@ -138,7 +140,11 @@ class StudioPurchaseOrder(models.Model):
 			if order.company_id.po_double_validation == 'one_step'\
 					or (order.company_id.po_double_validation == 'two_step'\
 						and order.amount_total < self.env.user.company_id.currency_id.compute(order.company_id.po_double_validation_amount, order.currency_id)):
-				order.button_approve()
+				# order.button_approve()
+				order.write({'state': 'purchase'})
+				order._create_picking()
+				if order.company_id.po_lock == 'lock':
+					order.write({'state': 'done'})
 			else:
 				order.write({'state': 'to approve'})
 		return True

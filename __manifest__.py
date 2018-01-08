@@ -106,7 +106,7 @@
 		'report/report_acknowledgement_receipt.xml',
 		'report/report_collection_receipt.xml',
 		'report/report_account_payable_voucher.xml',
-		'views/report_expense_sheet.xml',
+		'report/report_expense_sheet.xml',
 		'report/report.xml',
 		'wizard/account_report_alphalist_payee_view.xml',
 		'wizard/account_report_sales_transaction_view.xml',

@@ -137,8 +137,25 @@ class AccountInvoice(models.Model):
     debit_memo_id = fields.Many2one('account.debit.memo', string='Debit Memo')
     credit_memo_id = fields.Many2one('account.credit.memo', string='Credit Memo')
 
+    # RULES
+    # is_allowed_vendor_bill_validate = fields.Boolean(compute='_compute_group')
+
     # OVERRIDE FIELDS
     comment = fields.Text(default="All accounts are payable on the terms stated above. Interest of 36% per annum will be charged on all overdue counts. All claims of corrections to invoice must be made within two days of receipt of goods. Parties  expressly submit to the jurisdiction of the courts of Paranaque City on any legal action arrising from this transaction and an additional sum equal to twenty-five 25 percent of the amount due will be charge for attorney's fees and other costs.")
+
+    # @api.multi
+    # def _compute_group(self):
+    #     for record in self:
+    #         user = self.env['res.users'].browse(self.env.uid)
+
+    #         # Validation of Vendor Bill
+    #         if record.type == 'in_invoice':
+    #             if user.has_group('purchase.group_purchase_user') or user.has_group('purchase.group_purchase_manager'):
+    #                 record.is_allowed_vendor_bill_validate = False
+    #                 if user.has_group('account.group_account_user') or user.has_group('account.group_account_manager'):
+    #                     record.is_allowed_vendor_bill_validate = True
+    #         else:
+    #             record.is_allowed_vendor_bill_validate = True
 
     @api.multi
     def action_generate_debit_memo(self):

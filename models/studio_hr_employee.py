@@ -7,4 +7,4 @@ class StudioHrEmployee(models.Model):
 	x_regularizationdate = fields.Date('Regularization Date', store=True, copy=True)
 	x_idno = fields.Char('Company ID No.', store=True, copy=True)
 	x_payrollaccount = fields.Char('Payroll Account No.', store=True, copy=True)
-	
+	is_fund_custodian = fields.Boolean(string='Is a Fund Custodian', default=False)

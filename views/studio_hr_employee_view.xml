@@ -50,6 +50,10 @@
 
 				  <!-- <xpath expr="//field[@name='bank_account_id']" position="replace"/> -->
 
+				  <xpath expr="//field[@name='manager']" position="after">
+				  	<field name="is_fund_custodian"/>
+				  </xpath>
+
             </field>
         </record> 
     </data>
