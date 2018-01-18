@@ -28,6 +28,7 @@ class FleetTripTicket(models.Model):
 	departure_time = fields.Float(string='Time of Departure from Office or Garage')
 	arrival_time = fields.Float(string='Time of Arrival')
 
+	company_id = fields.Many2one('res.company', string='Company', readonly=True, states={'draft': [('readonly', False)], 'refused': [('readonly', False)]}, default=lambda self: self.env.user.company_id)
 	employee_id = fields.Many2one('hr.employee', 'Created By', required=True, default=lambda self: self.env['hr.employee'].search([('user_id', '=', self.env.uid)], limit=1))
 	passenger_id = fields.Many2one('res.partner', 'Passenger')
 

@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<data>
+<template id="report_trip_ticket_document">
+    <t t-call="web.basic_layout">
+        <div class="page">
+            <t t-if="not o and doc">
+                <t t-set="o" t-value="doc"/>
+            </t>
+            
+            <t t-if="o and 'company_id' in o">
+                <t t-set="company" t-value="o.company_id.sudo()"/>
+            </t>
+
+            <t t-if="not o or not 'company_id' in o">
+                <t t-set="company" t-value="res_company"/>
+            </t>
+
+            <div class="row">
+                <div class="col-xs-3">
+                    <img t-if="company.logo" t-att-src="'data:image/png;base64,%s' % to_text(company.logo)" style="max-height: 45px;"/>
+                </div>
+                <div class="col-xs-9 text-right" style="margin-top:22px;" t-field="company.report_header" name="moto"/>
+            </div>
+
+            <div t-if="company.logo or company.report_header" class="row zero_min_height">
+                <div class="col-xs-12">
+                    <div style="border-bottom: 1px solid black;"/>
+                </div>
+            </div>
+
+            <br/>
+
+            <h3>Trip Ticket #<span t-field="o.name"/></h3>
+            <!-- <h5><strong>No: </strong><span t-field="o.name"/></h5> -->
+            <br/>
+
+            <div class="row">
+                <div class="col-xs-6">
+                    <h5><strong>Driver Name: </strong><span t-field="o.driver_id.name"/></h5>
+                </div>
+                <div class="col-xs-6">
+                    <h5><strong>Date: </strong><span t-field="o.ticket_date"/></h5>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-xs-6">
+                    <h5><strong>Type of Vehicle Used: </strong><span t-field="o.vehicle_id.name"/></h5>
+                </div>   
+                <div class="col-xs-6">
+                    <h5><strong>Plate No.: </strong><span t-field="o.license_plate"/></h5>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-xs-6">
+                    <h5><strong>Place of Destination: </strong><span t-field="o.destination"/></h5>
+                </div>   
+                <div class="col-xs-6">
+                    <h5><strong>Estimate Kilometers.: </strong><span t-field="o.estimate_kilometers"/></h5>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-xs-6">
+                    <h5><strong>Purpose/Details: </strong><span t-field="o.purpose"/></h5>
+                </div>
+            </div>
+
+            <br/>
+
+            <h3>Details</h3>
+
+            <br/>
+
+            <div class="row">
+                <div class="col-xs-6">
+                    <h5><strong>Gas/Diesel: </strong><span t-field="o.gas_diesel"/></h5>
+                </div>
+                <div class="col-xs-6">
+                    <h5><strong>OIL/FLUID: </strong><span t-field="o.oil_fluid"/></h5>
+                </div>  
+            </div>
+
+            <div class="row">
+                <div class="col-xs-6">
+                    <h5><strong>Reading (Departure): </strong><span t-field="o.reading_departure"/></h5>
+                </div>
+                <div class="col-xs-6">
+                    <h5><strong>Reading (Arrival): </strong><span t-field="o.reading_arrival"/></h5>
+                </div>  
+            </div>
+
+            <div class="row">
+                <div class="col-xs-6">
+                    <h5><strong>Time of Departure from Office or Garage: </strong><span t-field="o.departure_time"/></h5>
+                </div>
+                <div class="col-xs-6">
+                    <h5><strong>Time of Arrival: </strong><span t-field="o.arrival_time"/></h5>
+                </div>
+            </div>
+
+        </div>
+    </t>
+</template>
+
+<template id="report_trip_ticket">
+    <t t-call="web.html_container">
+        <t t-foreach="docs" t-as="o">
+            <t t-call="globpak.report_trip_ticket_document" />
+        </t>
+    </t>
+</template>
+
+</data>
+</odoo>

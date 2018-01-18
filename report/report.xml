@@ -80,7 +80,45 @@
             report_type="qweb-pdf"
             name="globpak.report_account_payable_summary"
             file="globpak.report_account_payable_summary"
-            /> -->        
+            /> -->
+
+        <report 
+            id="action_official_business"
+            model="hr.employee.official.business"
+            string="Official Business"
+            report_type="qweb-pdf"
+            name="globpak.report_official_business"
+            file="globpak.report_official_business"
+            attachment_use="True"
+            attachment="(object.state in ('confirm','validate','expense','done')) and ('OB'+(object.name or '').replace('/','')+'.pdf')"
+            menu="False"
+            paperformat="globpak.paperformat_report_globpak_generic"
+        />
+
+        <!-- paperformat="globpak.paperformat_report_generic" -->
+
+        <report 
+            id="action_hr_expense"
+            model="hr.expense"
+            string="Expense"
+            report_type="qweb-pdf"
+            name="globpak.report_hr_expense"
+            file="globpak.report_hr_expense"
+            attachment_use="True"
+            attachment="(object.state in ('confirm','validate','reported','done')) and ('Expense '+(object.name or '').replace('/','')+'.pdf')"
+        />
+
+        <report 
+            id="action_trip_ticket"
+            model="fleet.trip.ticket"
+            string="Trip Ticket"
+            report_type="qweb-pdf"
+            name="globpak.report_trip_ticket"
+            file="globpak.report_trip_ticket"
+            attachment_use="True"
+            attachment="(object.state in ('confirm','validate','done')) and ('Trip Ticket '+(object.name or '').replace('/','')+'.pdf')"
+            paperformat="globpak.paperformat_report_globpak_generic"
+        />        
 
     </data>
 </odoo>

@@ -48,6 +48,7 @@
                             <group>
                                 <field name="ticket_date" />
                                 <field name="license_plate" />
+                                <field name="company_id" />
                             </group>
                         </group>
                         <notebook>

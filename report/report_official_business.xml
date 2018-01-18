@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<data>
+<template id="report_official_business_document">
+    <t t-call="globpak.external_layout_generic">
+        <div class="page">
+            <t t-if="not o and doc">
+                <t t-set="o" t-value="doc"/>
+            </t>
+            
+            <t t-if="o and 'company_id' in o">
+                <t t-set="company" t-value="o.company_id.sudo()"/>
+            </t>
+
+            <t t-if="not o or not 'company_id' in o">
+                <t t-set="company" t-value="res_company"/>
+            </t>
+
+            <div class="row">
+                <div class="col-xs-3">
+                    <img t-if="company.logo" t-att-src="'data:image/png;base64,%s' % to_text(company.logo)" style="max-height: 45px;"/>
+                </div>
+                <div class="col-xs-9 text-right" style="margin-top:22px;" t-field="company.report_header" name="moto"/>
+            </div>
+
+            <div t-if="company.logo or company.report_header" class="row zero_min_height">
+                <div class="col-xs-12">
+                    <div style="border-bottom: 1px solid black;"/>
+                </div>
+            </div>
+
+            <br/>
+
+            <h3>Official Business #<span t-field="o.name"/></h3>
+
+            <br/>
+
+            <div class="row">
+                <div class="col-xs-6">
+                    <h5><strong>Employee: </strong><span t-field="o.employee_id.name"/></h5>
+                </div>
+                <div class="col-xs-6">
+                    <h5><strong>Department: </strong><span t-field="o.department_id.name"/></h5>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-xs-6">
+                    <h5><strong>Company: </strong><span t-field="o.company_id.name"/></h5>
+                </div>   
+                <div class="col-xs-6">
+                    <h5><strong>Approved By: </strong><span t-field="o.approver_id.name"/></h5>
+                </div>
+            </div>
+
+            <br/>
+
+            <h3>Details</h3>
+
+            <br/>
+
+            <div class="row">
+                <div class="col-xs-6">
+                    <h5><strong>Date: </strong><span t-field="o.date_ob"/></h5>
+                </div>
+                <div class="col-xs-6">
+                    <h5><strong>Date Submitted: </strong><span t-field="o.date_submitted"/></h5>
+                </div>  
+            </div>
+
+            <div class="row">
+                <div class="col-xs-6">
+                    <h5><strong>Estimated Time of Departure: </strong><span t-field="o.departure_time"/></h5>
+                </div>
+                <div class="col-xs-6">
+                    <h5><strong>Means of Transportation: </strong><span t-field="o.transportation_means"/></h5>
+                </div>  
+            </div>
+
+            <br/>
+
+            <div class="row">
+                <div class="col-xs-12">
+                    <h5><strong>Purpose of Visit: </strong><span t-field="o.visit_purpose"/></h5>
+                </div> 
+            </div>
+
+            <div class="row">
+                <div class="col-xs-12">
+                    <h5><strong>Person to Visit: </strong><span t-field="o.visit_person"/></h5>
+                </div> 
+            </div>
+
+            <div class="row">
+                <div class="col-xs-12">
+                    <h5><strong>Place to Visit: </strong><span t-field="o.visit_place"/></h5>
+                </div> 
+            </div>
+
+            <div class="row">
+                <div class="col-xs-12">
+                    <h5><strong>Other Remarks: </strong><span t-field="o.remarks"/></h5>
+                </div> 
+            </div>
+
+        </div>
+    </t>
+</template>
+
+<template id="report_official_business">
+    <t t-call="web.html_container">
+        <t t-foreach="docs" t-as="o">
+            <t t-call="globpak.report_official_business_document" />
+        </t>
+    </t>
+</template>
+
+</data>
+</odoo>

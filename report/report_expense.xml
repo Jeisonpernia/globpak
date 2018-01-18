@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+
+		<template id="report_hr_expense_document">
+			<t t-call="web.external_layout">
+				<div class="page">
+
+					<div class="text-right">
+						<h3>HR Expense</h3>
+						<!-- <h5>Description: <span t-field="o.name"/></h5> -->
+						<h5>Date: <span t-field="o.date"/></h5>
+					</div>
+
+					<br/>
+
+					<!-- <div class="row">
+						<div class="col-xs-6">
+							<strong>Employee: </strong>
+							<p t-field="o.employee_id.name"/>
+						</div>
+
+						<div class="col-xs-6">
+							<strong>Expense Type:</strong>
+							<p t-field="o.expense_type"/>
+						</div>
+					</div> -->
+
+					<div class="row mt32 mb32">
+                        <div class="col-xs-3">
+                            <strong>Employee:</strong>
+                            <p t-esc="o.employee_id.name"/>
+                        </div>
+                        <div class="col-xs-3">
+                            <strong>Manager:</strong>
+                            <p t-esc="o.approver_id.name"/>
+                        </div>
+                        <div class="col-xs-3">
+                            <strong>Description:</strong>
+                            <p t-esc="o.name"/>
+                        </div>
+                        <div class="col-xs-3">
+                            <strong>Currency:</strong>
+                            <p t-field="o.currency_id.name"/>
+                        </div>
+                    </div>
+
+					<t t-set='tax_total' t-value='0'/>
+					<table class="table table-condensed" style="font-size: 12px">
+						<thead>
+							<tr>
+								<th>Receipt #</th>
+								<th>Vendor</th>
+								<th>Product</th>
+								<th>Description</th>
+								<th>Account</th>
+								<th class="text-right">Quantity</th>
+								<th class="text-right">Price Unit</th>
+								<th class="text-right">Taxes</th>
+								<th class="text-right">Subtotal</th>
+							</tr>
+						</thead>
+						<tbody>
+							<t t-foreach="o.line_ids" t-as="line">
+								<tr>
+									<td><span t-field="line.reference"/></td>
+									<td><span t-field="line.partner_id.name"/></td>
+									<td><span t-field="line.product_id.name"/></td>
+									<td><span t-field="line.name"/></td>
+                                	<td><span t-field="line.account_id"/></td>
+									<td class="text-right"><span t-field="line.quantity"/></td>
+									<td class="text-right"><span t-field="line.price_unit" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/></td>
+									<td class="text-right">
+										<span t-field="line.tax_amount" t-options='{"widget": "monetary", "display_currency": o.currency_id}' />
+									</td>
+									<td class="text-right"><span t-field="line.untaxed_amount" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/></td>
+								</tr>
+							</t>
+						</tbody>
+					</table>
+
+					<br/>
+
+					<!-- <div class="clearfix">
+		                <div class="row pull-right" name="total">
+		                    <div class="col-xs-12">
+		                        <table class="table-condensed" style="min-width: 200px;max-width: 350px;font-size: 12px">
+		                            <tr>
+		                                <td>
+		                                    <strong>Total</strong>
+		                                </td>
+		                                <td class="text-right" style="width: 120px">
+		                                	<span t-esc="o.total_amount" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+		                                </td>
+		                            </tr>
+		                        </table>
+		                    </div>
+		                </div>
+            		</div> -->
+
+            		<div class="clearfix">
+                        <div id="total" class="row pull-right">
+                            <div>
+                                <table class="table-condensed" style="min-width: 250px;max-width: 400px;">
+                                    <!-- <tr class="border-black" style="border-bottom:1px solid #dddddd;">
+                                        <td><strong>Subtotal</strong></td>
+                                        <td class="text-right">
+                                            <span t-field="o.untaxed_amount" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                        </td>
+                                    </tr> -->
+                                    <!-- <tr class="border-black" style="border-bottom:1px solid #dddddd;">
+                                        <td><strong>Taxes</strong></td>
+                                        <td class="text-right">
+                                            <span t-field="o.tax_amount" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                        </td>
+                                    </tr> -->
+                                    <tr class="border-black">
+                                        <td><strong>Total</strong></td>
+                                        <td class="text-right">
+                                            <span t-field="o.total_amount" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <span t-field="o.description"/>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <p>Certified honest and conform,<br/>(Date and signature).<br/><br/></p>
+                    <p>This document must be dated and signed for reimbursement.</p>
+
+            	</div>
+			</t>
+		</template>
+
+		<template id="report_hr_expense">
+			<t t-call="web.html_container">
+				<t t-foreach="docs" t-as="o">
+					<t t-call="globpak.report_hr_expense_document" />
+				</t>
+			</t>
+		</template>
+	</data>
+</odoo>

@@ -2,6 +2,7 @@ from odoo import models, fields, api, _
 import odoo.addons.decimal_precision as dp
 
 from odoo.exceptions import UserError
+from odoo.exceptions import ValidationError
 
 import logging
 _logger = logging.getLogger(__name__)
@@ -30,6 +31,45 @@ class HrExpenseSheet(models.Model):
 		("company_account", "Company"),
 	])
 
+	# OVERRIDE ACTION
+	@api.multi
+	def check_consistency(self):
+		# if any(sheet.employee_id != self[0].fund_custodian_id for sheet in self):
+		# 	raise UserError(_("Expenses must belong to the same Employee."))
+
+		expense_lines = self.mapped('expense_line_ids')
+		if expense_lines and any(expense.payment_mode != expense_lines[0].payment_mode for expense in expense_lines):
+			raise UserError(_("Expenses must have been paid by the same entity (Company or employee)"))
+
+	# @api.model
+	# def create(self, vals):
+	# 	# Add the followers at creation, so they can be notified
+	# 	if vals.get('employee_id'):
+	# 		employee = self.env['hr.employee'].browse(vals['employee_id'])
+	# 		users = self._get_users_to_subscribe(employee=employee) - self.env.user
+	# 		vals['message_follower_ids'] = []
+	# 		for partner in users.mapped('partner_id'):
+	# 			vals['message_follower_ids'] += self.env['mail.followers']._add_follower_command(self._name, [], {partner.id: None}, {})[0]
+	# 	sheet = super(HrExpenseSheet, self).create(vals)
+	# 	# self.check_consistency()
+	# 	return sheet
+
+	# @api.multi
+	# def write(self, vals):
+	# 	res = super(HrExpenseSheet, self).write(vals)
+	# 	# self.check_consistency()
+	# 	if vals.get('employee_id'):
+	# 		self._add_followers()
+	# 	return res
+
+	@api.one
+	@api.constrains('expense_line_ids')
+	def _check_employee(self):
+		employee_ids = self.expense_line_ids.mapped('fund_custodian_id')
+		if len(employee_ids) > 1 or (len(employee_ids) == 1 and employee_ids != self.employee_id):
+			raise ValidationError(_('You cannot add expense lines of another employee.'))
+
+	# NEW ACTION
 	@api.one
 	@api.depends('expense_line_ids', 'expense_line_ids.untaxed_amount')
 	def _compute_amount_untaxed(self):
@@ -48,12 +88,12 @@ class HrExpenseSheet(models.Model):
 		self.update({'current_user' : self.env.user.id})
 
 	@api.multi
-	def approve_expense_sheets(self):
-		if self.approver_id:
-			if self.approver_id.user_id != self.current_user:
-				raise UserError(_("You cannot validate your own epense. Immediate supervisors are responsible for validating this expense."))
-		else:
-			raise UserError("No Approver was set. Please assign an approver to employee.")
+	def approve_expense_sheets(self): # RETURN
+		# if self.approver_id:
+		# 	if self.approver_id.user_id != self.current_user:
+		# 		raise UserError(_("You cannot validate your own epense. Immediate supervisors are responsible for validating this expense."))
+		# else:
+		# 	raise UserError("No Approver was set. Please assign an approver to employee.")
 		self.write({'state': 'approve', 'responsible_id': self.env.user.id})
 
 	@api.multi
@@ -121,6 +161,7 @@ class HrExpenseTax(models.Model):
 
 class HrExpenseLine(models.Model):
 	_name = 'hr.expense.line'
+	# _inherit = ['mail.thread']
 	_description = 'HR Expense Line'
 
 	@api.one
@@ -129,6 +170,7 @@ class HrExpenseLine(models.Model):
 		vat_sales = 0
 		vat_exempt = 0
 		zero_rated = 0
+		is_recompute_base = False
 		if self.tax_ids:
 			for tax in self.tax_ids:
 				# Check if zero rated sales or vatable sales
@@ -138,6 +180,11 @@ class HrExpenseLine(models.Model):
 				else:
 					# Vatable Sales
 					vat_sales += self.untaxed_amount
+
+				# RECOMPUTE BASE
+				if tax.amount_type == 'base_deduction':
+					is_recompute_base = True
+
 		else:
 			# Vat Exempt Sales
 			vat_exempt += self.untaxed_amount
@@ -145,6 +192,7 @@ class HrExpenseLine(models.Model):
 		self.vat_sales = vat_sales
 		self.vat_exempt_sales = vat_exempt
 		self.zero_rated_sales = zero_rated
+		self.is_recompute_base = is_recompute_base
 	
 	name = fields.Text(string='Description', required=True)
 	product_id = fields.Many2one('product.product', string='Product', ondelete='restrict', index=True, domain=[('can_be_expensed', '=', True)], required=True)
@@ -152,23 +200,24 @@ class HrExpenseLine(models.Model):
 	quantity = fields.Float(default=1.00)
 	price_unit = fields.Float(string='Price Unit')
 	tax_ids = fields.Many2many('account.tax', 'expense_line_tax', 'expense_line_id', 'tax_id', string='Taxes')
+
 	untaxed_amount = fields.Float(string='Subtotal', store=True, compute='_compute_amount', digits=dp.get_precision('Account'))
+	tax_amount = fields.Float(string='Tax Amount', store=True, compute='_compute_amount', digits=dp.get_precision('Account'))
 	total_amount = fields.Float(string='Total', store=True, compute='_compute_amount', digits=dp.get_precision('Account'))
 
 	vat_sales = fields.Monetary(string='Vatable Sales', store=True, readonly=True, compute='_compute_amount_sales')
 	vat_exempt_sales = fields.Monetary(string='Vat Exempt Sales', store=True, readonly=True, compute='_compute_amount_sales')
 	zero_rated_sales = fields.Monetary(string='Zero Rated Sales', store=True, readonly=True, compute='_compute_amount_sales')
 
+	is_recompute_base = fields.Boolean(string='Recompute Base', compute='_compute_amount_sales')
+
 	expense_id = fields.Many2one('hr.expense', string="Expense", readonly=True, copy=False)
 	partner_id = fields.Many2one('res.partner', 'Vendor')
 	reference = fields.Char(string='Receipt #')
 	date = fields.Date(compute='_compute_date', store=True)
 	
-	# employee_id = fields.Many2one('hr.employee', string="Employee", required=True, readonly=True, states={'submit': [('readonly', False)]}, default=lambda self: self.env['hr.employee'].search([('user_id', '=', self.env.uid)], limit=1))
 	employee_id = fields.Many2one('hr.employee', string="Employee", compute='_compute_employee', store=True)
 	account_id = fields.Many2one('account.account', string='Account', states={'post': [('readonly', True)], 'done': [('readonly', True)]}, default=lambda self: self.env['ir.property'].get('property_account_expense_categ_id', 'product.category'))
-	# company_id = fields.Many2one('res.company', string='Company', readonly=True, states={'draft': [('readonly', False)], 'cancel': [('readonly', False)]}, default=lambda self: self.env.user.company_id)
-	# currency_id = fields.Many2one('res.currency', string='Currency', readonly=True, states={'draft': [('readonly', False)], 'cancel': [('readonly', False)]}, default=lambda self: self.env.user.company_id.currency_id)
 	company_id = fields.Many2one('res.company', string='Company', related='expense_id.company_id', store=True, readonly=True)
 	currency_id = fields.Many2one('res.currency', related='expense_id.currency_id', store=True, readonly=True)
 	account_analytic_id = fields.Many2one('account.analytic.account', 'Analytic Account', compute='_compute_analytic', store=True)
@@ -176,6 +225,8 @@ class HrExpenseLine(models.Model):
 
 	state = fields.Selection([
 		('draft', 'To Submit'),
+		('confirm', 'Pending'),
+		('validate', 'Approved'),
 		('reported', 'Reported'),
 		('done', 'Posted'),
 		('refused', 'Refused'),
@@ -186,6 +237,10 @@ class HrExpenseLine(models.Model):
 		for expense in self:
 			if expense.expense_id.state == "draft":
 				expense.state = "draft"
+			elif expense.expense_id.state == "confirm":
+				expense.state = "confirm"
+			elif expense.expense_id.state == "validate":
+				expense.state = "validate"
 			elif expense.expense_id.state == "reported":
 				expense.state = "reported"
 			elif expense.expense_id.state == "done":
@@ -196,9 +251,19 @@ class HrExpenseLine(models.Model):
 	@api.depends('quantity', 'price_unit', 'tax_ids', 'currency_id')
 	def _compute_amount(self):
 		for expense in self:
-			expense.untaxed_amount = expense.price_unit * expense.quantity
 			taxes = expense.tax_ids.compute_all(expense.price_unit, expense.currency_id, expense.quantity, expense.product_id, expense.employee_id.user_id.partner_id)
-			expense.total_amount = taxes.get('total_included')
+			tax_amount = taxes.get('total_included') - taxes.get('total_excluded')
+
+			untaxed_amount = expense.price_unit * expense.quantity
+			total_amount = taxes.get('total_included')
+			
+			if expense.is_recompute_base == True:
+				untaxed_amount = (expense.price_unit * expense.quantity) - tax_amount
+				total_amount = (expense.price_unit * expense.quantity)
+
+			expense.tax_amount = tax_amount
+			expense.untaxed_amount = untaxed_amount
+			expense.total_amount = total_amount
 
 	@api.depends('expense_id', 'expense_id.date')
 	def _compute_date(self):
@@ -231,10 +296,11 @@ class HrExpenseLine(models.Model):
 		'''
 		This function prepares move line of account.move related to an expense
 		'''
-		if self.expense_id.reimbursement_mode == 'petty_cash':
-			partner_id = self.expense_id.fund_custodian_id.address_home_id.commercial_partner_id.id
-		else:
-			partner_id = self.employee_id.address_home_id.commercial_partner_id.id
+
+		# if self.expense_id.reimbursement_mode == 'petty_cash':
+		partner_id = self.expense_id.fund_custodian_id.address_home_id.commercial_partner_id.id
+		# else:
+		# partner_id = self.employee_id.address_home_id.commercial_partner_id.id
 
 		return {
 			'date_maturity': line.get('date_maturity'),
@@ -338,14 +404,14 @@ class HrExpenseLine(models.Model):
 				})
 				payment_id = payment.id
 			else:
-				if expense.expense_id.reimbursement_mode == 'petty_cash':
-					if not expense.expense_id.fund_custodian_id.address_home_id:
-						raise UserError(_("No Home Address found for the fund custodian %s, please configure one.") % (expense.expense_id.fund_custodian_id.name))
-					emp_account = expense.expense_id.fund_custodian_id.address_home_id.property_account_payable_id.id
-				else:
-					if not expense.expense_id.employee_id.address_home_id:
-						raise UserError(_("No Home Address found for the employee %s, please configure one.") % (expense.expense_id.employee_id.name))
-					emp_account = expense.expense_id.employee_id.address_home_id.property_account_payable_id.id
+				# if expense.expense_id.reimbursement_mode == 'petty_cash':
+				if not expense.expense_id.fund_custodian_id.address_home_id:
+					raise UserError(_("No Home Address found for the fund custodian %s, please configure one.") % (expense.expense_id.fund_custodian_id.name))
+				emp_account = expense.expense_id.fund_custodian_id.address_home_id.property_account_payable_id.id
+				# else:
+				# if not expense.expense_id.employee_id.address_home_id:
+					# raise UserError(_("No Home Address found for the employee %s, please configure one.") % (expense.expense_id.employee_id.name))
+				# emp_account = expense.expense_id.employee_id.address_home_id.property_account_payable_id.id
 
 			aml_name = expense.expense_id.employee_id.name + ': ' + expense.name.split('\n')[0][:64]
 			move_lines.append({
@@ -469,10 +535,11 @@ class HrExpense(models.Model):
 		self.amount_goods = amount_goods
 	
 	# NEW FIELDS
-	line_ids = fields.One2many('hr.expense.line', 'expense_id', string='Expense Lines', states={'done': [('readonly', True)], 'post': [('readonly', True)]}, copy=False)
-	tax_line_ids = fields.One2many('hr.expense.tax', 'expense_id', string='Tax Lines', oldname='tax_line', states={'done': [('readonly', True)], 'post': [('readonly', True)]}, copy=True)
+	line_ids = fields.One2many('hr.expense.line', 'expense_id', string='Expense Lines', readonly=True, states={'draft': [('readonly', False)], 'refused': [('readonly', False)]}, copy=False)
+	tax_line_ids = fields.One2many('hr.expense.tax', 'expense_id', string='Tax Lines', oldname='tax_line', readonly=True, states={'draft': [('readonly', False)], 'refused': [('readonly', False)]}, copy=True)
 	
 	approver_id = fields.Many2one('hr.employee','Approver', store=True, compute='_set_employee_details')
+	current_user = fields.Many2one('res.users', compute='_get_current_user')
 	responsible_id = fields.Many2one('res.user','Responsible', store=True, readonly=True, default=lambda self: self.env.uid)
 	
 	tax_amount = fields.Float(string='Taxes', store=True, compute='_compute_amount', digits=dp.get_precision('Account'))
@@ -491,11 +558,11 @@ class HrExpense(models.Model):
 		], string='Expense Type', default='ob', readonly=True, states={'draft': [('readonly', False)], 'refused': [('readonly', False)]})
 	ob_id = fields.Many2one('hr.employee.official.business', string='Official Business', readonly=True, states={'draft': [('readonly', False)], 'refused': [('readonly', False)]})
 
-	reimbursement_mode = fields.Selection([
-		('petty_cash', 'Petty Cash'),
-		('none','None'),
-	], default='petty_cash',readonly=True, states={'draft': [('readonly', False)], 'refused': [('readonly', False)]})
-	fund_custodian_id = fields.Many2one('hr.employee', 'Fund Custodian', domain=[('is_fund_custodian', '=', True)], readonly=True, states={'draft': [('readonly', False)], 'refused': [('readonly', False)]})
+	# reimbursement_mode = fields.Selection([
+	# 	('petty_cash', 'Petty Cash'),
+	# 	('none','None'),
+	# ], default='petty_cash',readonly=True, states={'draft': [('readonly', False)], 'refused': [('readonly', False)]})
+	fund_custodian_id = fields.Many2one('hr.employee', 'Fund Custodian', readonly=True, states={'draft': [('readonly', False)], 'refused': [('readonly', False)]})
 	
 	# OVERRIDE FIELDS
 	product_id = fields.Many2one(required=False)
@@ -508,6 +575,26 @@ class HrExpense(models.Model):
 		# ("fund_custodian_account", "Fund Custodian"),
 		("company_account", "Company"),
 	])
+	state = fields.Selection([
+		('draft', 'To Submit'),
+		('confirm', 'Pending'),
+		('validate', 'Approved'),
+		('reported', 'Reported'),
+		('done', 'Posted'),
+		('refused', 'Refused')
+	], string='Status', copy=False, index=True, readonly=True, store=True, help="Status of the expense.")
+
+	# @api.depends('sheet_id', 'sheet_id.account_move_id', 'sheet_id.state')
+	# def _compute_state(self):
+	# 	for expense in self:
+	# 		if not expense.sheet_id:
+	# 			expense.state = "draft"
+	# 		elif expense.sheet_id.state == "cancel":
+	# 			expense.state = "refused"
+	# 		elif not expense.sheet_id.account_move_id:
+	# 			expense.state = "reported"
+	# 		else:
+	# 			expense.state = "done"
 	
 	# NEW FUNCTIONS
 	@api.onchange('ob_id')
@@ -518,6 +605,13 @@ class HrExpense(models.Model):
 	def _set_employee_details(self):
 		for ob in self:
 			ob.approver_id = ob.employee_id.parent_id
+
+	@api.depends()
+	def _get_current_user(self):
+		for rec in self:
+			rec.current_user = self.env.user
+		# i think this work too so you don't have to loop
+		self.update({'current_user' : self.env.user.id})
 
 	@api.multi
 	def compute_taxes(self):
@@ -582,6 +676,7 @@ class HrExpense(models.Model):
 				else:
 					tax_grouped[key]['amount'] += val['amount']
 					tax_grouped[key]['base'] += val['base']
+
 		return tax_grouped
 	
 	@api.onchange('line_ids')
@@ -625,9 +720,11 @@ class HrExpense(models.Model):
 		for expense in self:
 			untaxed_amount = sum(expense.line_ids.mapped('untaxed_amount'))
 			tax_amount = sum(line.amount for line in expense.tax_line_ids)
+			total_amount = sum(expense.line_ids.mapped('total_amount'))
 			expense.untaxed_amount = untaxed_amount
 			expense.tax_amount = tax_amount
-			expense.total_amount = untaxed_amount + tax_amount
+			# expense.total_amount = untaxed_amount + tax_amount
+			expense.total_amount = total_amount
 
 	@api.multi
 	def write(self, vals):
@@ -669,3 +766,43 @@ class HrExpense(models.Model):
 					ob.write({'state':'validate'})
 		res = super(HrExpense, self).unlink()
 		return res
+
+	@api.multi
+	def submit_expenses(self):
+		for expense in self:
+			expense.write({'state':'confirm'})
+
+	@api.multi
+	def approve_expenses(self):
+		# for expense in self:
+		# 	expense.write({'state':'validate'})
+		if self.approver_id:
+			if self.approver_id.user_id != self.current_user:
+				raise UserError("You cannot validate your own epense. Expense Approver: %s" % (self.approver_id.name))
+		else:
+			raise UserError("No approver was set. Please assign an approver to employee.")
+		self.write({'state': 'validate', 'responsible_id': self.env.user.id})
+
+	@api.multi
+	def create_sheet(self):
+
+		if self.fund_custodian_id != self.current_user:
+			raise UserError(_("You're not allowed to create this report. Fund Custodian: %s" % (self.fund_custodian_id.name)))
+
+		if any(expense.state != 'validate' for expense in self):
+			raise UserError(_("You cannot report twice the same line!"))
+
+		if len(self.mapped('employee_id')) != 1:
+			raise UserError(_("You cannot report expenses for different employees in the same report!"))
+
+		return {
+			'type': 'ir.actions.act_window',
+			'view_mode': 'form',
+			'res_model': 'hr.expense.sheet',
+			'target': 'current',
+			'context': {
+				'default_expense_line_ids': [line.id for line in self],
+				'default_employee_id': self[0].employee_id.id,
+				'default_name': self[0].name if len(self.ids) == 1 else ''
+			}
+		}

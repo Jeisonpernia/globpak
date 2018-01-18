@@ -11,6 +11,14 @@
                     <field name="ewt_structure_id" />
                 </xpath>
 
+                <xpath expr="//label[@for='amount']" position="attributes">
+                    <attribute name="attrs">{'invisible':[('amount_type','not in', ('fixed', 'percent', 'division', 'base_deduction'))]}</attribute>
+                </xpath>
+
+                <xpath expr="//notebook/page[1]/group/group[1]/div" position="attributes">
+                    <attribute name="attrs">{'invisible':[('amount_type','not in', ('fixed', 'percent', 'division', 'base_deduction'))]}</attribute>
+                </xpath>
+
             </field>
         </record> 
 

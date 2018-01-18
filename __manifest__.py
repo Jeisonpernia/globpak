@@ -52,7 +52,7 @@
 	'version': '0.1',
 
 	# any module necessary for this one to work correctly
-	'depends': ['base', 'web', 'web_editor', 'account', 'hr', 'hr_contract', 'hr_expense', 'hr_holidays', 'l10n_us_check_printing', 'sale', 'purchase', 'crm', 'account_asset', 'website_quote', 'portal'],
+	'depends': ['base', 'web', 'web_editor', 'account', 'hr', 'hr_contract', 'hr_expense', 'hr_holidays', 'l10n_us_check_printing', 'sale', 'purchase', 'crm', 'account_asset', 'website_quote', 'portal', 'calendar', 'website_calendar'],
 
 	# always loaded
 	'data': [
@@ -61,6 +61,8 @@
 		'data/ir_sequence_data.xml',
 		'data/us_check_printing.xml',
 		'data/account_ewt_structure_data.xml',
+		'data/report_paper_format_data.xml',
+		# 'data/calendar_event_type.xml',
 		'views/assets.xml',
 		'views/portal_templates.xml',
 		'views/layout_templates.xml',
@@ -107,6 +109,9 @@
 		'report/report_collection_receipt.xml',
 		'report/report_account_payable_voucher.xml',
 		'report/report_expense_sheet.xml',
+		'report/report_official_business.xml',
+		'report/report_expense.xml',
+		'report/report_trip_ticket.xml',
 		'report/report.xml',
 		'wizard/account_report_alphalist_payee_view.xml',
 		'wizard/account_report_sales_transaction_view.xml',
