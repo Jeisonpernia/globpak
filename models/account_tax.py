@@ -14,6 +14,6 @@ class AccountTax(models.Model):
 		if self.amount_type == 'base_deduction':
 			# base_amount = price_unit
 			# tax_amount = price_unit * self.amount / 100
-			return base_amount * self.amount / 100
+			return base_amount / 1.12 * self.amount / 100
 		return res
 

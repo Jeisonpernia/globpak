@@ -209,6 +209,7 @@ class HrExpenseLine(models.Model):
 	vat_exempt_sales = fields.Monetary(string='Vat Exempt Sales', store=True, readonly=True, compute='_compute_amount_sales')
 	zero_rated_sales = fields.Monetary(string='Zero Rated Sales', store=True, readonly=True, compute='_compute_amount_sales')
 
+	allowed_expense_amount = fields.Monetary('Allowed Expense Amount')
 	is_recompute_base = fields.Boolean(string='Recompute Base', compute='_compute_amount_sales')
 
 	expense_id = fields.Many2one('hr.expense', string="Expense", readonly=True, copy=False)
@@ -260,6 +261,10 @@ class HrExpenseLine(models.Model):
 			if expense.is_recompute_base == True:
 				untaxed_amount = (expense.price_unit * expense.quantity) - tax_amount
 				total_amount = (expense.price_unit * expense.quantity)
+
+				if expense.allowed_expense_amount > 0:
+					untaxed_amount = expense.allowed_expense_amount - tax_amount
+					total_amount = expense.allowed_expense_amount
 
 			expense.tax_amount = tax_amount
 			expense.untaxed_amount = untaxed_amount

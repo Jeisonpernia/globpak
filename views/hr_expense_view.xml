@@ -66,6 +66,7 @@
                                     <!-- <field name="discount" groups="base.group_no_one"/> -->
                                     <field name="tax_ids" widget="many2many_tags" domain="[('type_tax_use','=','purchase'),('company_id', '=', parent.company_id)]" options="{'no_create': True}"/>
                                     <field name="is_recompute_base" invisible="1"/>
+                                    <field name="allowed_expense_amount" />
                                     <field name="untaxed_amount"/> 
                                     <field name="currency_id" invisible="1"/>
                                     <field name="state" invisible="1"/>

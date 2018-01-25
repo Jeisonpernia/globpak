@@ -27,4 +27,43 @@
             <field name="perm_create" eval="False"/>
         </record>
     </data>
+
+    <data noupdate="0">
+        <!-- FLEET -->
+        <delete id="fleet.fleet_rule_vehicle_visibility_user" model="ir.rule"/>
+        <record id="globpak.fleet_rule_vehicle_visibility_user" model="ir.rule">
+            <field name="name">User can only see his/her vehicle</field>
+            <field name="model_id" ref="fleet.model_fleet_vehicle"/>
+            <field name="groups" eval="[(4, ref('fleet.fleet_group_user'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+            <field name="domain_force">[]</field>
+        </record>
+
+        <delete id="fleet.fleet_rule_odometer_visibility_user" model="ir.rule"/>
+        <record id="globpak.fleet_rule_odometer_visibility_user" model="ir.rule">
+            <field name="name">User can only see his/her vehicle's odometer</field>
+            <field name="model_id" ref="fleet.model_fleet_vehicle_odometer"/>
+            <field name="groups" eval="[(4, ref('fleet.fleet_group_user'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+            <field name="domain_force">[]</field>
+        </record>
+
+        <delete id="fleet.fleet_rule_fuel_log_visibility_user" model="ir.rule"/>
+        <record id="globpak.fleet_rule_fuel_log_visibility_user" model="ir.rule">
+            <field name="name">User can only see his/her vehicle's fuel log</field>
+            <field name="model_id" ref="fleet.model_fleet_vehicle_log_fuel"/>
+            <field name="groups" eval="[(4, ref('fleet.fleet_group_user'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+            <field name="domain_force">[]</field>
+        </record>
+    </data>
 </odoo>
