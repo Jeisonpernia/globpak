@@ -17,29 +17,29 @@ class HrEmployeeOfficialBusiness(models.Model):
 	_order = "date_ob desc, id desc"
 
 	name = fields.Char(string='OB #', required=True, copy=False, readonly=True, index=True, default=lambda self: _('New'))
-	employee_id = fields.Many2one('hr.employee', 'Employee', required=True, default=lambda self: self.env['hr.employee'].search([('user_id', '=', self.env.uid)], limit=1), track_visibility='always')
-	department_id = fields.Many2one('hr.department', 'Department', store=True, compute='_set_employee_details')
-	date_ob = fields.Date(required=True, default=fields.Datetime.now(), string='Date of Official Business', track_visibility='always')
+	employee_id = fields.Many2one('hr.employee', 'Employee', required=True, default=lambda self: self.env['hr.employee'].search([('user_id', '=', self.env.uid)], limit=1), track_visibility='always', readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)], 'cancel': [('readonly', False)]})
+	# department_id = fields.Many2one('hr.department', 'Department', store=True, compute='_set_employee_details')
+	date_ob = fields.Date(required=True, default=fields.Datetime.now(), string='Date of Official Business', track_visibility='always', readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)], 'cancel': [('readonly', False)]})
 	date_submitted = fields.Datetime(string='Submitted Date')
-	company_id = fields.Many2one('res.company', 'Company', store=True, default=lambda self: self.env.user.company_id)
+	company_id = fields.Many2one('res.company', 'Company', store=True, default=lambda self: self.env.user.company_id, readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)], 'cancel': [('readonly', False)]})
 	departure_time = fields.Selection([
 		('earlymorning', 'Early Morning'),
 		('morning', 'Morning'),
 		('directob', 'Direct OB'),
 		('afternoon', 'Afternoon'),
 		('anytime', 'Anytime Within The Day'),
-	], string='Estimated Time of Departure', required=True, track_visibility='always')
-	visit_purpose = fields.Text(string='Purpose of Visit', required=True, track_visibility='always')
-	visit_person = fields.Text(string='Person to Visit')
-	visit_place = fields.Text(string='Place to Visit')
+	], string='Estimated Time of Departure', required=True, track_visibility='always', readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)], 'cancel': [('readonly', False)]})
+	visit_purpose = fields.Text(string='Purpose of Visit', required=True, track_visibility='always', readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)], 'cancel': [('readonly', False)]})
+	visit_person = fields.Text(string='Person to Visit', readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)], 'cancel': [('readonly', False)]})
+	visit_place = fields.Text(string='Place to Visit', readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)], 'cancel': [('readonly', False)]})
 	transportation_means = fields.Selection([
 		('uber', 'Uber/Grab'),
 		('companycar', 'With Company Car'),
 		('truck', 'Truck'),
 		('commute','Commute'),
 		('others', 'Others'),
-	], string='Means of Transportation', required=True, track_visibility='always')
-	remarks = fields.Text(string='Other Remarks')
+	], string='Means of Transportation', required=True, track_visibility='always', readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)], 'cancel': [('readonly', False)]})
+	remarks = fields.Text(string='Other Remarks', readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)], 'cancel': [('readonly', False)]})
 	user_id = fields.Many2one('res.user', 'User')
 	approver_id = fields.Many2one('hr.employee','Approver', store=True, compute='_set_employee_details', track_visibility='always')
 	state = fields.Selection([
@@ -85,16 +85,16 @@ class HrEmployeeOfficialBusiness(models.Model):
 		employee = self.employee_id
 		if employee.user_id:
 			user_ids.append(employee.user_id.id)
-		if employee.parent_id:
-			user_ids.append(employee.parent_id.user_id.id)
-		if employee.department_id and employee.department_id.manager_id and employee.parent_id != employee.department_id.manager_id:
-			user_ids.append(employee.department_id.manager_id.user_id.id)
+		# if employee.parent_id:
+			# user_ids.append(employee.parent_id.user_id.id)
+		# if employee.department_id and employee.department_id.manager_id and employee.parent_id != employee.department_id.manager_id:
+			# user_ids.append(employee.department_id.manager_id.user_id.id)
 		self.message_subscribe_users(user_ids=user_ids)
 
 	@api.depends('employee_id')
 	def _set_employee_details(self):
 		for ob in self:
-			ob.department_id = ob.employee_id.department_id
+			# ob.department_id = ob.employee_id.department_id
 			ob.approver_id = ob.employee_id.parent_id
 
 	@api.multi

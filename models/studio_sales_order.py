@@ -47,7 +47,7 @@ class StudioSalesOrder(models.Model):
 
 	x_clientpo = fields.Char(string='Client PO No.', store=True, copy=True)
 	subject = fields.Char(required=True)
-	description = fields.Text(required=True)
+	description = fields.Text(required=False)
 
 	state = fields.Selection([
 		('draft', 'Quotation'),

@@ -13,10 +13,11 @@ class AccountReportSalesTransaction(models.TransientModel):
         return journal_id
 
     def _default_date_from(self):
-        date_today = datetime.date.today()
-        if date_today.day > 25:
-            date_today += datetime.timedelta(7)
-        return date_today.replace(day=1)
+        # date_today = datetime.date.today()
+        # if date_today.day > 25:
+        #     date_today += datetime.timedelta(7)
+        # return date_today.replace(day=1)
+        return datetime.date.today().replace(day=1)
 
     def _default_date_to(self):
         date_today = datetime.date.today()

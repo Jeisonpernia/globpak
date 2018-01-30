@@ -76,6 +76,7 @@ class ExportReportXlsAccountAlphalistPayee(http.Controller):
         amount_income = 0
         amount_tax = 0
         total_amount_tax = 0
+        payment_nature = ''
         for account in account_move_lines:
             if account.partner_id.company_type == 'company':
                 registered_name = account.partner_id.name
@@ -99,12 +100,16 @@ class ExportReportXlsAccountAlphalistPayee(http.Controller):
                 else:
                     amount_tax = account.credit
 
+            # GET NATURE OF PAYMENT
+            if account.invoice_id:
+                payment_nature = account.invoice_id.x_description
+
             worksheet.write(row_count, 0, seq_count, style_table_row) 
             worksheet.write(row_count, 1, account.partner_id.vat or '', style_table_row)
             worksheet.write(row_count, 2, registered_name, style_table_row)
             worksheet.write(row_count, 3, customer_name, style_table_row)
             worksheet.write(row_count, 4, account.tax_line_id.ewt_structure_id.name or '', style_table_row)
-            worksheet.write(row_count, 5, account.tax_line_id.ewt_structure_id.description or '', style_table_row)
+            worksheet.write(row_count, 5, payment_nature, style_table_row)
             
             worksheet.write(row_count, 6, amount_income, style_table_row_amount)
             worksheet.write(row_count, 7, account.tax_line_id.amount, style_table_row_amount)

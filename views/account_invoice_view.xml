@@ -108,6 +108,14 @@
                     <field name="zero_rated_sales"/>
                 </xpath>
 
+                <!-- OVERRIDE TO SHOW ACCOUNT FOR BILLING USERS -->
+                <xpath expr="//notebook/page[1]/field[@name='invoice_line_ids']/tree/field[@name='account_id']" position="attributes">
+                    <attribute name="groups"></attribute>
+                </xpath>
+                <!-- <xpath expr="//notebook/page[1]/field[@name='tax_line_ids']/tree/field[@name='account_id']" position="attributes">
+                    <attribute name="groups"></attribute>
+                </xpath> -->
+
             </field>
         </record>
         

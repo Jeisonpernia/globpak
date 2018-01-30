@@ -540,8 +540,8 @@ class HrExpense(models.Model):
 		self.amount_goods = amount_goods
 	
 	# NEW FIELDS
-	line_ids = fields.One2many('hr.expense.line', 'expense_id', string='Expense Lines', readonly=True, states={'draft': [('readonly', False)], 'refused': [('readonly', False)]}, copy=False)
-	tax_line_ids = fields.One2many('hr.expense.tax', 'expense_id', string='Tax Lines', oldname='tax_line', readonly=True, states={'draft': [('readonly', False)], 'refused': [('readonly', False)]}, copy=True)
+	line_ids = fields.One2many('hr.expense.line', 'expense_id', string='Expense Lines', readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)], 'refused': [('readonly', False)]}, copy=False)
+	tax_line_ids = fields.One2many('hr.expense.tax', 'expense_id', string='Tax Lines', oldname='tax_line', readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)], 'refused': [('readonly', False)]}, copy=True)
 	
 	approver_id = fields.Many2one('hr.employee','Approver', store=True, compute='_set_employee_details')
 	current_user = fields.Many2one('res.users', compute='_get_current_user')
@@ -783,10 +783,26 @@ class HrExpense(models.Model):
 		# 	expense.write({'state':'validate'})
 		if self.approver_id:
 			if self.approver_id.user_id != self.current_user:
-				raise UserError("You cannot validate your own epense. Expense Approver: %s" % (self.approver_id.name))
+				raise UserError("You cannot approve/refuse your own epense. Expense Approver: %s" % (self.approver_id.name))
 		else:
 			raise UserError("No approver was set. Please assign an approver to employee.")
 		self.write({'state': 'validate', 'responsible_id': self.env.user.id})
+
+	@api.multi
+	def refuse_expenses(self):
+		# for expense in self:
+		# 	expense.write({'state':'validate'})
+		if self.approver_id:
+			if self.approver_id.user_id != self.current_user:
+				raise UserError("You cannot approve/refuse your own epense. Expense Approver: %s" % (self.approver_id.name))
+		else:
+			raise UserError("No approver was set. Please assign an approver to employee.")
+		self.write({'state': 'refused', 'responsible_id': self.env.user.id})
+
+	@api.multi
+	def draft_expenses(self):
+		for expense in self:
+			expense.write({'state':'draft'})
 
 	@api.multi
 	def create_sheet(self):

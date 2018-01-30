@@ -101,13 +101,52 @@ class ExportReportXlsAccountEwtDeduction(http.Controller):
         transaction_count = 0
         
         for account in account_vendor_bill:
+            source_type = ''
+            source_num = ''
             amount_income = 0
             amount_tax = 0
             account_title = ''
+            input_tax_amount = 0
+
+            # GET SOURCES
+            if account.invoice_id:
+                source_num = account.invoice_id.number
+                if account.invoice_id.type == 'out_invoice':
+                    source_type = 'Customer Invoice'
+                elif account.invoice_id.type == 'in_invoice':
+                    source_type = 'Vendor Bill'
+                elif account.invoice_id.type == 'out_refund':
+                    source_type = 'Customer Credit Note'
+                else:
+                    source_type = 'Vendor Credit Note'
+            else:
+                # GET PAYMENT
+                # VENDOR PAYMENT
+                if 'SUPP.OUT' in account.name:
+                    payment = request.env['account.payment'].search([('name','=', account.name)], limit=1)
+                    if payment:
+                        source_type = 'O.R'
+                        source_num = payment.name
+                if 'CUST.IN' in account.name:
+                    payment = request.env['account.payment'].search([('name','=', account.name)], limit=1)
+                    if payment:
+                        source_type = 'O.R'
+                        source_num = payment.name
+                        if payment.collection_receipt_id:
+                            source_type = 'C.R'
+                        if payment.acknowledgement_receipt_id:
+                            source_type = 'C.R'
+                        # if not payment.collection_receipt_id and not payment.acknowledgement_receipt_id or payment.collection_receipt_id and payment.acknowledgement_receipt_id:
+                        #     source_type = 'O.R'
+
+            # GET TAXES AMOUNT
             for tax in account.invoice_id.tax_line_ids:
                 if tax.account_id == account.account_id:
                     amount_income = tax.base
                     amount_tax = tax.amount_total
+                else:
+                    # if tax.amount == 12:
+                    input_tax_amount = tax.amount_total
 
             if amount_tax <= 0:
                 if account.debit > 0:
@@ -130,13 +169,13 @@ class ExportReportXlsAccountEwtDeduction(http.Controller):
             worksheet.write(row_count, 5, '%s %s %s %s %s %s'%(account.partner_id.street or '',account.partner_id.street2 or '',account.partner_id.city or '',account.partner_id.state_id.name or '',account.partner_id.zip or '',account.partner_id.country_id.name or ''), style_table_row)
             worksheet.write(row_count, 6, account.partner_id.vat or '', style_table_row)
 
-            worksheet.write(row_count, 7, '', style_table_row)
-            worksheet.write(row_count, 8, '', style_table_row)
+            worksheet.write(row_count, 7, source_type, style_table_row)
+            worksheet.write(row_count, 8, source_num, style_table_row)
             worksheet.write(row_count, 9, account.invoice_id.amount_total, style_table_row_amount)
             worksheet.write(row_count, 10, account.invoice_id.vat_exempt_sales, style_table_row_amount) 
 
             worksheet.write(row_count, 11, account.invoice_id.vat_sales, style_table_row_amount)
-            worksheet.write(row_count, 12, account.invoice_id.amount_tax, style_table_row_amount) 
+            worksheet.write(row_count, 12, input_tax_amount, style_table_row_amount) 
             worksheet.write(row_count, 13, '', style_table_row)
             worksheet.write(row_count, 14, account_title, style_table_row)
             worksheet.write(row_count, 15, account.invoice_id.x_description or '', style_table_row_amount) 
