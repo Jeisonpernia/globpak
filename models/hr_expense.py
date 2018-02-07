@@ -15,19 +15,13 @@ class HrExpenseSheet(models.Model):
 	x_approved_by = fields.Many2one('res.partner', string="Approved By")
 	untaxed_amount = fields.Float(string='Subtotal', store=True, compute='_compute_amount_untaxed', digits=dp.get_precision('Account'))
 
-	approver_id = fields.Many2one('hr.employee','Approver', store=True, compute='_set_employee_details')
+	# approver_id = fields.Many2one('hr.employee','Approver', store=True, compute='_set_employee_details')
+	approver_id = fields.Many2one('hr.employee','Approver', store=True, required=True, track_visibility='always')
 	current_user = fields.Many2one('res.users', compute='_get_current_user')
-
-	# reimbursement_mode = fields.Selection([
-	# 	('petty_cash', 'Petty Cash'),
-	# 	('none','None'),
-	# ], related='expense_line_ids.reimbursement_mode', readonly=True, string='Reimbursement')
-	# fund_custodian_id = fields.Many2one('hr.employee', 'Fund Custodian', related='expense_line_ids.fund_custodian_id', readonly=True)
 
 	# OVERRIDE FIELDS
 	payment_mode = fields.Selection([
 		("own_account", "Employee (to reimburse)"),
-		# ("fund_custodian_account", "Fund Custodian"),
 		("company_account", "Company"),
 	])
 
@@ -75,10 +69,14 @@ class HrExpenseSheet(models.Model):
 	def _compute_amount_untaxed(self):
 		self.untaxed_amount = sum(self.expense_line_ids.mapped('untaxed_amount'))
 
-	@api.depends('employee_id')
+	# @api.depends('employee_id')
+	# def _set_employee_details(self):
+	# 	for ob in self:
+	# 		ob.approver_id = ob.employee_id.parent_id
+
+	@api.onchange('employee_id')
 	def _set_employee_details(self):
-		for ob in self:
-			ob.approver_id = ob.employee_id.parent_id
+		self.approver_id = self.employee_id.parent_id
 
 	@api.depends()
 	def _get_current_user(self):
@@ -543,7 +541,8 @@ class HrExpense(models.Model):
 	line_ids = fields.One2many('hr.expense.line', 'expense_id', string='Expense Lines', readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)], 'refused': [('readonly', False)]}, copy=False)
 	tax_line_ids = fields.One2many('hr.expense.tax', 'expense_id', string='Tax Lines', oldname='tax_line', readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)], 'refused': [('readonly', False)]}, copy=True)
 	
-	approver_id = fields.Many2one('hr.employee','Approver', store=True, compute='_set_employee_details')
+	# approver_id = fields.Many2one('hr.employee','Approver', store=True, compute='_set_employee_details')
+	approver_id = fields.Many2one('hr.employee','Approver', store=True, required=True)
 	current_user = fields.Many2one('res.users', compute='_get_current_user')
 	responsible_id = fields.Many2one('res.user','Responsible', store=True, readonly=True, default=lambda self: self.env.uid)
 	
@@ -563,10 +562,12 @@ class HrExpense(models.Model):
 		], string='Expense Type', default='ob', readonly=True, states={'draft': [('readonly', False)], 'refused': [('readonly', False)]})
 	ob_id = fields.Many2one('hr.employee.official.business', string='Official Business', readonly=True, states={'draft': [('readonly', False)], 'refused': [('readonly', False)]})
 
-	# reimbursement_mode = fields.Selection([
-	# 	('petty_cash', 'Petty Cash'),
-	# 	('none','None'),
-	# ], default='petty_cash',readonly=True, states={'draft': [('readonly', False)], 'refused': [('readonly', False)]})
+
+	reimbursement_mode = fields.Selection([
+		('petty_cash', 'Petty Cash'),
+		('reimbursement', 'Reimbursement'),
+		('cash_advance', 'Cash Advance'),
+	], string='Reimbursement Mode', default='petty_cash', readonly=True, states={'draft': [('readonly', False)], 'refused': [('readonly', False)]})
 	fund_custodian_id = fields.Many2one('hr.employee', 'Fund Custodian', readonly=True, states={'draft': [('readonly', False)], 'refused': [('readonly', False)]})
 	
 	# OVERRIDE FIELDS
@@ -606,10 +607,14 @@ class HrExpense(models.Model):
 	def _onchange_ob_id(self):
 		self.date = self.ob_id.date_ob
 		
-	@api.depends('employee_id')
+	# @api.depends('employee_id')
+	# def _set_employee_details(self):
+	# 	for ob in self:
+	# 		ob.approver_id = ob.employee_id.parent_id
+
+	@api.onchange('employee_id')
 	def _set_employee_details(self):
-		for ob in self:
-			ob.approver_id = ob.employee_id.parent_id
+		self.approver_id = self.employee_id.parent_id
 
 	@api.depends()
 	def _get_current_user(self):

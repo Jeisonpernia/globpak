@@ -39,8 +39,8 @@ class CustomerPortal(CustomerPortal):
 		if order_sudo.state != 'sent':
 			return {'error': _('Order is not in a state requiring customer validation.')}
 
-		order_sudo.write({'x_clientpo': client_po_no})
-		order_sudo.action_confirm()
+		order_sudo.write({'x_clientpo': client_po_no, 'state': 'confirm'})
+		# order_sudo.action_confirm()
 
 		_message_post_helper(
 			res_model='sale.order',
@@ -51,6 +51,6 @@ class CustomerPortal(CustomerPortal):
 			attachments=[('signature.png', base64.b64decode(signature))] if signature else [],
 			**({'token': access_token} if access_token else {}))
 		return {
-			'success': _('Your Order has been confirmed.'),
+			'success': _('Your order has been confirmed.'),
 			'redirect_url': '/my/orders/%s?%s' % (order_sudo.id, access_token and 'access_token=%s' % order_sudo.access_token or ''),
 		}

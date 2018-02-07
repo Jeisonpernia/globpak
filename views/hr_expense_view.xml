@@ -34,7 +34,8 @@
                             <field name="payment_mode" widget="radio"/>
                             <field name="company_id" groups="base.group_multi_company"/>
                             <!-- <field name="reimbursement_mode" widget="radio" attrs="{'invisible':[('payment_mode', '!=', 'own_account')]}"/> -->
-                            <field name="fund_custodian_id" domain="[('is_fund_custodian', '=', True)]" options="{'no_create': True}" attrs="{'required':[('payment_mode', '=', 'own_account')],'invisible':[('payment_mode', '!=', 'own_account')]}"/>
+                            <field name="reimbursement_mode" widget="radio" />
+                            <field name="fund_custodian_id" domain="[('is_fund_custodian', '=', True)]" options="{'no_create': True}" attrs="{'required':[('payment_mode', '=', 'own_account')],'invisible':['|',('payment_mode', '!=', 'own_account'),('reimbursement_mode', '!=', 'petty_cash')]}"/>
                             <field name="total_amount" invisible="1"/>
                             <field name="approver_id" />
                             <field name="current_user" invisible="1"/>
@@ -124,10 +125,9 @@
             <field name="inherit_id" ref="hr_expense.view_hr_expense_sheet_form" />
             <field name="arch" type="xml">
 
-                <!-- <xpath expr="//field[@name='company_id']" position="after">
-                    <field name="reimbursement_mode"/>
-                    <field name="fund_custodian_id" />
-                </xpath> -->
+                <xpath expr="//field[@name='company_id']" position="after">
+                    <field name="approver_id" />
+                </xpath>
 
                 <xpath expr="//field[@name='expense_line_ids']" position="attributes">
                     <attribute name="domain">[('fund_custodian_id.user_id', '=', uid),('state', '=', 'validate')]</attribute>
@@ -144,7 +144,7 @@
                 <xpath expr="//notebook/page[2]/group/group[2]/field[@name='account_move_id']" position="before">
                     <field name="x_checked_by" />
                     <!-- <field name="x_approved_by" /> -->
-                    <field name="approver_id" />
+                    <!-- <field name="approver_id" /> -->
                     <field name="current_user" invisible="1"/>
                 </xpath>
 

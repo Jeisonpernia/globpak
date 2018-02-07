@@ -41,7 +41,8 @@ class HrEmployeeOfficialBusiness(models.Model):
 	], string='Means of Transportation', required=True, track_visibility='always', readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)], 'cancel': [('readonly', False)]})
 	remarks = fields.Text(string='Other Remarks', readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)], 'cancel': [('readonly', False)]})
 	user_id = fields.Many2one('res.user', 'User')
-	approver_id = fields.Many2one('hr.employee','Approver', store=True, compute='_set_employee_details', track_visibility='always')
+	# approver_id = fields.Many2one('hr.employee','Approver', store=True, compute='_set_employee_details', track_visibility='always')
+	approver_id = fields.Many2one('hr.employee','Approver', store=True, required=True, track_visibility='always')
 	state = fields.Selection([
 		('draft', 'To Submit'),
 		('confirm', 'Pending'),
@@ -91,11 +92,15 @@ class HrEmployeeOfficialBusiness(models.Model):
 			# user_ids.append(employee.department_id.manager_id.user_id.id)
 		self.message_subscribe_users(user_ids=user_ids)
 
-	@api.depends('employee_id')
+	# @api.depends('employee_id')
+	# def _set_employee_details(self):
+	# 	for ob in self:
+	# 		# ob.department_id = ob.employee_id.department_id
+	# 		ob.approver_id = ob.employee_id.parent_id
+
+	@api.onchange('employee_id')
 	def _set_employee_details(self):
-		for ob in self:
-			# ob.department_id = ob.employee_id.department_id
-			ob.approver_id = ob.employee_id.parent_id
+		self.approver_id = self.employee_id.parent_id
 
 	@api.multi
 	def submit_ob(self):
@@ -131,45 +136,6 @@ class HrEmployeeOfficialBusiness(models.Model):
 				raise UserError("You're not allowed to approve this OB. OB Approver: %s" % (self.approver_id.name))
 		else:
 			raise UserError("No Approver was set. Please assign an approver to employee.")
-
-		# employee = self.employee_id.user_id
-		# approver = self.approver_id.user_id
-		# values = {
-		# 	'name': self.name,
-		# 	'description': self.visit_purpose,
-		# 	# 'partner_ids': self.employee_id.related_partner_id,
-		# 	# 'partner_ids': partner,
-		# 	# 'partner_ids': [(6, 0, [self.employee_id.related_partner_id.id])],
-		# 	'allday': True,
-		# 	'start': self.date_ob,
-		# 	'stop': self.date_ob,
-		# 	'location': self.visit_place,
-		# 	# 'user_id': self.approver_id.user_id.id,
-		# 	'user_id': employee.id,
-		# 	'privacy': 'confidential',
-		# 	'ob_id': self.id,
-		# 	'approver_partner': approver.partner_id.id,
-		# }
-		# meeting = self.env['calendar.event'].create(values)
-
-
-		# Remove Approver in Attendees
-		# attendees_to_remove = self.env["calendar.attendee"].search([('partner_id', '=', approver.partner_id.id), ('event_id', '=', meeting.id)])
-		# attendees_to_remove.unlink()
-
-		# Create New Attendee For Employee
-		# attendees = self.env['calendar.attendee'].create({
-		# 	'partner_id': employee.partner_id.id,
-		# 	'email':  employee.partner_id.email,
-		# 	'event_id': meeting.id,
-		# 	'state': 'accepted',
-		# })
-
-		# meeting.write({'attendee_ids': [(6, 0, [attendees.id])]})
-
-		# calendar = self.env['calendar.event'].search([('ob_id', '=', self.id)], limit=1)
-		# if calendar:
-		# 	calendar.write({'categ_ids': ['categ_ob_approve']})
 
 		self.state = 'validate'
 

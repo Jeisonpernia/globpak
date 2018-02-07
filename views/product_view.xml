@@ -26,6 +26,14 @@
                 <xpath expr="//field[@name='standard_price']" position="attributes">
                     <attribute name="attrs">{'invisible': [('is_allowed_price_cost_view', '!=', True)]}</attribute>
                 </xpath>
+
+                <xpath expr="//field[@name='item_ids']" position="before">
+                    <group>
+                        <group>
+                            <field name="parent_product" />
+                        </group>
+                    </group>
+                </xpath>
               
                 <!-- <xpath expr="//label[@for='standard_price']" position="attributes">
                     <attribute name="groups">purchase.group_purchase_user,account.group_account_invoice</attribute>
@@ -127,6 +135,76 @@
 
             </field>
         </record>
+
+
+
+        <!-- PRODUCT PRICELIST VIEW -->
+        <record id="product_pricelist_item_view_tree" model="ir.ui.view">
+            <field name="name">product.pricelist.item.tree</field>
+            <field name="model">product.pricelist.item</field>
+            <field name="priority" eval="8" />
+            <field name="arch" type="xml">
+                <tree string="Product Pricelist">
+                    <field name="product_tmpl_id" />
+                    <field name="pricelist_id" />
+                    <field name="fixed_price" />
+                    <field name="min_quantity" />
+                    <field name="date_start" />
+                    <field name="date_end" />
+                </tree>
+            </field>
+        </record>
+
+        <record id="product_pricelist_item_view_form" model="ir.ui.view">
+            <field name="name">product.pricelist.item.form</field>
+            <field name="model">product.pricelist.item</field>
+            <field name="priority" eval="8" />
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <group>
+                            <field name="product_tmpl_id" />
+                            <field name="pricelist_id" />
+                            <field name="fixed_price" />
+                            <field name="min_quantity" />
+                            <field name="date_start" />
+                            <field name="date_end" />
+                        </group>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record id="product_pricelist_item_view_search" model="ir.ui.view">
+            <field name="name">product.pricelist.item.search</field>
+            <field name="model">product.pricelist.item</field>
+            <field name="arch" type="xml">
+                <search string="Search Sales Order">
+                    <group expand="0" string="Group By">
+                        <filter name="group_by_product" string="Product" domain="[]" context="{'group_by':'product_tmpl_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="product_pricelist_item_action">
+            <field name="name">Product Pricelist</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">product.pricelist.item</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="product_pricelist_item_view_search" />
+            <field name="domain">[]</field>
+            <!-- <field name="domain">[('approver_id.user_id', '=', uid)]</field> -->
+            <field name="context">{'search_default_group_by_product': 1}</field>
+            <field name="help" type="html">
+              <p>
+                Create your product pricelist.
+              </p>
+            </field>
+        </record>
+
+        <menuitem id="menu_product_pricelist_item" name="Product Pricelist" parent="sale.product_menu_catalog" action="product_pricelist_item_action" groups="sales_team.group_sale_salesman" sequence="100" />
 
 
 

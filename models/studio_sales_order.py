@@ -52,7 +52,7 @@ class StudioSalesOrder(models.Model):
 	state = fields.Selection([
 		('draft', 'Quotation'),
 		('sent', 'Quotation Sent'),
-		# ('validate', 'Validated'),
+		('confirm', 'Confirmed (Client)'),
 		('sale', 'Sales Order'),
 		('done', 'Locked'),
 		('cancel', 'Cancelled'),
@@ -94,6 +94,8 @@ class StudioSalesOrder(models.Model):
 		for record in self:
 			if user.has_group('sales_team.group_sale_salesman_all_leads') or user.has_group('sales_team.group_sale_salesman') or user.has_group('sales_team.group_sale_manager'):
 				record.is_allowed_sale_validate_confirm = False
+				if record.state == 'confirm':
+					record.is_allowed_sale_validate_confirm = True
 			
 			if user.has_group('account.group_account_manager'):
 				record.is_allowed_sale_validate_confirm = True
