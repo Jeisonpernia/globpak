@@ -24,6 +24,7 @@
 					</div>
 
 					<t t-set='tax_total' t-value='0'/>
+					<t t-set='line_count' t-value='0'/>
 					<table class="table table-condensed" style="font-size: 12px">
 						<thead>
 							<tr>
@@ -40,6 +41,8 @@
 						<tbody>
 							<!-- <t t-set='tax_total' t-value='0'/> -->
 							<t t-foreach="o.expense_line_ids" t-as="expense">
+								<t t-set='line_count' t-value='line_count + 1'/>
+
 								<tr t-foreach="expense.line_ids" t-as="line">
 									<td><span t-field="line.date"/></td>
 								<td><span t-field="line.reference"/></td>
@@ -155,20 +158,43 @@
 		                </div>
             		</div>
 
-					<div style="position: absolute; top: 850px; width: 100%">
-						<div class="col-xs-4">
-							<strong>Prepared By: </strong><br/>
-							<span t-field="o.employee_id.name"/>
+            		<!-- <t t-if='line_count > 15'> -->
+            			<br/>
+            			<br/>
+						<br/>
+						<div style="row">
+							<div class="col-xs-4">
+								<strong>Prepared By: </strong><br/>
+								<span t-field="o.employee_id.name"/>
+							</div>
+							<div class="col-xs-4">
+								<strong>Checked By: </strong><br/>
+								<span t-field="o.x_checked_by.name"/>
+							</div>
+							<div class="col-xs-4">
+								<strong>Approved By: </strong><br/>
+								<span t-field="o.approver_id.name"/>
+							</div>
 						</div>
-						<div class="col-xs-4">
-							<strong>Checked By: </strong><br/>
-							<span t-field="o.x_checked_by.name"/>
+					<!-- </t> -->
+
+					<!-- <t t-if='not line_count > 15'>
+						<div style="position: absolute; top: 850px; width: 100%">
+							<div class="col-xs-4">
+								<strong>Prepared By: </strong><br/>
+								<span t-field="o.employee_id.name"/>
+							</div>
+							<div class="col-xs-4">
+								<strong>Checked By: </strong><br/>
+								<span t-field="o.x_checked_by.name"/>
+							</div>
+							<div class="col-xs-4">
+								<strong>Approved By: </strong><br/>
+								<span t-field="o.approver_id.name"/>
+							</div>
 						</div>
-						<div class="col-xs-4">
-							<strong>Approved By: </strong><br/>
-							<span t-field="o.approver_id.name"/>
-						</div>
-					</div>
+					</t> -->
+
 				</div>
 			</t>
 			</xpath>

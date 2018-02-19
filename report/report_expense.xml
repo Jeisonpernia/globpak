@@ -32,10 +32,6 @@
                             <p t-esc="o.employee_id.name"/>
                         </div>
                         <div class="col-xs-3">
-                            <strong>Manager:</strong>
-                            <p t-esc="o.approver_id.name"/>
-                        </div>
-                        <div class="col-xs-3">
                             <strong>Description:</strong>
                             <p t-esc="o.name"/>
                         </div>
@@ -46,6 +42,10 @@
                         <div class="col-xs-3">
                             <strong>Status:</strong>
                             <p t-field="o.state"/>
+                        </div>
+                        <div class="col-xs-3">
+                            <strong>Approved By:</strong>
+                            <p t-esc="o.approver_id.name"/>
                         </div>
                     </div>
 

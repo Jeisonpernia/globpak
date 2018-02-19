@@ -182,3 +182,8 @@ class AccountInvoice(models.Model):
     @api.multi
     def action_print_account_payable_voucher(self):
         return self.env.ref('globpak.account_payable_voucher').report_action(self)
+
+class AccountInvoiceLine(models.Model):
+    _inherit = 'account.invoice.line'
+
+    related_partner_id = fields.Many2one('res.partner', string='Related Vendor')

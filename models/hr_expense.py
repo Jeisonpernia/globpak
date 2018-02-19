@@ -14,20 +14,26 @@ class HrExpenseSheet(models.Model):
 	x_checked_by = fields.Many2one('res.partner', string="Checked By")
 	x_approved_by = fields.Many2one('res.partner', string="Approved By")
 	untaxed_amount = fields.Float(string='Subtotal', store=True, compute='_compute_amount_untaxed', digits=dp.get_precision('Account'))
-
 	# approver_id = fields.Many2one('hr.employee','Approver', store=True, compute='_set_employee_details')
 	approver_id = fields.Many2one('hr.employee','Approver', store=True, required=True, track_visibility='always')
 	current_user = fields.Many2one('res.users', compute='_get_current_user')
+	reimbursement_mode = fields.Selection([
+		('petty_cash', 'Petty Cash'),
+		('reimbursement', 'Reimbursement'),
+		('cash_advance', 'Liquidation for Cash Advance'),
+	], string='Reimbursement Mode', default='petty_cash', readonly=True, states={'submit': [('readonly', False)], 'cancel': [('readonly', False)]})
 
 	# OVERRIDE FIELDS
 	payment_mode = fields.Selection([
 		("own_account", "Employee (to reimburse)"),
 		("company_account", "Company"),
 	])
+	expense_line_ids = fields.One2many('hr.expense', 'sheet_id', string='Expense Lines', states={'approve': [('readonly', True)], 'done': [('readonly', True)], 'post': [('readonly', True)]}, copy=False)
 
 	# OVERRIDE ACTION
 	@api.multi
 	def check_consistency(self):
+
 		# if any(sheet.employee_id != self[0].fund_custodian_id for sheet in self):
 		# 	raise UserError(_("Expenses must belong to the same Employee."))
 
@@ -59,9 +65,16 @@ class HrExpenseSheet(models.Model):
 	@api.one
 	@api.constrains('expense_line_ids')
 	def _check_employee(self):
-		employee_ids = self.expense_line_ids.mapped('fund_custodian_id')
-		if len(employee_ids) > 1 or (len(employee_ids) == 1 and employee_ids != self.employee_id):
-			raise ValidationError(_('You cannot add expense lines of another employee.'))
+
+		fund_custodian_ids = self.expense_line_ids.mapped('fund_custodian_id')
+		employee_ids = self.expense_line_ids.mapped('employee_id')
+
+		if self.reimbursement_mode == 'petty_cash':
+			if len(fund_custodian_ids) > 1 or (len(fund_custodian_ids) == 1 and fund_custodian_ids != self.employee_id):
+				raise ValidationError(_('You cannot add expense lines of another fund custodian.'))
+		else:
+			if len(employee_ids) > 1 or (len(employee_ids) == 1 and employee_ids != self.employee_id):
+				raise ValidationError(_('You cannot add expense lines of another employee.'))
 
 	# NEW ACTION
 	@api.one
@@ -92,19 +105,34 @@ class HrExpenseSheet(models.Model):
 		# 		raise UserError(_("You cannot validate your own epense. Immediate supervisors are responsible for validating this expense."))
 		# else:
 		# 	raise UserError("No Approver was set. Please assign an approver to employee.")
+		user = self.env['res.users'].browse(self.env.uid)
+		for record in self:
+			if not user.has_group('account.group_account_user'):
+				raise UserError(_("You cannot validate this expense report. Only accounting users are allowed to approve/refuse expense report."))
+
+		# APPROVE
 		self.write({'state': 'approve', 'responsible_id': self.env.user.id})
 
 	@api.multi
 	def refuse_sheet(self, reason):
-		if self.approver_id:
-			if self.approver_id.user_id != self.current_user:
-				raise UserError(_("You cannot refuse your own epense. Immediate supervisors are responsible for refusing this expense."))
-			else:
-				self.write({'state': 'cancel'})
-				for sheet in self:
-					sheet.message_post_with_view('hr_expense.hr_expense_template_refuse_reason', values={'reason': reason ,'is_sheet':True ,'name':self.name})
-		else:
-			raise UserError("No Approver was set. Please assign an approver to employee.")
+		# if self.approver_id:
+		# 	if self.approver_id.user_id != self.current_user:
+		# 		raise UserError(_("You cannot refuse your own epense. Immediate supervisors are responsible for refusing this expense."))
+		# 	else:
+		# 		self.write({'state': 'cancel'})
+		# 		for sheet in self:
+		# 			sheet.message_post_with_view('hr_expense.hr_expense_template_refuse_reason', values={'reason': reason ,'is_sheet':True ,'name':self.name})
+		# else:
+		# 	raise UserError("No Approver was set. Please assign an approver to employee.")
+		user = self.env['res.users'].browse(self.env.uid)
+		for record in self:
+			if not user.has_group('account.group_account_user'):
+				raise UserError(_("You cannot validate this expense report. Only accounting users are allowed to approve/refuse expense report."))
+
+		# REFUSE
+		self.write({'state': 'cancel', 'responsible_id': self.env.user.id})
+		for sheet in self:
+			sheet.message_post_with_view('hr_expense.hr_expense_template_refuse_reason', values={'reason': reason ,'is_sheet':True ,'name':self.name})
 
 	@api.multi
 	def get_tax_details(self, line, tax):
@@ -492,7 +520,6 @@ class HrExpenseLine(models.Model):
 					'expense_id': expense.expense_id.id,
 				})
 		return account_move
-	
 
 class HrExpense(models.Model):
 	_inherit = 'hr.expense'
@@ -542,7 +569,8 @@ class HrExpense(models.Model):
 	tax_line_ids = fields.One2many('hr.expense.tax', 'expense_id', string='Tax Lines', oldname='tax_line', readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)], 'refused': [('readonly', False)]}, copy=True)
 	
 	# approver_id = fields.Many2one('hr.employee','Approver', store=True, compute='_set_employee_details')
-	approver_id = fields.Many2one('hr.employee','Approver', store=True, required=True)
+	# approver_id = fields.Many2one('hr.employee','Approver', store=True, required=True)
+	approver_id = fields.Many2one('hr.employee','Approver')
 	current_user = fields.Many2one('res.users', compute='_get_current_user')
 	responsible_id = fields.Many2one('res.user','Responsible', store=True, readonly=True, default=lambda self: self.env.uid)
 	
@@ -566,9 +594,9 @@ class HrExpense(models.Model):
 	reimbursement_mode = fields.Selection([
 		('petty_cash', 'Petty Cash'),
 		('reimbursement', 'Reimbursement'),
-		('cash_advance', 'Cash Advance'),
-	], string='Reimbursement Mode', default='petty_cash', readonly=True, states={'draft': [('readonly', False)], 'refused': [('readonly', False)]})
-	fund_custodian_id = fields.Many2one('hr.employee', 'Fund Custodian', readonly=True, states={'draft': [('readonly', False)], 'refused': [('readonly', False)]})
+		('cash_advance', 'Liquidation for Cash Advance'),
+	], string='Reimbursement Mode', default='petty_cash', readonly=True, states={'draft': [('readonly', False)], 'refused': [('readonly', False)], 'validate': [('readonly', False)]})
+	fund_custodian_id = fields.Many2one('hr.employee', 'Fund Custodian', readonly=True, states={'draft': [('readonly', False)], 'refused': [('readonly', False)], 'validate': [('readonly', False)]})
 	
 	# OVERRIDE FIELDS
 	product_id = fields.Many2one(required=False)
@@ -590,17 +618,17 @@ class HrExpense(models.Model):
 		('refused', 'Refused')
 	], string='Status', copy=False, index=True, readonly=True, store=True, help="Status of the expense.")
 
-	# @api.depends('sheet_id', 'sheet_id.account_move_id', 'sheet_id.state')
-	# def _compute_state(self):
-	# 	for expense in self:
-	# 		if not expense.sheet_id:
-	# 			expense.state = "draft"
-	# 		elif expense.sheet_id.state == "cancel":
-	# 			expense.state = "refused"
-	# 		elif not expense.sheet_id.account_move_id:
-	# 			expense.state = "reported"
-	# 		else:
-	# 			expense.state = "done"
+	@api.depends('sheet_id', 'sheet_id.account_move_id', 'sheet_id.state')
+	def _compute_state(self):
+		for expense in self:
+			if not expense.sheet_id:
+				expense.state = "validate"
+			elif expense.sheet_id.state == "cancel":
+				expense.state = "refused"
+			elif not expense.sheet_id.account_move_id:
+				expense.state = "reported"
+			else:
+				expense.state = "done"
 	
 	# NEW FUNCTIONS
 	@api.onchange('ob_id')
@@ -812,7 +840,7 @@ class HrExpense(models.Model):
 	@api.multi
 	def create_sheet(self):
 
-		if self.fund_custodian_id != self.current_user:
+		if self.fund_custodian_id.user_id != self.current_user:
 			raise UserError(_("You're not allowed to create this report. Fund Custodian: %s" % (self.fund_custodian_id.name)))
 
 		if any(expense.state != 'validate' for expense in self):

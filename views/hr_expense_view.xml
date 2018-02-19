@@ -35,7 +35,8 @@
                             <field name="company_id" groups="base.group_multi_company"/>
                             <!-- <field name="reimbursement_mode" widget="radio" attrs="{'invisible':[('payment_mode', '!=', 'own_account')]}"/> -->
                             <field name="reimbursement_mode" widget="radio" />
-                            <field name="fund_custodian_id" domain="[('is_fund_custodian', '=', True)]" options="{'no_create': True}" attrs="{'required':[('payment_mode', '=', 'own_account')],'invisible':['|',('payment_mode', '!=', 'own_account'),('reimbursement_mode', '!=', 'petty_cash')]}"/>
+                            <field name="fund_custodian_id" domain="[('is_fund_custodian', '=', True)]" options="{'no_create': True}" attrs="{'required':[('reimbursement_mode', '=', 'petty_cash')],'invisible':[('reimbursement_mode', '!=', 'petty_cash')]}"/>
+                            <!-- <field name="fund_custodian_id" domain="[('is_fund_custodian', '=', True)]" options="{'no_create': True}" attrs="{'required':['|',('payment_mode', '=', 'own_account'),('reimbursement_mode', '=', 'petty_cash')],'invisible':[('payment_mode', '!=', 'own_account')]}"/> -->
                             <field name="total_amount" invisible="1"/>
                             <field name="approver_id" />
                             <field name="current_user" invisible="1"/>
@@ -126,11 +127,14 @@
             <field name="arch" type="xml">
 
                 <xpath expr="//field[@name='company_id']" position="after">
-                    <field name="approver_id" />
+                    <field name="reimbursement_mode" widget="radio" />
+                    <field name="approver_id" invisible="1" />
+                    <field name="responsible_id" />
                 </xpath>
 
                 <xpath expr="//field[@name='expense_line_ids']" position="attributes">
-                    <attribute name="domain">[('fund_custodian_id.user_id', '=', uid),('state', '=', 'validate')]</attribute>
+                    <!-- <attribute name="domain">[('fund_custodian_id.user_id', '=', uid),('state', '=', 'validate')]</attribute> -->
+                    <attribute name="domain">[('reimbursement_mode', '=', reimbursement_mode),('state', '=', 'validate')]</attribute>
                 </xpath>
 
                 <xpath expr="//field[@name='expense_line_ids']/tree/field[@name='date']" position="before">
