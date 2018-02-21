@@ -19,6 +19,8 @@ class Product(models.Model):
 				record.is_allowed_price_view = False
 				if user.has_group('account.group_account_user') or user.has_group('account.group_account_manager'):
 					record.is_allowed_price_view = True
+				if user.has_group('sales_team.group_sale_salesman_all_leads') or user.has_group('sales_team.group_sale_salesman') or user.has_group('sales_team.group_sale_manager'):
+					record.is_allowed_price_view = True
 			else:
 				record.is_allowed_price_view = True
 
@@ -26,6 +28,8 @@ class Product(models.Model):
 			if user.has_group('sales_team.group_sale_salesman_all_leads') or user.has_group('sales_team.group_sale_salesman') or user.has_group('sales_team.group_sale_manager'):
 				record.is_allowed_price_cost_view = False
 				if user.has_group('account.group_account_user') or user.has_group('account.group_account_manager'):
+					record.is_allowed_price_cost_view = True
+				if user.has_group('purchase.group_purchase_user') or user.has_group('purchase.group_purchase_manager'):
 					record.is_allowed_price_cost_view = True
 			else:
 				record.is_allowed_price_cost_view = True

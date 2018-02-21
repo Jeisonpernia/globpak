@@ -570,6 +570,7 @@ class HrExpense(models.Model):
 	
 	# approver_id = fields.Many2one('hr.employee','Approver', store=True, compute='_set_employee_details')
 	# approver_id = fields.Many2one('hr.employee','Approver', store=True, required=True)
+	is_approved = fields.Boolean()
 	approver_id = fields.Many2one('hr.employee','Approver')
 	current_user = fields.Many2one('res.users', compute='_get_current_user')
 	responsible_id = fields.Many2one('res.user','Responsible', store=True, readonly=True, default=lambda self: self.env.uid)
@@ -622,7 +623,10 @@ class HrExpense(models.Model):
 	def _compute_state(self):
 		for expense in self:
 			if not expense.sheet_id:
-				expense.state = "validate"
+				if expense.is_approved == True:
+					expense.state = "validate"
+				else:
+					expense.state = "draft"
 			elif expense.sheet_id.state == "cancel":
 				expense.state = "refused"
 			elif not expense.sheet_id.account_move_id:
@@ -819,7 +823,7 @@ class HrExpense(models.Model):
 				raise UserError("You cannot approve/refuse your own epense. Expense Approver: %s" % (self.approver_id.name))
 		else:
 			raise UserError("No approver was set. Please assign an approver to employee.")
-		self.write({'state': 'validate', 'responsible_id': self.env.user.id})
+		self.write({'state': 'validate', 'responsible_id': self.env.user.id, 'is_approved': True})
 
 	@api.multi
 	def refuse_expenses(self):
