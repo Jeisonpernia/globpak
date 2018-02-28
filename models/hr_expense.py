@@ -196,7 +196,7 @@ class HrExpenseLine(models.Model):
 		vat_sales = 0
 		vat_exempt = 0
 		zero_rated = 0
-		is_recompute_base = False
+		# is_recompute_base = False
 		if self.tax_ids:
 			for tax in self.tax_ids:
 				# Check if zero rated sales or vatable sales
@@ -208,8 +208,8 @@ class HrExpenseLine(models.Model):
 					vat_sales += self.untaxed_amount
 
 				# RECOMPUTE BASE
-				if tax.amount_type == 'base_deduction':
-					is_recompute_base = True
+				# if tax.amount_type == 'base_deduction':
+				# 	is_recompute_base = True
 
 		else:
 			# Vat Exempt Sales
@@ -218,7 +218,7 @@ class HrExpenseLine(models.Model):
 		self.vat_sales = vat_sales
 		self.vat_exempt_sales = vat_exempt
 		self.zero_rated_sales = zero_rated
-		self.is_recompute_base = is_recompute_base
+		# self.is_recompute_base = is_recompute_base
 	
 	name = fields.Text(string='Description', required=True)
 	product_id = fields.Many2one('product.product', string='Product', ondelete='restrict', index=True, domain=[('can_be_expensed', '=', True)], required=True)
@@ -236,7 +236,7 @@ class HrExpenseLine(models.Model):
 	zero_rated_sales = fields.Monetary(string='Zero Rated Sales', store=True, readonly=True, compute='_compute_amount_sales')
 
 	allowed_expense_amount = fields.Monetary('Allowed Expense Amount')
-	is_recompute_base = fields.Boolean(string='Recompute Base', compute='_compute_amount_sales')
+	# is_recompute_base = fields.Boolean(string='Recompute Base', compute='_compute_amount_sales')
 
 	expense_id = fields.Many2one('hr.expense', string="Expense", readonly=True, copy=False)
 	partner_id = fields.Many2one('res.partner', 'Vendor')
@@ -284,13 +284,13 @@ class HrExpenseLine(models.Model):
 			untaxed_amount = expense.price_unit * expense.quantity
 			total_amount = taxes.get('total_included')
 			
-			if expense.is_recompute_base == True:
-				untaxed_amount = (expense.price_unit * expense.quantity) - tax_amount
-				total_amount = (expense.price_unit * expense.quantity)
+			# if expense.is_recompute_base == True:
+			# 	untaxed_amount = (expense.price_unit * expense.quantity) - tax_amount
+			# 	total_amount = (expense.price_unit * expense.quantity)
 
-				if expense.allowed_expense_amount > 0:
-					untaxed_amount = expense.allowed_expense_amount - tax_amount
-					total_amount = expense.allowed_expense_amount
+			if expense.allowed_expense_amount > 0:
+				untaxed_amount = expense.allowed_expense_amount - tax_amount
+				total_amount = expense.allowed_expense_amount
 
 			expense.tax_amount = tax_amount
 			expense.untaxed_amount = untaxed_amount
