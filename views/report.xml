@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <!-- QWeb Reports -->
+        <report 
+            id="account_payable_voucher"
+            model="account.invoice"
+            string="Accounts Payable Voucher"
+            report_type="qweb-pdf"
+            name="globpak.report_account_payable_voucher"
+            file="globpak.report_account_payable_voucher"
+            attachment_use="True"
+            attachment="(object.state in ('open','paid')) and ('APV'+(object.number or '').replace('/','')+'.pdf')"
+            menu="False"
+        />
+        
+        <report 
+            id="account_collection_receipt"
+            model="account.payment"
+            string="Collection Receipt"
+            report_type="qweb-pdf"
+            name="globpak.report_account_collection_receipt"
+            file="globpak.report_account_collection_receipt"
+            attachment_use="True"
+            attachment="(object.state in ('open','paid')) and ('CR'+(object.number or '').replace('/','')+'.pdf')"
+            menu="False"
+        />
+
+        <report 
+            id="account_journal_voucher"
+            model="account.move"
+            string="Journal Voucher"
+            report_type="qweb-pdf"
+            name="globpak.report_journal_voucher"
+            file="globpak.report_journal_voucher"
+            attachment_use="True"
+            attachment="(object.state in ('draft','posted')) and ('JV'+(object.name or '').replace('/','')+'.pdf')"
+        />
+
+        <report 
+            id="account_credit_memo"
+            model="account.invoice"
+            string="Credit Memo"
+            report_type="qweb-pdf"
+            name="globpak.report_credit_memo"
+            file="globpak.report_credit_memo"
+            attachment_use="True"
+            attachment="(object.state in ('open','paid')) and ('CM'+(object.number or '').replace('/','')+'.pdf')"
+            menu="False"
+        />
+
+        <report 
+            id="account_debit_memo"
+            model="account.invoice"
+            string="Debit Memo"
+            report_type="qweb-pdf"
+            name="globpak.report_debit_memo"
+            file="globpak.report_debit_memo"
+            attachment_use="True"
+            attachment="(object.state in ('open','paid')) and ('DM'+(object.number or '').replace('/','')+'.pdf')"
+            menu="False"
+        />
+
+        <report 
+            id="account_acknowledgement_receipt"
+            model="account.payment"
+            string="Acknowledgement Receipt"
+            report_type="qweb-pdf"
+            name="globpak.report_account_acknowledgement_receipt"
+            file="globpak.report_account_acknowledgement_receipt"
+            attachment_use="True"
+            attachment="(object.state in ('draft','posted')) and ('AR'+(object.name or '').replace('/','')+'.pdf')"
+            menu="False"
+        />
+
+        <report 
+            id="action_report_account_payable_summary"
+            model="account.report.payable.summary"
+            string="Accounts Payable Summary"
+            report_type="qweb-pdf"
+            name="globpak.report_account_payable_summary"
+            file="globpak.report_account_payable_summary"
+            />        
+
+    </data>
+</odoo>
