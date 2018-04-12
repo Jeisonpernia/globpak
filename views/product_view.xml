@@ -19,6 +19,10 @@
                     <attribute name="attrs">{'invisible': [('is_allowed_price_view', '!=', True)]}</attribute>
                 </xpath>
 
+                <xpath expr="//field[@name='item_ids']" position="attributes">
+                    <attribute name="attrs">{'invisible': [('is_allowed_price_view', '!=', True)]}</attribute>
+                </xpath>
+
                 <xpath expr="//label[@for='standard_price']" position="attributes">
                     <attribute name="attrs">{'invisible': [('is_allowed_price_cost_view', '!=', True)]}</attribute>
                 </xpath>

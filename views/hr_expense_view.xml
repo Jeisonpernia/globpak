@@ -17,26 +17,18 @@
                          <button name="draft_expenses" states="refused" string="Set to Draft" type="object" />
                          <button name="create_sheet" string="Create Expense Report" type="object" class="oe_highlight" attrs="{'invisible':['|',('state', '!=', 'validate'),('fund_custodian_id', '=', False)]}"/>
                         <button name="view_sheet" type="object" string="View Report" class="oe_highlight" attrs="{'invisible': [('state', 'not in', ['reported','done'])]}"/>
-                        <!-- <button name="%(hr_expense.hr_expense_refuse_wizard_action)d" states="confirm,validate" context="{'hr_expense_refuse_model':'hr.expense.sheet'}" string="Refuse" type="action" groups="hr_expense.group_hr_expense_user" /> -->
                         <field name="state" widget="statusbar" statusbar_visible="draft,confirm,validate,reported,done"/>
                     </header>
                 </xpath>
-
-
-                <!-- <xpath expr="//field[@name='state']" position="attributes">
-                    <attribute name="statusbar_visible">draft,confirm,validate,reported,done</attribute>
-                </xpath> -->
-
+               
                 <xpath expr="//form/sheet/group" position="replace">
                     <group>
                         <group>
                             <field name="employee_id"/>
                             <field name="payment_mode" widget="radio"/>
                             <field name="company_id" groups="base.group_multi_company"/>
-                            <!-- <field name="reimbursement_mode" widget="radio" attrs="{'invisible':[('payment_mode', '!=', 'own_account')]}"/> -->
                             <field name="reimbursement_mode" widget="radio" />
                             <field name="fund_custodian_id" domain="[('is_fund_custodian', '=', True)]" options="{'no_create': True}" attrs="{'required':[('reimbursement_mode', '=', 'petty_cash')],'invisible':[('reimbursement_mode', '!=', 'petty_cash')]}"/>
-                            <!-- <field name="fund_custodian_id" domain="[('is_fund_custodian', '=', True)]" options="{'no_create': True}" attrs="{'required':['|',('payment_mode', '=', 'own_account'),('reimbursement_mode', '=', 'petty_cash')],'invisible':[('payment_mode', '!=', 'own_account')]}"/> -->
                             <field name="total_amount" invisible="1"/>
                             <field name="approver_id" />
                             <field name="current_user" invisible="1"/>

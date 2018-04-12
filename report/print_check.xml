@@ -26,6 +26,9 @@
                     <div class="col-xs-1">
                         <img t-if="company.logo" t-att-src="'data:image/png;base64,%s' % to_text(company.logo)" style="max-height: 65px;"/>
                     </div>
+                    <div class="col-xs-11 text-center" style="font-size: 12px">
+                        <center><span t-esc="company.partner_id.contact_address"/></center>
+                    </div>
                 </div>
             </div>
             <center><h5><strong>ACKNOWLEDGEMENT RECEIPT</strong></h5></center>
@@ -38,10 +41,10 @@
                     </center>
                 </div>
             </div>
-            <br/>
+            <!-- <br/>
             <div class="row" style="font-size: 12px">
                 <center><span t-esc="company.partner_id.contact_address"/></center>
-            </div>
+            </div> -->
 
             <br/>
 

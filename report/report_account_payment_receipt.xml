@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <template id="report_payment_receipt_extend" inherit_id="account.report_payment_receipt">
+        <xpath expr="//div[@class='page']/div[2]" position="after">
+             <div class="row">
+                <div class="col-xs-6" t-if="o.journal_id">
+                    <strong>Payment Journal: </strong><span t-field="o.journal_id" />
+                </div>
+                <div class="col-xs-6" t-if="o.check_number">
+                    <strong>Check Number: </strong><span t-field="o.check_number"/>
+                </div>
+            </div>
+        </xpath>
+    </template>
+
+</odoo>

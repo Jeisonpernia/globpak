@@ -187,3 +187,4 @@ class AccountInvoiceLine(models.Model):
     _inherit = 'account.invoice.line'
 
     related_partner_id = fields.Many2one('res.partner', string='Related Vendor')
+    related_partner_ref = fields.Char(string='Reference')

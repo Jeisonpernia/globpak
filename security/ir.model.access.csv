@@ -10,3 +10,5 @@ access_hr_expense_tax,hr.expense.tax,model_hr_expense_tax,base.group_user,1,1,1,
 access_fleet_trip_ticket_user,fleet.trip.ticket user,model_fleet_trip_ticket,fleet.fleet_group_user,1,1,1,0
 access_fleet_trip_ticket_manager,fleet.trip.ticket manager,model_fleet_trip_ticket,fleet.fleet_group_manager,1,1,1,1
 access_sale_report_stock_user,sale.report stock user manager,sale.model_sale_report,stock.group_stock_user,1,0,0,0
+access_res_user_expense_all,res.user expense all,base.model_res_users,,1,0,0,0
+access_res_user_expense_employee,res.user expense employee,base.model_res_users,base.group_user,1,0,0,0

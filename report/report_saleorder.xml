@@ -7,6 +7,11 @@
             <t t-call="globpak.external_layout_sales">
                 <div class="page">
                     <div class="row">
+                        <div class="col-xs-6" t-if="doc.state in ['draft','sent']">
+                            <strong>CLIENT ADDRESS:</strong><br/>
+                            <strong><span style="font-size: 15px" t-field="doc.account_name"/></strong>
+                            <div t-field="doc.partner_shipping_id" t-options='{"widget": "contact", "fields": ["address"], "no_marker": True}' />
+                        </div>
                         <div class="col-xs-3 pull-right">
                             <h2>
                                 <t t-if="not (env.context.get('proforma', False) or is_pro_forma)">
@@ -18,8 +23,8 @@
                                 </t>
                                 
                             </h2>
-                            <span t-if="doc.confirmation_date and doc.state not in ['draft','sent']">Date: <span t-field="doc.confirmation_date" t-options='{"format": "MM/dd/yyyy"}'/></span>
-                            <span t-if="doc.date_order and doc.state in ['draft','sent']">Date: <span t-field="doc.date_order" t-options='{"format": "MM/dd/yyyy"}'/></span><br/>
+                            <span t-if="doc.confirmation_date and doc.state not in ['draft','sent','confirm']">Date: <span t-field="doc.confirmation_date" t-options='{"format": "MM/dd/yyyy"}'/></span>
+                            <span t-if="doc.date_order and doc.state in ['draft','sent','confirm']">Date: <span t-field="doc.date_order" t-options='{"format": "MM/dd/yyyy"}'/></span><br/>
                             <span t-if="doc.state not in ['draft','sent']">S.O No.: <span t-field="doc.name"/></span>
                             <span t-if="doc.state in ['draft','sent']">Quote Number: <span t-field="doc.name"/></span>
                         </div>
@@ -33,14 +38,14 @@
                             <p t-if="doc.partner_shipping_id.vat"><t t-esc="doc.company_id.country_id.vat_label or 'TIN'"/>: <span t-field="doc.partner_shipping_id.vat"/></p>
                         </div>
                         <div class="col-xs-6">
-                            <strong >Ship To:</strong>
+                            <strong >Deliver To:</strong>
                             <div t-field="doc.partner_shipping_id" t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True}' />
                             <p t-if="doc.partner_shipping_id.vat"><t t-esc="doc.company_id.country_id.vat_label or 'TIN'"/>: <span t-field="doc.partner_shipping_id.vat"/></p>
                         </div>
                     </div>
 
                     <!-- QUOTE -->
-                    <div class="row" t-if="doc.state in ['draft','sent']">
+                    <!-- <div class="row" t-if="doc.state in ['draft','sent']">
                         <div class="col-xs-6">
                             <strong>CLIENT ADDRESS:</strong><br/>
                             <strong><span style="font-size: 15px" t-field="doc.account_name"/></strong>
@@ -48,18 +53,18 @@
                         </div>
                     </div>
 
-                    <br/>
+                    <br/> -->
 
-                    <div class="row zero_min_height" t-if="doc.state in ['draft','sent']">
+                    <!-- <div class="row zero_min_height" t-if="doc.state in ['draft','sent']">
                         <div class="col-xs-12">
                             <div style="border-bottom: 1px solid black;"></div>
                         </div>
-                    </div>
+                    </div> -->
 
                     <br/>
 
                     <!-- QUOTE -->
-                    <div class="row" id="informations" t-if="doc.state in ['draft','sent']">
+                    <!-- <div class="row" id="informations" t-if="doc.state in ['draft','sent']">
                         <div class="col-xs-5 col-xs-offset-1">
                             <span>Account Name: </span>
                             <strong><span t-field="doc.account_name"/></strong>
@@ -84,7 +89,7 @@
                             <strong><span t-field="doc.user_id"/></strong>
                         </div>
 
-                    </div>
+                    </div> -->
 
                     <!-- ORDER -->
                     <!-- <div class="row" t-if="doc.state not in ['draft','sent']"> -->
@@ -119,10 +124,10 @@
                                     <th style="border: 1px solid black;">P.O NO.</th>
                                     <th style="border: 1px solid black;">Terms</th>
                                     <th style="border: 1px solid black;">Rep</th>
-                                    <th style="border: 1px solid black;">Ship Date:</th>
-                                    <th style="border: 1px solid black;">Ship Via</th>
-                                    <th style="border: 1px solid black;">FOB</th>
-                                    <th style="border: 1px solid black;">Ref. No.</th>
+                                    <th style="border: 1px solid black;">Delivery Date</th>
+                                    <!-- <th style="border: 1px solid black;">Ship Via</th> -->
+                                    <!-- <th style="border: 1px solid black;">FOB</th> -->
+                                    <!-- <th style="border: 1px solid black;">Ref. No.</th> -->
                                 </tr>
                             </thead>
                             <tbody>
@@ -131,9 +136,9 @@
                                     <td style="border: 1px solid black;"><p t-field="doc.payment_term_id"/></td>
                                     <td style="border: 1px solid black;"><p t-field="doc.user_id"/></td>
                                     <td style="border: 1px solid black;"><p t-field="doc.commitment_date" t-options='{"format": "MM/dd/yyyy"}'/></td>
-                                    <td style="border: 1px solid black;"></td>
-                                    <td style="border: 1px solid black;"></td>
-                                    <td style="border: 1px solid black;"></td>
+                                    <!-- <td style="border: 1px solid black;"></td> -->
+                                    <!-- <td style="border: 1px solid black;"></td> -->
+                                    <!-- <td style="border: 1px solid black;"></td> -->
                                 </tr>
                             </tbody>
                         </table>
@@ -159,7 +164,7 @@
                                     <th>Product Name</th>
                                     <th>Product Code</th>
                                     <th class="text-right">Qty</th>
-                                    <th class="text-right">List Price</th>
+                                    <th class="text-right">Unit Price</th>
                                     <!-- <th t-if="display_discount" class="text-right" groups="sale.group_discount_per_so_line">Disc.(%)</th> -->
                                     <!-- <th class="text-right">Taxes</th> -->
                                     <th class="text-right" groups="sale.group_show_price_subtotal">Total</th>
@@ -252,7 +257,7 @@
                                     <th>U/M</th>
                                     <th>Item</th>
                                     <th>Description</th>
-                                    <th class="text-right">Rate</th>
+                                    <th class="text-right">Unit Price</th>
                                     <th class="text-right">Amount</th>
                                 </tr>
                            </thead>
@@ -364,6 +369,15 @@
                                                         t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
                                                 </td>
                                             </t>
+                                            <!-- <t t-if="len(o.tax_line_ids) &lt; 1">
+                                                <t t-set='vat' t-value='0'/>
+                                                <tr>
+                                                    <td>Taxes</td>
+                                                    <td class="text-right">
+                                                        <span t-esc="vat" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                                    </td>
+                                                </tr>
+                                            </t> -->
                                         </tr>
                                     </t>
                                     <tr>

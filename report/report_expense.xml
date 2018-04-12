@@ -7,7 +7,7 @@
 				<div class="page">
 
 					<div class="text-right">
-						<h3>HR Expense</h3>
+						<h3>Expense</h3>
 						<!-- <h5>Description: <span t-field="o.name"/></h5> -->
 						<h5>Date: <span t-field="o.date"/></h5>
 					</div>
@@ -53,33 +53,120 @@
 					<table class="table table-condensed" style="font-size: 12px">
 						<thead>
 							<tr>
+								<th>Date</th>
 								<th>Receipt #</th>
 								<th>Vendor</th>
-								<th>Product</th>
-								<th>Description</th>
+								<th>Particulars</th>
+								<!-- <th>Description</th> -->
 								<th>Account</th>
-								<th class="text-right">Quantity</th>
-								<th class="text-right">Price Unit</th>
+								<!-- <th class="text-right">Quantity</th> -->
+								<th class="text-right">Net</th>
 								<th class="text-right">Taxes</th>
-								<th class="text-right">Subtotal</th>
+								<th class="text-right">Total</th>
 							</tr>
 						</thead>
 						<tbody>
 							<t t-foreach="o.line_ids" t-as="line">
 								<tr>
-									<td><span t-field="line.reference"/></td>
-									<td><span t-field="line.partner_id.name"/></td>
-									<td><span t-field="line.product_id.name"/></td>
-									<td><span t-field="line.name"/></td>
-                                	<td><span t-field="line.account_id"/></td>
-									<td class="text-right"><span t-field="line.quantity"/></td>
-									<td class="text-right"><span t-field="line.price_unit" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/></td>
-									<td class="text-right">
+									<td width="10%"><span t-field="line.date"/></td>
+									<td width="10%"><span t-field="line.reference"/></td>
+									<td width="20%"><span t-field="line.partner_id.name"/></td>
+									<td width="15%">
+										<!-- <span t-field="line.product_id.name"/><br/> -->
+										<span t-field="line.name"/>
+									</td>
+									<!-- <td width="10%"><span t-field="line.name"/></td> -->
+                                	<td width="15%"><span t-field="line.account_id"/></td>
+									<!-- <td class="text-right"><span t-field="line.quantity"/></td> -->
+									<td width="10%" class="text-right"><span t-field="line.price_unit" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/></td>
+									<td width="10%" class="text-right">
 										<span t-field="line.tax_amount" t-options='{"widget": "monetary", "display_currency": o.currency_id}' />
 									</td>
-									<td class="text-right"><span t-field="line.untaxed_amount" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/></td>
+									<td width="10%" class="text-right"><span t-field="line.untaxed_amount" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/></td>
 								</tr>
 							</t>
+
+							<!-- TOTALS -->
+							<tr>
+								<td width="10%"></td>
+								<td width="10%"></td>
+								<td width="20%"></td>
+								<td width="15%"></td>
+								<td width="15%"></td>
+								<!-- <td width="35%">
+									<div class="row zero_min_height">
+										<div class="col-xs-12">
+											<div style="margin-bottom: 7px;"></div>
+										</div>
+									</div>
+									<strong>Total</strong>
+									<div class="row zero_min_height">
+										<div class="col-xs-12">
+											<div style="margin-top: 7px;"></div>
+										</div>
+									</div>
+								</td> -->
+
+								<!-- Net -->
+								<td width="10%" class="text-right">
+									<div class="row zero_min_height">
+										<div class="col-xs-12">
+											<div style="border-bottom: 1px solid black;margin-bottom: 7px;"></div>
+										</div>
+									</div>
+									<span t-esc="o.untaxed_amount" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+									<div class="row zero_min_height">
+										<div class="col-xs-12">
+											<div style="border-bottom: 1px solid black;margin-top: 7px;margin-bottom: 5px;"></div>
+										</div>
+									</div>
+									<div class="row zero_min_height">
+										<div class="col-xs-12">
+											<div style="border-bottom: 1px solid black;"></div>
+										</div>
+									</div>
+								</td>
+
+								<!-- Taxes -->
+								<td width="10%" class="text-right">
+									<div class="row zero_min_height">
+										<div class="col-xs-12">
+											<div style="border-bottom: 1px solid black;margin-bottom: 7px;"></div>
+										</div>
+									</div>
+									<span t-esc="o.tax_amount" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+									<div class="row zero_min_height">
+										<div class="col-xs-12">
+											<div style="border-bottom: 1px solid black;margin-top: 7px;margin-bottom: 5px;"></div>
+										</div>
+									</div>
+									<div class="row zero_min_height">
+										<div class="col-xs-12">
+											<div style="border-bottom: 1px solid black;"></div>
+										</div>
+									</div>
+								</td>
+
+								<!-- Total -->
+								<td width="10%" class="text-right">
+									<div class="row zero_min_height">
+										<div class="col-xs-12">
+											<div style="border-bottom: 1px solid black;margin-bottom: 7px;"></div>
+										</div>
+									</div>
+									<span t-esc="o.total_amount" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+									<div class="row zero_min_height">
+										<div class="col-xs-12">
+											<div style="border-bottom: 1px solid black;margin-top: 7px;margin-bottom: 5px;"></div>
+										</div>
+									</div>
+									<div class="row zero_min_height">
+										<div class="col-xs-12">
+											<div style="border-bottom: 1px solid black;"></div>
+										</div>
+									</div>
+								</td>
+							</tr>
 						</tbody>
 					</table>
 
@@ -102,22 +189,22 @@
 		                </div>
             		</div> -->
 
-            		<div class="clearfix">
+            		<!-- <div class="clearfix">
                         <div id="total" class="row pull-right">
                             <div>
                                 <table class="table-condensed" style="min-width: 250px;max-width: 400px;">
-                                    <!-- <tr class="border-black" style="border-bottom:1px solid #dddddd;">
+                                    <tr class="border-black" style="border-bottom:1px solid #dddddd;">
                                         <td><strong>Subtotal</strong></td>
                                         <td class="text-right">
                                             <span t-field="o.untaxed_amount" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
                                         </td>
-                                    </tr> -->
-                                    <!-- <tr class="border-black" style="border-bottom:1px solid #dddddd;">
+                                    </tr>
+                                    <tr class="border-black" style="border-bottom:1px solid #dddddd;">
                                         <td><strong>Taxes</strong></td>
                                         <td class="text-right">
                                             <span t-field="o.tax_amount" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
                                         </td>
-                                    </tr> -->
+                                    </tr>
                                     <tr class="border-black">
                                         <td><strong>Total</strong></td>
                                         <td class="text-right">
@@ -127,7 +214,7 @@
                                 </table>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
 
                     <span t-field="o.description"/>
                     <br/>

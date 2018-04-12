@@ -14,7 +14,6 @@ class HrExpenseSheet(models.Model):
 	x_checked_by = fields.Many2one('res.partner', string="Checked By")
 	x_approved_by = fields.Many2one('res.partner', string="Approved By")
 	untaxed_amount = fields.Float(string='Subtotal', store=True, compute='_compute_amount_untaxed', digits=dp.get_precision('Account'))
-	# approver_id = fields.Many2one('hr.employee','Approver', store=True, compute='_set_employee_details')
 	approver_id = fields.Many2one('hr.employee','Approver', store=True, required=True)
 	current_user = fields.Many2one('res.users', compute='_get_current_user')
 	reimbursement_mode = fields.Selection([
@@ -94,18 +93,11 @@ class HrExpenseSheet(models.Model):
 	@api.depends()
 	def _get_current_user(self):
 		for rec in self:
-			rec.current_user = self.env.user
-		# i think this work too so you don't have to loop
-		self.update({'current_user' : self.env.user.id})
+			rec.current_user = self.env.uid
 
 	@api.multi
 	def approve_expense_sheets(self): # RETURN
-		# if self.approver_id:
-		# 	if self.approver_id.user_id != self.current_user:
-		# 		raise UserError(_("You cannot validate your own epense. Immediate supervisors are responsible for validating this expense."))
-		# else:
-		# 	raise UserError("No Approver was set. Please assign an approver to employee.")
-		user = self.env['res.users'].browse(self.env.uid)
+		user = self.env['res.users'].sudo().browse(self.env.uid)
 		for record in self:
 			if not user.has_group('account.group_account_user'):
 				raise UserError(_("You cannot validate this expense report. Only accounting users are allowed to approve/refuse expense report."))
@@ -115,16 +107,7 @@ class HrExpenseSheet(models.Model):
 
 	@api.multi
 	def refuse_sheet(self, reason):
-		# if self.approver_id:
-		# 	if self.approver_id.user_id != self.current_user:
-		# 		raise UserError(_("You cannot refuse your own epense. Immediate supervisors are responsible for refusing this expense."))
-		# 	else:
-		# 		self.write({'state': 'cancel'})
-		# 		for sheet in self:
-		# 			sheet.message_post_with_view('hr_expense.hr_expense_template_refuse_reason', values={'reason': reason ,'is_sheet':True ,'name':self.name})
-		# else:
-		# 	raise UserError("No Approver was set. Please assign an approver to employee.")
-		user = self.env['res.users'].browse(self.env.uid)
+		user = self.env['res.users'].sudo().browse(self.env.uid)
 		for record in self:
 			if not user.has_group('account.group_account_user'):
 				raise UserError(_("You cannot validate this expense report. Only accounting users are allowed to approve/refuse expense report."))
@@ -187,7 +170,6 @@ class HrExpenseTax(models.Model):
 
 class HrExpenseLine(models.Model):
 	_name = 'hr.expense.line'
-	# _inherit = ['mail.thread']
 	_description = 'HR Expense Line'
 
 	@api.one
@@ -248,7 +230,6 @@ class HrExpenseLine(models.Model):
 	company_id = fields.Many2one('res.company', string='Company', related='expense_id.company_id', store=True, readonly=True)
 	currency_id = fields.Many2one('res.currency', related='expense_id.currency_id', store=True, readonly=True)
 	account_analytic_id = fields.Many2one('account.analytic.account', 'Analytic Account', compute='_compute_analytic', store=True)
-	# analytic_tag_ids = fields.Many2many('account.analytic.tag', string='Analytic Tags')
 
 	state = fields.Selection([
 		('draft', 'To Submit'),
@@ -567,9 +548,7 @@ class HrExpense(models.Model):
 	# NEW FIELDS
 	line_ids = fields.One2many('hr.expense.line', 'expense_id', string='Expense Lines', readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)], 'refused': [('readonly', False)]}, copy=False)
 	tax_line_ids = fields.One2many('hr.expense.tax', 'expense_id', string='Tax Lines', oldname='tax_line', readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)], 'refused': [('readonly', False)]}, copy=True)
-	
-	# approver_id = fields.Many2one('hr.employee','Approver', store=True, compute='_set_employee_details')
-	# approver_id = fields.Many2one('hr.employee','Approver', store=True, required=True)
+
 	is_approved = fields.Boolean()
 	approver_id = fields.Many2one('hr.employee','Approver')
 	current_user = fields.Many2one('res.users', compute='_get_current_user')
@@ -607,7 +586,6 @@ class HrExpense(models.Model):
 	date = fields.Date(required=True)
 	payment_mode = fields.Selection([
 		("own_account", "Employee (to reimburse)"),
-		# ("fund_custodian_account", "Fund Custodian"),
 		("company_account", "Company"),
 	])
 	state = fields.Selection([
@@ -638,22 +616,14 @@ class HrExpense(models.Model):
 	@api.onchange('ob_id')
 	def _onchange_ob_id(self):
 		self.date = self.ob_id.date_ob
-		
-	# @api.depends('employee_id')
-	# def _set_employee_details(self):
-	# 	for ob in self:
-	# 		ob.approver_id = ob.employee_id.parent_id
 
 	@api.onchange('employee_id')
 	def _set_employee_details(self):
 		self.approver_id = self.employee_id.parent_id
 
-	@api.depends()
 	def _get_current_user(self):
 		for rec in self:
-			rec.current_user = self.env.user
-		# i think this work too so you don't have to loop
-		self.update({'current_user' : self.env.user.id})
+			rec.current_user = self.env.uid
 
 	@api.multi
 	def compute_taxes(self):
@@ -706,7 +676,6 @@ class HrExpense(models.Model):
 	def get_taxes_values(self):
 		tax_grouped = {}
 		for line in self.line_ids:
-			# price_unit = line.price_unit * (1 - (line.discount or 0.0) / 100.0)
 			price_unit = line.price_unit
 			taxes = line.tax_ids.compute_all(price_unit, self.currency_id, line.quantity, line.product_id, self.employee_id.user_id.partner_id)['taxes']
 			for tax in taxes:
@@ -733,9 +702,6 @@ class HrExpense(models.Model):
 	# OVERRIDE FUNCTIONS
 	@api.model
 	def create(self, vals):
-		# if not vals.get('account_id',False):
-			# raise UserError(_('Configuration error!\nCould not find any account to create the invoice, are you sure you have a chart of account installed?'))
-		
 		result = super(HrExpense, self).create(vals)
 		
 		if any(line.tax_ids for line in result.line_ids) and not result.tax_line_ids:
@@ -751,7 +717,6 @@ class HrExpense(models.Model):
 	@api.multi
 	def action_move_create(self):
 		res = self.mapped('line_ids').action_move_create()
-		# res = super(HrExpense, self).action_move_create()
 		for expense in self:
 			ob = self.env['hr.employee.official.business'].search([('id','=',expense.ob_id.id)])
 			ob.write({'state':'done'})
@@ -765,7 +730,6 @@ class HrExpense(models.Model):
 			total_amount = sum(expense.line_ids.mapped('total_amount'))
 			expense.untaxed_amount = untaxed_amount
 			expense.tax_amount = tax_amount
-			# expense.total_amount = untaxed_amount + tax_amount
 			expense.total_amount = total_amount
 
 	@api.multi
@@ -778,7 +742,6 @@ class HrExpense(models.Model):
 			if not expense_type:
 				expense_type = expense.expense_type
 
-			# if ob_id != new_ob_id:
 			if expense_type == 'ob':
 				if ob_id == new_ob_id:
 					new_ob = self.env['hr.employee.official.business'].search([('id','=',new_ob_id)])
@@ -816,25 +779,24 @@ class HrExpense(models.Model):
 
 	@api.multi
 	def approve_expenses(self):
-		# for expense in self:
-		# 	expense.write({'state':'validate'})
 		if self.approver_id:
 			if self.approver_id.user_id != self.current_user:
+			# if self.approver_id.user_id != self.env.uid:
 				raise UserError("You cannot approve/refuse your own epense. Expense Approver: %s" % (self.approver_id.name))
 		else:
 			raise UserError("No approver was set. Please assign an approver to employee.")
-		self.write({'state': 'validate', 'responsible_id': self.env.user.id, 'is_approved': True})
+		# self.write({'state': 'validate', 'responsible_id': self.env.user.id, 'is_approved': True})
+		self.write({'state': 'validate', 'is_approved': True})
 
 	@api.multi
 	def refuse_expenses(self):
-		# for expense in self:
-		# 	expense.write({'state':'validate'})
 		if self.approver_id:
 			if self.approver_id.user_id != self.current_user:
+			# if self.approver_id.user_id != self.env.uid:
 				raise UserError("You cannot approve/refuse your own epense. Expense Approver: %s" % (self.approver_id.name))
 		else:
 			raise UserError("No approver was set. Please assign an approver to employee.")
-		self.write({'state': 'refused', 'responsible_id': self.env.user.id})
+		self.write({'state': 'refused'})
 
 	@api.multi
 	def draft_expenses(self):
@@ -845,6 +807,7 @@ class HrExpense(models.Model):
 	def create_sheet(self):
 
 		if self.fund_custodian_id.user_id != self.current_user:
+		# if self.fund_custodian_id.user_id != self.env.uid:
 			raise UserError(_("You're not allowed to create this report. Fund Custodian: %s" % (self.fund_custodian_id.name)))
 
 		if any(expense.state != 'validate' for expense in self):

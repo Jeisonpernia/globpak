@@ -18,11 +18,6 @@
                     <field name="credit_memo_id" attrs="{'invisible':['|',('type', '!=', 'out_refund'),('credit_memo_id','=',False)]}" readonly="1"/>
                 </xpath>
 
-                <!-- <xpath expr="//field[@name='name']" position="after">
-                    <field name="x_checked_by" />
-                    <field name="x_approved_by" />
-                </xpath> -->
-
                 <xpath expr="//field[@name='amount_tax']" position="before">
                     <field name="vat_sales"/>
                     <field name="vat_exempt_sales" />
@@ -52,10 +47,6 @@
                 <xpath expr="//notebook/page[2]/group/group[1]" position="inside">
                     <field name="x_approved_by" />
                 </xpath>
-
-                <!-- <xpath expr="//field[@name='date']" position="after">
-                    <field name="landed_cost_line_id"/>
-                </xpath> -->
 
                 <xpath expr="//notebook/page[1]" position="after">
                     <page string="Importation">
@@ -97,11 +88,6 @@
                     <field name="x_description" />
                 </xpath>
 
-                <!-- <xpath expr="//field[@name='account_id']" position="after">
-                    <field name="x_checked_by" />
-                    <field name="x_approved_by" />
-                </xpath> -->
-
                 <xpath expr="//field[@name='amount_tax']" position="before">
                     <field name="vat_sales"/>
                     <field name="vat_exempt_sales" />
@@ -115,11 +101,8 @@
 
                 <xpath expr="//notebook/page[1]/field[@name='invoice_line_ids']/tree/field[@name='product_id']" position="before">
                     <field name="related_partner_id" />
+                    <field name="related_partner_ref"/>
                 </xpath>
-
-                <!-- <xpath expr="//notebook/page[1]/field[@name='tax_line_ids']/tree/field[@name='account_id']" position="attributes">
-                    <attribute name="groups"></attribute>
-                </xpath> -->
 
             </field>
         </record>
