@@ -37,6 +37,7 @@
                         <group>
                             <field name="expense_type" widget="radio" />
                             <field name="ob_id" attrs="{'required':[('expense_type', '=', 'ob')],'invisible':[('expense_type', '!=', 'ob')]}" domain="[('employee_id', '=', employee_id), ('state', '=', 'validate')]"/>
+                            <!-- <field name="date" widget="date" attrs="{'required':[('reimbursement_mode', '=', 'petty_cash')],'invisible':[('reimbursement_mode', '!=', 'petty_cash')]}"/> -->
                             <field name="date" widget="date" />
                             <field name="currency_id" groups="base.group_multi_currency"/>
                             <field name="sheet_id" invisible="1"/>
@@ -47,8 +48,11 @@
                         <page string="LINES">
                             <field name="line_ids">
                                 <tree string="Expense Lines" editable="bottom">
+                                    <field name="reimbursement_mode" invisible="1"/>
                                     <!-- <field name="sequence" widget="handle" /> -->
-                                    <field name="date" invisible="1" />
+                                    <!-- <field name="date" attrs="{'invisible':[('reimbursement_mode', '=', 'petty_cash')]}" /> -->
+                                    <!-- <field name="date" attrs="{'readonly': [('reimbursement_mode','=','petty_cash')]}" /> -->
+                                    <field name="date"/>
                                     <field name="reference" />
                                     <field name="partner_id" />
                                     <field name="product_id"/>

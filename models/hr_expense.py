@@ -20,6 +20,7 @@ class HrExpenseSheet(models.Model):
 		('petty_cash', 'Petty Cash'),
 		('reimbursement', 'Reimbursement'),
 		('cash_advance', 'Liquidation for Cash Advance'),
+		('credit_card', 'Credit Card Expenses'),
 	], string='Reimbursement Mode', default='petty_cash', readonly=True, states={'submit': [('readonly', False)], 'cancel': [('readonly', False)]})
 
 	# OVERRIDE FIELDS
@@ -223,7 +224,8 @@ class HrExpenseLine(models.Model):
 	expense_id = fields.Many2one('hr.expense', string="Expense", readonly=True, copy=False)
 	partner_id = fields.Many2one('res.partner', 'Vendor')
 	reference = fields.Char(string='Receipt #')
-	date = fields.Date(compute='_compute_date', store=True)
+	# date = fields.Date(compute='_compute_date', inverse='_compute_date_inverse', store=True)
+	date = fields.Date(store=True)
 	
 	employee_id = fields.Many2one('hr.employee', string="Employee", compute='_compute_employee', store=True)
 	account_id = fields.Many2one('account.account', string='Account', states={'post': [('readonly', True)], 'done': [('readonly', True)]}, default=lambda self: self.env['ir.property'].get('property_account_expense_categ_id', 'product.category'))
@@ -240,6 +242,13 @@ class HrExpenseLine(models.Model):
 		('refused', 'Refused'),
 	], compute='_compute_state', string='Status', copy=False, index=True, readonly=True, store=True, help="Status of the expense.")
 
+	reimbursement_mode = fields.Selection([
+		('petty_cash', 'Petty Cash'),
+		('reimbursement', 'Reimbursement'),
+		('cash_advance', 'Liquidation for Cash Advance'),
+		('credit_card', 'Credit Card Expenses'),
+	], string='Reimbursement Mode', compute='_compute_mode')
+
 	@api.depends('expense_id', 'expense_id.state')
 	def _compute_state(self):
 		for expense in self:
@@ -255,6 +264,22 @@ class HrExpenseLine(models.Model):
 				expense.state = "done"
 			else:
 				expense.state = "refused"
+
+	@api.depends('expense_id', 'expense_id.reimbursement_mode')
+	def _compute_mode(self):
+		for expense in self:
+			if expense.expense_id.reimbursement_mode == "petty_cash":
+				expense.reimbursement_mode = "petty_cash"
+				expense.date = expense.expense_id.date
+			
+			if expense.expense_id.reimbursement_mode == "reimbursement":
+				expense.reimbursement_mode = "reimbursement"
+			
+			if expense.expense_id.reimbursement_mode == "cash_advance":
+				expense.reimbursement_mode = "cash_advance"
+			
+			if expense.expense_id.reimbursement_mode == "credit_card":
+				expense.reimbursement_mode = "credit_card"
 	
 	@api.depends('quantity', 'price_unit', 'tax_ids', 'currency_id')
 	def _compute_amount(self):
@@ -277,10 +302,11 @@ class HrExpenseLine(models.Model):
 			expense.untaxed_amount = untaxed_amount
 			expense.total_amount = total_amount
 
-	@api.depends('expense_id', 'expense_id.date')
-	def _compute_date(self):
-		for expense in self:
-			expense.date = expense.expense_id.date
+	# @api.depends('expense_id', 'expense_id.date')
+	# def _compute_date(self):
+	# 	for expense in self:
+	# 		if expense.reimbursement_mode == 'petty_cash':
+	# 			expense.date = expense.expense_id.date
 
 	@api.depends('expense_id', 'expense_id.employee_id')
 	def _compute_employee(self):
@@ -372,7 +398,7 @@ class HrExpenseLine(models.Model):
 		for expense in self:
 			journal = expense.expense_id.sheet_id.bank_journal_id if expense.expense_id.payment_mode == 'company_account' else expense.expense_id.sheet_id.journal_id
 			#create the move that will contain the accounting entries
-			acc_date = expense.expense_id.sheet_id.accounting_date or expense.date
+			acc_date = expense.expense_id.sheet_id.accounting_date or expense.expense_id.date
 			if not expense.expense_id.sheet_id.id in move_group_by_sheet:
 				move = self.env['account.move'].create({
 					'journal_id': journal.id,
@@ -575,6 +601,7 @@ class HrExpense(models.Model):
 		('petty_cash', 'Petty Cash'),
 		('reimbursement', 'Reimbursement'),
 		('cash_advance', 'Liquidation for Cash Advance'),
+		('credit_card', 'Credit Card Expenses'),
 	], string='Reimbursement Mode', default='petty_cash', readonly=True, states={'draft': [('readonly', False)], 'refused': [('readonly', False)], 'validate': [('readonly', False)]})
 	fund_custodian_id = fields.Many2one('hr.employee', 'Fund Custodian', readonly=True, states={'draft': [('readonly', False)], 'refused': [('readonly', False)], 'validate': [('readonly', False)]})
 	

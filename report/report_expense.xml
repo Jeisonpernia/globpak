@@ -9,7 +9,7 @@
 					<div class="text-right">
 						<h3>Expense</h3>
 						<!-- <h5>Description: <span t-field="o.name"/></h5> -->
-						<h5>Date: <span t-field="o.date"/></h5>
+						<h5 t-if="o.date">Date: <span t-field="o.date"/></h5>
 					</div>
 
 					<br/>
@@ -114,7 +114,8 @@
 											<div style="border-bottom: 1px solid black;margin-bottom: 7px;"></div>
 										</div>
 									</div>
-									<span t-esc="o.untaxed_amount" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+									<span t-esc="o.total_amount" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+									<!-- <span t-esc="o.untaxed_amount" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/> -->
 									<div class="row zero_min_height">
 										<div class="col-xs-12">
 											<div style="border-bottom: 1px solid black;margin-top: 7px;margin-bottom: 5px;"></div>
@@ -154,7 +155,8 @@
 											<div style="border-bottom: 1px solid black;margin-bottom: 7px;"></div>
 										</div>
 									</div>
-									<span t-esc="o.total_amount" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+									<span t-esc="o.untaxed_amount" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+									<!-- <span t-esc="o.total_amount" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/> -->
 									<div class="row zero_min_height">
 										<div class="col-xs-12">
 											<div style="border-bottom: 1px solid black;margin-top: 7px;margin-bottom: 5px;"></div>

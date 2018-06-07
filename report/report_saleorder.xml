@@ -64,20 +64,24 @@
                     <br/>
 
                     <!-- QUOTE -->
-                    <!-- <div class="row" id="informations" t-if="doc.state in ['draft','sent']">
-                        <div class="col-xs-5 col-xs-offset-1">
+                    <div class="row" id="informations" t-if="doc.state in ['draft','sent']">
+                        <!-- <div class="col-xs-5 col-xs-offset-1">
                             <span>Account Name: </span>
                             <strong><span t-field="doc.account_name"/></strong>
+                        </div> -->
+                        <div class="col-xs-6">
+                            <span>CONTACT NAME: </span>
+                            <span t-field="doc.partner_contact_id.name"/>
                         </div>
                         
-                        <div class="col-xs-5 col-xs-offset-1">
-                            <span>Quotation For: </span>
-                            <strong><span t-field="doc.subject"/></strong>
+                        <div class="col-xs-6">
+                            <span>SUBJECT: </span>
+                            <span t-field="doc.subject"/>
                         </div>
                         
                     </div>
 
-                    <div class="row" id="informations2" t-if="doc.state in ['draft','sent']">
+                    <!-- <div class="row" id="informations2" t-if="doc.state in ['draft','sent']">
 
                         <div class="col-xs-5 col-xs-offset-1">
                             <span>Contact Name: </span>
@@ -460,25 +464,30 @@
                     </div>
 
                     <!-- ORDER -->
-                    <div class="row" t-if="doc.state not in ['draft','sent']" style="position: absolute; top: 800px; width: 100%">
+                    <!-- <div class="row" t-if="doc.state not in ['draft','sent']" style="position: absolute; top: 800px; width: 100%">
                         <div class="col-xs-4">
                             <strong>Prepared By: </strong> <br/>
                             <span t-field="doc.create_uid"/>
                         </div>
                         <div class="col-xs-4">
                             <strong>Checked By: </strong> <br/>
-                            <!-- <span t-field="doc.x_prepared_by"/> -->
                         </div>
                         <div class="col-xs-4">
                             <strong>Approved By: </strong> <br/>
-                            <!-- <span t-field="doc.x_approved_by"/>  -->
+                        </div>
+                    </div> -->
+
+                    <div class="row" style="position: absolute; top: 800px; width: 100%">
+                        <div class="col-xs-6">
+                            <strong>Prepared By: </strong> <br/>
+                            <span t-field="doc.user_id"/>
+                        </div>
+                        <div class="col-xs-6">
+                            <strong>Received By: </strong> <br/>
+                            ___________________
                         </div>
                     </div>
 
-                    <!-- <p id="fiscal_position_remark" t-if="doc.fiscal_position_id and doc.fiscal_position_id.note">
-                        <strong>Fiscal Position Remark:</strong><br/>
-                        <span t-field="doc.fiscal_position_id.note"/>
-                    </p> -->
                     <div class="oe_structure"/>
                 </div>
             </t>

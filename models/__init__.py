@@ -26,3 +26,4 @@ from . import studio_purchase_order
 
 from . import crm_lead
 # from . import hr_holidays_credit
+from . import product_pricelist

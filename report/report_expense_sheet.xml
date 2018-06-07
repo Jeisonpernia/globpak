@@ -269,15 +269,15 @@
             			<br/>
 						<br/>
 						<div style="row">
-							<div class="col-xs-4">
+							<div class="col-xs-6">
 								<strong>Prepared By: </strong><br/>
 								<span t-field="o.employee_id.name"/>
 							</div>
-							<div class="col-xs-4">
+							<!-- <div class="col-xs-4">
 								<strong>Checked By: </strong><br/>
 								<span t-field="o.x_checked_by.name"/>
-							</div>
-							<div class="col-xs-4">
+							</div> -->
+							<div class="col-xs-6">
 								<strong>Approved By: </strong><br/>
 								<span t-field="o.approver_id.name"/>
 							</div>

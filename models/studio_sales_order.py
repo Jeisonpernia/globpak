@@ -70,6 +70,7 @@ class StudioSalesOrder(models.Model):
 
 	account_name = fields.Char(compute='_get_customer_details')
 	contact_name = fields.Char(compute='_get_customer_details')
+	partner_contact_id = fields.Many2one('res.partner', string='Contact Person')
 
 	@api.multi
 	def action_confirm(self):
