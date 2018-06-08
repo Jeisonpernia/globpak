@@ -2,53 +2,92 @@
 <odoo>
 	<data>
 
+        <!-- QUOTATION / SALES ORDER -->
+        <record id="view_order_tree_salesperson" model="ir.ui.view">
+            <field name="name">sale.order.tree.salesperson</field>
+            <field name="model">sale.order</field>
+            <field name="priority">99</field>
+            <field name="arch" type="xml">
+                <tree string="Quotation / Sales Orders" decoration-bf="message_needaction==True" decoration-muted="state=='cancel'" create="false" edit="false" delete="false">
+                    <field name="message_needaction" invisible="1"/>
+                    <field name="name" string="Order Number"/>
+                    <field name="date_order" string="Quotation Date"/>
+                    <field name="confirmation_date" string="Order Confirmation Date"/>
+                    <field name="partner_id"/>
+                    <field name="user_id"/>
+                    <field name="amount_total" sum="Total Tax Included" widget="monetary"/>
+                    <field name="currency_id" />
+                    <field name="invoice_status" />
+                    <field name="state" />
+                </tree>
+            </field>
+        </record>
+
 		<record id="action_orders_salesperson" model="ir.actions.act_window">
             <field name="name">Quotation / Sales Orders</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">sale.order</field>
             <field name="view_type">form</field>
-            <field name="view_mode">tree,form,graph,pivot</field>
+            <field name="view_mode">tree,graph,pivot</field>
+            <field name="view_id" ref="globpak.view_order_tree_salesperson"/>
             <field name="domain">[('user_id','=',uid)]</field>
             <field name="help" type="html">
               <p class="oe_view_nocontent_create">
-                Create a Quotation, the first step of a new sale.
-              </p><p>
-                Your next actions should flow efficiently: confirm the Quotation to a Sales Order, then create the Invoice and collect the Payment.
-              </p><p>
-                Note that once a Quotation becomes a Sales Order, it will be moved from the Quotations list to the Sales Order list.
+                No quotation / sales order to display.
               </p>
             </field>
         </record>
 
-        <record id="action_invoice_tree1_salesperson" model="ir.actions.act_window">
+
+        <!-- INVOICE -->
+        <record id="invoice_tree_salesperson" model="ir.ui.view">
+            <field name="name">account.invoice.tree.salesperson</field>
+            <field name="model">account.invoice</field>
+            <field name="arch" type="xml">
+                <tree decoration-info="state == 'draft'" decoration-muted="state == 'cancel'" string="Invoice" create="false" edit="false" delete="false">
+                    <field name="partner_id" groups="base.group_user" string="Customer"/>
+                    <field name="date_invoice"/>
+                    <field name="number"/>
+                    <field name="commercial_partner_id" invisible="1"/>
+                    <field name="reference" invisible="1"/>
+                    <field name="name" invisible="1"/>
+                    <field name="journal_id" invisible="1"/>
+                    <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
+                    <field name="user_id"/>
+                    <field name="date_due"/>
+                    <field name="origin"/>
+                    <field name="amount_total_signed" string="Total" sum="Total"/>
+                    <field name="residual_signed" string="Amount Due" sum="Amount Due"/>
+                    <field name="currency_id" invisible="1"/>
+                    <field name="company_currency_id" invisible="1"/>
+                    <field name="state"/>
+                    <field name="type" invisible="context.get('type',True)"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_invoice_tree_salesperson" model="ir.actions.act_window">
             <field name="name">Customer Invoices</field>
             <field name="res_model">account.invoice</field>
             <field name="view_type">form</field>
-            <field name="view_mode">tree,form,pivot,graph</field>
-            <field eval="False" name="view_id"/>
+            <field name="view_mode">tree,pivot,graph</field>
+            <field name="view_id" ref="globpak.invoice_tree_salesperson"/>
             <field name="domain">[('type','=','out_invoice'),('user_id','=',uid)]</field>
             <field name="context">{'type':'out_invoice', 'journal_type': 'sale'}</field>
             <field name="help" type="html">
               <p class="oe_view_nocontent_create">
-                Click to create a customer invoice.
-              </p><p>
-                Odoo's electronic invoicing allows to ease and fasten the
-                collection of customer payments. Your customer receives the
-                invoice by email and he can pay online and/or import it
-                in his own system.
-              </p><p>
-                The discussions with your customer are automatically displayed at
-                the bottom of each invoice.
+                No invoice to display.
               </p>
             </field>
         </record>
 
         <!-- DELIVERY ORDERS -->
-        <!-- <record id="stock_picking_tree_picking_salesperson" model="ir.ui.view">
+        <record id="stock_picking_tree_picking_salesperson" model="ir.ui.view">
             <field name="name">stock.picking.tree.salesperson</field>
             <field name="model">stock.picking</field>
+            <field name="priority">99</field>
             <field name="arch" type="xml">
-                <tree decoration-info="state == 'draft'" decoration-muted="state == 'cancel'" decoration-danger="state not in ('cancel', 'done') and scheduled_date &lt; current_date" string="Picking list", create="false", edit="false">
+                <tree decoration-info="state == 'draft'" decoration-muted="state == 'cancel'" decoration-danger="state not in ('cancel', 'done') and scheduled_date &lt; current_date" string="Delivery Orders" create="false" edit="false" delete="false">
                     <field name="name"/>
                     <field name="location_dest_id" groups="stock.group_stock_multi_locations"/>
                     <field name="partner_id"/>
@@ -62,7 +101,7 @@
                     <field name="picking_type_id" invisible="1"/>
                 </tree>
             </field>
-        </record> -->
+        </record>
 
         <record id="stock_picking_action_picking_salesperson" model="ir.actions.act_window">
             <field name="name">Delivery Orders</field>
@@ -70,7 +109,7 @@
             <field name="type">ir.actions.act_window</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree</field>
-            <!-- <field name="view_id" ref="globpak.stock_picking_tree_picking_salesperson" /> -->
+            <field name="view_id" ref="globpak.stock_picking_tree_picking_salesperson" />
             <field name="domain">[('sale_id.user_id','=',uid)]</field>
             <field name="context">{
                     'contact_display': 'partner_address',
@@ -78,9 +117,7 @@
             </field>
             <field name="help" type="html">
               <p class="oe_view_nocontent_create">
-                Click here to create a new transfer.
-              </p><p>
-                You can either do it immediately or mark it as Todo for future processing. Use your scanner to validate the transferred quantity quicker.
+                No delivery to display.
               </p>
             </field>
         </record>

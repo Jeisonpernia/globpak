@@ -23,7 +23,7 @@
     <!-- SALES -->
     <menuitem id="menu_salesperson_report" name="Salesperson Reports" parent="sale.sale_menu_root" sequence="50" />
     <menuitem id="menu_salesperson_report_sales" name="Quotation / Sales Order" parent="globpak.menu_salesperson_report" sequence="1" action="action_orders_salesperson"/>
-    <menuitem id="menu_salesperson_report_invoice" name="Customer Invoice" parent="globpak.menu_salesperson_report" sequence="2" action="action_invoice_tree1_salesperson" />
+    <menuitem id="menu_salesperson_report_invoice" name="Customer Invoice" parent="globpak.menu_salesperson_report" sequence="2" action="action_invoice_tree_salesperson" />
     <menuitem id="menu_salesperson_report_delivery" name="Delivery Orders" parent="globpak.menu_salesperson_report" sequence="3" action="stock_picking_action_picking_salesperson" />
 </data>
 </odoo>

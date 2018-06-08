@@ -52,7 +52,7 @@
 	'version': '0.1',
 
 	# any module necessary for this one to work correctly
-	'depends': ['base', 'web', 'web_editor', 'account', 'hr', 'hr_contract', 'hr_expense', 'hr_holidays', 'l10n_us_check_printing', 'sale', 'purchase', 'crm', 'account_asset', 'website_quote', 'portal', 'calendar', 'website_calendar'],
+	'depends': ['base', 'web', 'web_editor', 'account', 'hr', 'hr_contract', 'hr_expense', 'hr_holidays', 'l10n_us_check_printing', 'sale', 'purchase', 'stock', 'crm', 'account_asset', 'website_quote', 'portal', 'calendar', 'website_calendar'],
 
 	# always loaded
 	'data': [

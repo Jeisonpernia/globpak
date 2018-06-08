@@ -66,8 +66,10 @@
 							</tr>
 						</thead>
 						<tbody>
+							<t t-set='net_amount' t-value='0'/>
 							<t t-foreach="o.line_ids" t-as="line">
 								<tr>
+									<t t-set='net_amount' t-value='net_amount + line.price_unit'/>
 									<td width="10%"><span t-field="line.date"/></td>
 									<td width="10%"><span t-field="line.reference"/></td>
 									<td width="20%"><span t-field="line.partner_id.name"/></td>
@@ -114,7 +116,7 @@
 											<div style="border-bottom: 1px solid black;margin-bottom: 7px;"></div>
 										</div>
 									</div>
-									<span t-esc="o.total_amount" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+									<span t-esc="net_amount" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
 									<!-- <span t-esc="o.untaxed_amount" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/> -->
 									<div class="row zero_min_height">
 										<div class="col-xs-12">
