@@ -1,6 +1,9 @@
 from odoo import models, fields, api, _ 
 from odoo.exceptions import UserError, AccessError
 
+import logging
+_logger = logging.getLogger(__name__)
+
 class StudioSalesOrder(models.Model):
 	_inherit = 'sale.order'
 
@@ -136,3 +139,44 @@ class StudioSalesOrderLine(models.Model):
 					record.is_allowed_price_edit = True
 			else:
 				record.is_allowed_price_edit = True
+
+	@api.multi
+	def _get_display_price(self, product):
+		location_id = self.order_id.partner_shipping_id.state_id
+		# if self.order_id.partner_shipping_id.state_id:
+		# 	raise UserError(self.order_id.partner_shipping_id.state_id.name)
+
+		# TO DO: move me in master/saas-16 on sale.order
+		_logger.info("TINDE")
+		if self.order_id.pricelist_id.discount_policy == 'with_discount':
+			_logger.info(product.with_context(pricelist=self.order_id.pricelist_id.id))
+			return product.with_context(pricelist=self.order_id.pricelist_id.id).price
+		final_price, rule_id = self.order_id.pricelist_id.get_product_price_rule(self.product_id, self.product_uom_qty or 1.0, self.order_id.partner_id)
+		pricelist_item = self.env['product.pricelist.item'].browse(rule_id)
+		if pricelist_item.base == 'pricelist':
+			base_price, rule_id = pricelist_item.base_pricelist_id.get_product_price_rule(self.product_id, self.product_uom_qty or 1.0, self.order_id.partner_id)
+			base_price = pricelist_item.base_pricelist_id.currency_id.compute(base_price, self.order_id.pricelist_id.currency_id)
+		else:
+			base_price = product[pricelist_item.base] if pricelist_item else product.lst_price
+			base_price = product.currency_id.compute(base_price, self.order_id.pricelist_id.currency_id)
+		# negative discounts (= surcharge) are included in the display price (= unit price)
+		return max(base_price, final_price)
+
+	# EXTEND TO GET PRICELIST BY LOCATION / USE DELIVERY ADDRESS (STATE) AS LOCATION
+	@api.onchange('product_uom', 'product_uom_qty')
+	def product_uom_change(self):
+		if not self.product_uom or not self.product_id:
+			self.price_unit = 0.0
+			return
+		if self.order_id.pricelist_id and self.order_id.partner_id:
+			product = self.product_id.with_context(
+				lang=self.order_id.partner_id.lang,
+				partner=self.order_id.partner_id.id,
+				quantity=self.product_uom_qty,
+				date=self.order_id.date_order,
+				pricelist=self.order_id.pricelist_id.id,
+				uom=self.product_uom.id,
+				fiscal_position=self.env.context.get('fiscal_position'),
+				location=self.order_id.partner_shipping_id.state_id.id
+			)
+			self.price_unit = self.env['account.tax']._fix_tax_included_price_company(self._get_display_price(product), product.taxes_id, self.tax_id, self.company_id)
