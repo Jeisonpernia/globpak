@@ -5,7 +5,7 @@ from odoo.tools import pycompat
 import logging
 _logger = logging.getLogger(__name__)
 
-class Product(models.Model):
+class ProductProduct(models.Model):
 	_inherit = 'product.product'
 
 	is_allowed_price_view = fields.Boolean(compute='_compute_group')
@@ -37,7 +37,7 @@ class Product(models.Model):
 
 	@api.model
 	def create(self, values):
-		result = super(ProductTemplate, self).create(values)
+		result = super(ProductProduct, self).create(values)
 			
 		if values.get('parent_product'):
 			pricelist = self.env['product.pricelist.item']
@@ -58,7 +58,7 @@ class Product(models.Model):
 	@api.multi
 	def write(self, values):
 
-		result = super(ProductTemplate, self).write(values)
+		result = super(ProductProduct, self).write(values)
 			
 		if values.get('parent_product'):
 			pricelist = self.env['product.pricelist.item']

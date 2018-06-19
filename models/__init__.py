@@ -17,10 +17,9 @@ from . import hr_holidays
 from . import product
 from . import product_pricelist
 from . import crm_lead
-# from . import hr_holidays_credit
 
 # STUDIO
-# from . import studio_res_partner
+from . import studio_res_partner
 from . import studio_hr_employee
 from . import studio_sales_order
 from . import studio_stock_picking

@@ -76,6 +76,7 @@
 		'views/studio_purchase_order_view.xml',
 		'views/studio_sale_order_view.xml',
 		'views/studio_stock_picking_view.xml',
+		'views/studio_res_partner_view.xml',
 		'views/account_landed_cost_view.xml',
 		'views/product_view.xml',
 		'views/product_pricelist_view.xml',

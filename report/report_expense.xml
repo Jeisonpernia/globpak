@@ -60,9 +60,9 @@
 								<!-- <th>Description</th> -->
 								<th>Account</th>
 								<!-- <th class="text-right">Quantity</th> -->
-								<th class="text-right">Net</th>
+								<th class="text-right">Amount</th>
 								<th class="text-right">Taxes</th>
-								<th class="text-right">Total</th>
+								<th class="text-right">Total Net</th>
 							</tr>
 						</thead>
 						<tbody>
