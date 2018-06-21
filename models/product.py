@@ -85,6 +85,7 @@ class ProductProduct(models.Model):
 			partner = self._context.get('partner', False)
 			quantity = self._context.get('quantity', 1.0)
 			location = self._context.get('location', False)
+			flc = self._context.get('flc')
 
 			# Support context pricelists specified as display_name or ID for compatibility
 			if isinstance(pricelist_id_or_name, pycompat.string_types):
@@ -98,7 +99,7 @@ class ProductProduct(models.Model):
 				quantities = [quantity] * len(self)
 				partners = [partner] * len(self)
 				locations = [location] * len(self)
-				prices = pricelist.get_products_price(self, quantities, partners, locations)
+				prices = pricelist.get_products_price(self, quantities, partners, locations, flc)
 
 		for product in self:
 			product.price = prices.get(product.id, 0.0)

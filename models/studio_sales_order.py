@@ -128,6 +128,7 @@ class StudioSalesOrderLine(models.Model):
 	_inherit = 'sale.order.line'
 
 	is_allowed_price_edit = fields.Boolean(compute='_compute_group')
+	is_flc = fields.Boolean(string='FLC', default=False)
 
 	@api.depends('product_id')
 	def _compute_group(self):
@@ -163,7 +164,7 @@ class StudioSalesOrderLine(models.Model):
 		return max(base_price, final_price)
 
 	# EXTEND TO GET PRICELIST BY LOCATION / USE DELIVERY ADDRESS (STATE) AS LOCATION
-	@api.onchange('product_uom', 'product_uom_qty')
+	@api.onchange('product_uom', 'product_uom_qty', 'is_flc')
 	def product_uom_change(self):
 		if not self.product_uom or not self.product_id:
 			self.price_unit = 0.0
@@ -177,6 +178,7 @@ class StudioSalesOrderLine(models.Model):
 				pricelist=self.order_id.pricelist_id.id,
 				uom=self.product_uom.id,
 				fiscal_position=self.env.context.get('fiscal_position'),
-				location=self.order_id.partner_shipping_id.state_id.id
+				location=self.order_id.partner_shipping_id.state_id.id,
+				flc=self.is_flc
 			)
 			self.price_unit = self.env['account.tax']._fix_tax_included_price_company(self._get_display_price(product), product.taxes_id, self.tax_id, self.company_id)

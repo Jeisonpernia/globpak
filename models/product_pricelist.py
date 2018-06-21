@@ -16,7 +16,7 @@ class ProductPricelist(models.Model):
 
 	# EXTEND TO GET PRICELIST BY LOCATION
 	@api.multi
-	def _compute_price_rule(self, products_qty_partner, date=False, uom_id=False, location_id=False):
+	def _compute_price_rule(self, products_qty_partner, date=False, uom_id=False, location_id=False, flc=False):
 		""" Low-level method - Mono pricelist, multi products
 		Returns: dict{product_id: (price, suitable_rule) for the given pricelist}
 
@@ -28,7 +28,7 @@ class ProductPricelist(models.Model):
 		"""
 		self.ensure_one()
 		
-		if not date:
+		if not date or date == True:
 			date = self._context.get('date') or fields.Date.today()
 		if not uom_id and self._context.get('uom'):
 			uom_id = self._context['uom']
@@ -41,6 +41,12 @@ class ProductPricelist(models.Model):
 
 		if not location_id:
 			location_id = self._context.get('location')
+
+		if not flc:
+			flc = self._context.get('flc')
+
+		# _logger.info('SIELTEL')
+		# _logger.info(date)
 
 		if not products:
 			return {}
@@ -75,7 +81,7 @@ class ProductPricelist(models.Model):
 				'AND (item.categ_id IS NULL OR item.categ_id = any(%s)) '
 				'AND (item.pricelist_id = %s) '
 				'AND (item.date_start IS NULL OR item.date_start<=%s) '
-				'AND (item.date_end IS NULL OR item.date_end>=%s)'
+				'AND (item.date_end IS NULL OR item.date_end>=%s) '
 				'AND (item.location_id = %s)'
 				'ORDER BY item.applied_on, item.min_quantity desc, categ.parent_left desc',
 				(prod_tmpl_ids, prod_ids, categ_ids, self.id, date, date, location_id))
@@ -90,7 +96,7 @@ class ProductPricelist(models.Model):
 				'AND (item.categ_id IS NULL OR item.categ_id = any(%s)) '
 				'AND (item.pricelist_id = %s) '
 				'AND (item.date_start IS NULL OR item.date_start<=%s) '
-				'AND (item.date_end IS NULL OR item.date_end>=%s)'
+				'AND (item.date_end IS NULL OR item.date_end>=%s) '
 				'AND (item.location_id IS NULL)'
 				'ORDER BY item.applied_on, item.min_quantity desc, categ.parent_left desc',
 				(prod_tmpl_ids, prod_ids, categ_ids, self.id, date, date))
@@ -123,7 +129,7 @@ class ProductPricelist(models.Model):
 
 			price_uom = self.env['product.uom'].browse([qty_uom_id])
 			for rule in items:
-				if rule.min_quantity and qty_in_product_uom < rule.min_quantity:
+				if rule.min_quantity and flc == False and qty_in_product_uom < rule.min_quantity:
 					continue
 				if is_product_template:
 					if rule.product_tmpl_id and product.id != rule.product_tmpl_id.id:
@@ -189,7 +195,7 @@ class ProductPricelist(models.Model):
 
 		return results
 
-	def get_products_price(self, products, quantities, partners, locations, date=False, uom_id=False, location_id=False):
+	def get_products_price(self, products, quantities, partners, locations, date=False, uom_id=False, location_id=False, flc=False):
 		""" For a given pricelist, return price for products
 		Returns: dict{product_id: product price}, in the given pricelist """
 		self.ensure_one()
@@ -199,6 +205,7 @@ class ProductPricelist(models.Model):
 				list(pycompat.izip(products, quantities, partners)),
 				date=date,
 				uom_id=uom_id,
-				location_id=location_id
+				location_id=location_id,
+				flc=flc
 			).items()
 		}
