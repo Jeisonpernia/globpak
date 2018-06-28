@@ -128,7 +128,7 @@ class StudioSalesOrderLine(models.Model):
 	_inherit = 'sale.order.line'
 
 	is_allowed_price_edit = fields.Boolean(compute='_compute_group')
-	is_flc = fields.Boolean(string='FLC', default=False)
+	is_flc = fields.Boolean(string='FCL', default=False)
 
 	@api.depends('product_id')
 	def _compute_group(self):

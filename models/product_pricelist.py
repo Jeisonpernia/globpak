@@ -83,7 +83,7 @@ class ProductPricelist(models.Model):
 				'AND (item.date_start IS NULL OR item.date_start<=%s) '
 				'AND (item.date_end IS NULL OR item.date_end>=%s) '
 				'AND (item.location_id = %s)'
-				'ORDER BY item.applied_on, item.min_quantity desc, categ.parent_left desc',
+				'ORDER BY item.applied_on, item.min_quantity asc, categ.parent_left desc',
 				(prod_tmpl_ids, prod_ids, categ_ids, self.id, date, date, location_id))
 		else:
 			self._cr.execute(
@@ -98,7 +98,7 @@ class ProductPricelist(models.Model):
 				'AND (item.date_start IS NULL OR item.date_start<=%s) '
 				'AND (item.date_end IS NULL OR item.date_end>=%s) '
 				'AND (item.location_id IS NULL)'
-				'ORDER BY item.applied_on, item.min_quantity desc, categ.parent_left desc',
+				'ORDER BY item.applied_on, item.min_quantity asc, categ.parent_left desc',
 				(prod_tmpl_ids, prod_ids, categ_ids, self.id, date, date))
 
 		item_ids = [x[0] for x in self._cr.fetchall()]
@@ -123,14 +123,39 @@ class ProductPricelist(models.Model):
 					# Ignored - incompatible UoM in context, use default product UoM
 					pass
 
+			# GET RULE WITH MAX MIN QUANTITY
+			is_max_rule = False
+			max_rule = ''
+			max_min_quantity = 0
+			for rule in items:
+				if max_min_quantity < rule.min_quantity:
+					max_min_quantity = rule.min_quantity
+					max_rule = rule.id
+
+			if qty_in_product_uom > max_min_quantity:
+				is_max_rule = True
+
+			_logger.info('BBEKA')
+			_logger.info(is_max_rule)
+			_logger.info(max_rule)
+			_logger.info(max_min_quantity)
+
+
 			# if Public user try to access standard price from website sale, need to call price_compute.
 			# TDE SURPRISE: product can actually be a template
 			price = product.price_compute('list_price')[product.id]
 
 			price_uom = self.env['product.uom'].browse([qty_uom_id])
 			for rule in items:
-				if rule.min_quantity and flc == False and qty_in_product_uom < rule.min_quantity:
-					continue
+
+				# GET MAX RULE
+				if is_max_rule == True:
+					if rule.id != max_rule:
+						continue
+				else:
+					if rule.min_quantity and flc == False and qty_in_product_uom > rule.min_quantity:
+						continue
+
 				if is_product_template:
 					if rule.product_tmpl_id and product.id != rule.product_tmpl_id.id:
 						continue
