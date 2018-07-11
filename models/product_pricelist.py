@@ -6,17 +6,17 @@ from odoo.tools import pycompat
 import logging
 _logger = logging.getLogger(__name__)
 
-class ProductPricelistItem(models.Model):
-	_inherit = 'product.pricelist.item'
+# class ProductPricelistItem(models.Model):
+# 	_inherit = 'product.pricelist.item'
 
-	location_id = fields.Many2one('res.country.state', string='Location')
+# 	location_id = fields.Many2one('res.country.state', string='Location')
 
 class ProductPricelist(models.Model):
 	_inherit = 'product.pricelist'
 
 	# EXTEND TO GET PRICELIST BY LOCATION
 	@api.multi
-	def _compute_price_rule(self, products_qty_partner, date=False, uom_id=False, location_id=False, flc=False):
+	def _compute_price_rule(self, products_qty_partner, date=False, uom_id=False):
 		""" Low-level method - Mono pricelist, multi products
 		Returns: dict{product_id: (price, suitable_rule) for the given pricelist}
 
@@ -39,14 +39,11 @@ class ProductPricelist(models.Model):
 		else:
 			products = [item[0] for item in products_qty_partner]
 
-		if not location_id:
-			location_id = self._context.get('location')
+		# if not location_id:
+		# 	location_id = self._context.get('location')
 
-		if not flc:
-			flc = self._context.get('flc')
-
-		# _logger.info('SIELTEL')
-		# _logger.info(date)
+		# if not flc:
+		# 	flc = self._context.get('flc')
 
 		if not products:
 			return {}
@@ -70,36 +67,50 @@ class ProductPricelist(models.Model):
 			prod_tmpl_ids = [product.product_tmpl_id.id for product in products]
 
 		# Load all rules
-		if location_id:
-			self._cr.execute(
-				'SELECT item.id '
-				'FROM product_pricelist_item AS item '
-				'LEFT JOIN product_category AS categ '
-				'ON item.categ_id = categ.id '
-				'WHERE (item.product_tmpl_id IS NULL OR item.product_tmpl_id = any(%s))'
-				'AND (item.product_id IS NULL OR item.product_id = any(%s))'
-				'AND (item.categ_id IS NULL OR item.categ_id = any(%s)) '
-				'AND (item.pricelist_id = %s) '
-				'AND (item.date_start IS NULL OR item.date_start<=%s) '
-				'AND (item.date_end IS NULL OR item.date_end>=%s) '
-				'AND (item.location_id = %s)'
-				'ORDER BY item.applied_on, item.min_quantity asc, categ.parent_left desc',
-				(prod_tmpl_ids, prod_ids, categ_ids, self.id, date, date, location_id))
-		else:
-			self._cr.execute(
-				'SELECT item.id '
-				'FROM product_pricelist_item AS item '
-				'LEFT JOIN product_category AS categ '
-				'ON item.categ_id = categ.id '
-				'WHERE (item.product_tmpl_id IS NULL OR item.product_tmpl_id = any(%s))'
-				'AND (item.product_id IS NULL OR item.product_id = any(%s))'
-				'AND (item.categ_id IS NULL OR item.categ_id = any(%s)) '
-				'AND (item.pricelist_id = %s) '
-				'AND (item.date_start IS NULL OR item.date_start<=%s) '
-				'AND (item.date_end IS NULL OR item.date_end>=%s) '
-				'AND (item.location_id IS NULL)'
-				'ORDER BY item.applied_on, item.min_quantity asc, categ.parent_left desc',
-				(prod_tmpl_ids, prod_ids, categ_ids, self.id, date, date))
+		# if location_id:
+		# 	self._cr.execute(
+		# 		'SELECT item.id '
+		# 		'FROM product_pricelist_item AS item '
+		# 		'LEFT JOIN product_category AS categ '
+		# 		'ON item.categ_id = categ.id '
+		# 		'WHERE (item.product_tmpl_id IS NULL OR item.product_tmpl_id = any(%s))'
+		# 		'AND (item.product_id IS NULL OR item.product_id = any(%s))'
+		# 		'AND (item.categ_id IS NULL OR item.categ_id = any(%s)) '
+		# 		'AND (item.pricelist_id = %s) '
+		# 		'AND (item.date_start IS NULL OR item.date_start<=%s) '
+		# 		'AND (item.date_end IS NULL OR item.date_end>=%s) '
+		# 		'AND (item.location_id = %s)'
+		# 		'ORDER BY item.applied_on, item.min_quantity asc, categ.parent_left desc',
+		# 		(prod_tmpl_ids, prod_ids, categ_ids, self.id, date, date, location_id))
+		# else:
+			# self._cr.execute(
+			# 	'SELECT item.id '
+			# 	'FROM product_pricelist_item AS item '
+			# 	'LEFT JOIN product_category AS categ '
+			# 	'ON item.categ_id = categ.id '
+			# 	'WHERE (item.product_tmpl_id IS NULL OR item.product_tmpl_id = any(%s))'
+			# 	'AND (item.product_id IS NULL OR item.product_id = any(%s))'
+			# 	'AND (item.categ_id IS NULL OR item.categ_id = any(%s)) '
+			# 	'AND (item.pricelist_id = %s) '
+			# 	'AND (item.date_start IS NULL OR item.date_start<=%s) '
+			# 	'AND (item.date_end IS NULL OR item.date_end>=%s) '
+			# 	'AND (item.location_id IS NULL)'
+			# 	'ORDER BY item.applied_on, item.min_quantity asc, categ.parent_left desc',
+			# 	(prod_tmpl_ids, prod_ids, categ_ids, self.id, date, date))
+
+		self._cr.execute(
+			'SELECT item.id '
+			'FROM product_pricelist_item AS item '
+			'LEFT JOIN product_category AS categ '
+			'ON item.categ_id = categ.id '
+			'WHERE (item.product_tmpl_id IS NULL OR item.product_tmpl_id = any(%s))'
+			'AND (item.product_id IS NULL OR item.product_id = any(%s))'
+			'AND (item.categ_id IS NULL OR item.categ_id = any(%s)) '
+			'AND (item.pricelist_id = %s) '
+			'AND (item.date_start IS NULL OR item.date_start<=%s) '
+			'AND (item.date_end IS NULL OR item.date_end>=%s) '
+			'ORDER BY item.applied_on, item.min_quantity asc, categ.parent_left desc',
+			(prod_tmpl_ids, prod_ids, categ_ids, self.id, date, date))
 
 		item_ids = [x[0] for x in self._cr.fetchall()]
 		items = self.env['product.pricelist.item'].browse(item_ids)
@@ -135,11 +146,6 @@ class ProductPricelist(models.Model):
 			if qty_in_product_uom > max_min_quantity:
 				is_max_rule = True
 
-			_logger.info('BBEKA')
-			_logger.info(is_max_rule)
-			_logger.info(max_rule)
-			_logger.info(max_min_quantity)
-
 
 			# if Public user try to access standard price from website sale, need to call price_compute.
 			# TDE SURPRISE: product can actually be a template
@@ -153,7 +159,8 @@ class ProductPricelist(models.Model):
 					if rule.id != max_rule:
 						continue
 				else:
-					if rule.min_quantity and flc == False and qty_in_product_uom > rule.min_quantity:
+					# if rule.min_quantity and flc == False and qty_in_product_uom > rule.min_quantity:
+					if rule.min_quantity and qty_in_product_uom > rule.min_quantity:
 						continue
 
 				if is_product_template:
@@ -220,17 +227,17 @@ class ProductPricelist(models.Model):
 
 		return results
 
-	def get_products_price(self, products, quantities, partners, locations, date=False, uom_id=False, location_id=False, flc=False):
-		""" For a given pricelist, return price for products
-		Returns: dict{product_id: product price}, in the given pricelist """
-		self.ensure_one()
-		return {
-			product_id: res_tuple[0]
-			for product_id, res_tuple in self._compute_price_rule(
-				list(pycompat.izip(products, quantities, partners)),
-				date=date,
-				uom_id=uom_id,
-				location_id=location_id,
-				flc=flc
-			).items()
-		}
+	# def get_products_price(self, products, quantities, partners, locations, date=False, uom_id=False, location_id=False, flc=False):
+	# 	""" For a given pricelist, return price for products
+	# 	Returns: dict{product_id: product price}, in the given pricelist """
+	# 	self.ensure_one()
+	# 	return {
+	# 		product_id: res_tuple[0]
+	# 		for product_id, res_tuple in self._compute_price_rule(
+	# 			list(pycompat.izip(products, quantities, partners)),
+	# 			date=date,
+	# 			uom_id=uom_id,
+	# 			location_id=location_id,
+	# 			flc=flc
+	# 		).items()
+	# 	}

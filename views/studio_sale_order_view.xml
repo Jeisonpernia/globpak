@@ -34,10 +34,6 @@
                     </header>
                 </xpath>
 
-                <!-- <xpath expr="//field[@name='partner_shipping_id']" position="attributes">
-                    <attribute name="context">{'default_type':'delivery', 'show_address': 1}</attribute>
-                </xpath> -->
-
                 <xpath expr="//field[@name='partner_shipping_id']" position="after">
                     <field name="subject" attrs="{'readonly': [('state', '=', ('sale'))]}"/>
                     <field name="description" attrs="{'readonly': [('state', '=', ('sale'))]}"/>
@@ -53,7 +49,7 @@
 
                 <xpath expr="//field[@name='order_line']/tree/field[@name='price_unit']" position="before">
                     <field name="is_allowed_price_edit" invisible="1"/>
-                    <field name="is_flc"/>
+                    <!-- <field name="is_flc"/> -->
                 </xpath>
 
                 <xpath expr="//field[@name='order_line']/tree/field[@name='price_unit']" position="attributes">
@@ -83,6 +79,14 @@
 
                 <xpath expr="//field[@name='partner_shipping_id']" position="after">
                     <field name="partner_contact_id" domain="['|', ('parent_id', '=', partner_id), ('id', '=', partner_id)]" />
+                </xpath>
+
+                <xpath expr="//field[@name='order_line']/tree/field[@name='analytic_tag_ids']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+
+                <xpath expr="//field[@name='order_line']/tree/field[@name='route_id']" position="attributes">
+                    <attribute name="invisible">1</attribute>
                 </xpath>
 								  
             </field>

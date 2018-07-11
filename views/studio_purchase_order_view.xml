@@ -10,6 +10,7 @@
                 <xpath expr="//field[@name='partner_ref']" position="after">
                     <field name="po_type" />
                     <field name="x_origin" attrs="{'invisible':[('po_type', '!=', 'import')]}" options="{'no_create':True,'no_open':True}" />
+                    <field name="port_discharge" attrs="{'invisible':[('po_type', '!=', 'import')]}" options="{'no_open':True}"/>
                 </xpath>
 
 				<xpath expr="//field[@name='company_id']" position="after">

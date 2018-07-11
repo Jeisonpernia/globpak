@@ -130,7 +130,7 @@
 
                 <xpath expr="//field[@name='expense_line_ids']" position="attributes">
                     <!-- <attribute name="domain">[('fund_custodian_id.user_id', '=', uid),('state', '=', 'validate')]</attribute> -->
-                    <attribute name="domain">['&amp;',('reimbursement_mode','=',reimbursement_mode),('state','=','validate'),'|',('employee_id', '=', employee_id),('approver_id', '=', employee_id)]</attribute>
+                    <attribute name="domain">['&amp;',('reimbursement_mode','=',reimbursement_mode),('state','=','validate'),'|',('employee_id', '=', employee_id),('fund_custodian_id', '=', employee_id)]</attribute>
                 </xpath>
 
                 <xpath expr="//field[@name='expense_line_ids']/tree/field[@name='date']" position="before">

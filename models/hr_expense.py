@@ -270,7 +270,7 @@ class HrExpenseLine(models.Model):
 		for expense in self:
 			if expense.expense_id.reimbursement_mode == "petty_cash":
 				expense.reimbursement_mode = "petty_cash"
-				expense.date = expense.expense_id.date
+				# expense.date = expense.expense_id.date
 			
 			if expense.expense_id.reimbursement_mode == "reimbursement":
 				expense.reimbursement_mode = "reimbursement"

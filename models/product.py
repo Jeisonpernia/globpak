@@ -5,15 +5,18 @@ from odoo.tools import pycompat
 import logging
 _logger = logging.getLogger(__name__)
 
+# class PlantLocation(models.Model):
+# 	_name = 'plant.location'
+
+# 	name = fields.Char()
+
 class ProductProduct(models.Model):
 	_inherit = 'product.product'
 
 	is_allowed_price_view = fields.Boolean(compute='_compute_group')
 	is_allowed_price_cost_view = fields.Boolean(compute='_compute_group')
 	parent_product = fields.Many2one('product.product')
-	# plant_name = fields.Char()
 
-	# @api.depends('name')
 	@api.multi
 	def _compute_group(self):
 		for record in self:
@@ -78,32 +81,32 @@ class ProductProduct(models.Model):
 		return result
 
 	# EXTEND TO GET PRICELIST BY LOCATION
-	def _compute_product_price(self):
-		prices = {}
-		pricelist_id_or_name = self._context.get('pricelist')
-		if pricelist_id_or_name:
-			pricelist = None
-			partner = self._context.get('partner', False)
-			quantity = self._context.get('quantity', 1.0)
-			location = self._context.get('location', False)
-			flc = self._context.get('flc')
+	# def _compute_product_price(self):
+	# 	prices = {}
+	# 	pricelist_id_or_name = self._context.get('pricelist')
+	# 	if pricelist_id_or_name:
+	# 		pricelist = None
+	# 		partner = self._context.get('partner', False)
+	# 		quantity = self._context.get('quantity', 1.0)
+	# 		location = self._context.get('location', False)
+	# 		flc = self._context.get('flc')
 
-			# Support context pricelists specified as display_name or ID for compatibility
-			if isinstance(pricelist_id_or_name, pycompat.string_types):
-				pricelist_name_search = self.env['product.pricelist'].name_search(pricelist_id_or_name, operator='=', limit=1)
-				if pricelist_name_search:
-					pricelist = self.env['product.pricelist'].browse([pricelist_name_search[0][0]])
-			elif isinstance(pricelist_id_or_name, pycompat.integer_types):
-				pricelist = self.env['product.pricelist'].browse(pricelist_id_or_name)
+	# 		# Support context pricelists specified as display_name or ID for compatibility
+	# 		if isinstance(pricelist_id_or_name, pycompat.string_types):
+	# 			pricelist_name_search = self.env['product.pricelist'].name_search(pricelist_id_or_name, operator='=', limit=1)
+	# 			if pricelist_name_search:
+	# 				pricelist = self.env['product.pricelist'].browse([pricelist_name_search[0][0]])
+	# 		elif isinstance(pricelist_id_or_name, pycompat.integer_types):
+	# 			pricelist = self.env['product.pricelist'].browse(pricelist_id_or_name)
 
-			if pricelist:
-				quantities = [quantity] * len(self)
-				partners = [partner] * len(self)
-				locations = [location] * len(self)
-				prices = pricelist.get_products_price(self, quantities, partners, locations, flc)
+	# 		if pricelist:
+	# 			quantities = [quantity] * len(self)
+	# 			partners = [partner] * len(self)
+	# 			locations = [location] * len(self)
+	# 			prices = pricelist.get_products_price(self, quantities, partners, locations, flc)
 
-		for product in self:
-			product.price = prices.get(product.id, 0.0)
+	# 	for product in self:
+	# 		product.price = prices.get(product.id, 0.0)
 
 	# OVERRIDE TO CHNAGE HOW NAME OF PRODUCT IS DISPLAYED
 	@api.multi
@@ -181,8 +184,8 @@ class ProductTemplate(models.Model):
 	is_allowed_price_cost_view = fields.Boolean(compute='_compute_group')
 	parent_product = fields.Many2one('product.template')
 	plant_name = fields.Char()
+	# plant_name = fields.Many2one('plant.location')
 
-	# @api.depends('name')
 	@api.multi
 	def _compute_group(self):
 		for record in self:

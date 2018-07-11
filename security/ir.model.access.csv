@@ -12,3 +12,4 @@ access_fleet_trip_ticket_manager,fleet.trip.ticket manager,model_fleet_trip_tick
 access_sale_report_stock_user,sale.report stock user manager,sale.model_sale_report,stock.group_stock_user,1,0,0,0
 access_res_user_expense_all,res.user expense all,base.model_res_users,,1,0,0,0
 access_res_user_expense_employee,res.user expense employee,base.model_res_users,base.group_user,1,0,0,0
+access_purchase_user_port_discharge,purchase.port.discharge user,model_port_discharge,purchase.group_purchase_user,1,1,1,1

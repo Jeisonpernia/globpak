@@ -39,9 +39,9 @@
                     </group>
                 </xpath>
 
-                <xpath expr="//field[@name='item_ids']/tree/field[@name='date_end']" position="after">
+               <!--  <xpath expr="//field[@name='item_ids']/tree/field[@name='date_end']" position="after">
                     <field name="location_id" />
-                </xpath>
+                </xpath> -->
 
                 <xpath expr="//field[@name='categ_id']" position="after">
                     <field name="plant_name" />
@@ -170,7 +170,7 @@
                     <field name="min_quantity" />
                     <field name="date_start" />
                     <field name="date_end" />
-                    <field name="location_id" />
+                    <!-- <field name="location_id" /> -->
                 </tree>
             </field>
         </record>
@@ -190,7 +190,7 @@
                                 <field name="min_quantity" />
                                 <field name="date_start" />
                                 <field name="date_end" />
-                                <field name="location_id" />
+                                <!-- <field name="location_id" /> -->
                             </group>
                         </group>
                     </sheet>

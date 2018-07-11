@@ -2,6 +2,11 @@ from odoo import models, fields, api, _
 
 from odoo.exceptions import UserError
 
+class PortDischarge(models.Model):
+	_name = 'port.discharge'
+
+	name = fields.Char()
+
 class StudioPurchaseOrder(models.Model):
 	_inherit = 'purchase.order'
 
@@ -53,6 +58,8 @@ class StudioPurchaseOrder(models.Model):
 	x_client_delivery_address = fields.Many2one('res.partner', 'Client Delivery Address', compute='_get_order_details')
 	x_client_po_no = fields.Char(string='Client PO No.', compute='_get_order_details')
 	x_origin = fields.Many2one('res.country', string='Origin', store=True, copy=True)
+
+	port_discharge = fields.Many2one('port.discharge', string='Port of Discharge')
 
 	current_user = fields.Many2one('res.users', compute='_get_current_user')
 
