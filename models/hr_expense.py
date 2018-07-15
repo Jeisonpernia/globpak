@@ -596,7 +596,6 @@ class HrExpense(models.Model):
 		], string='Expense Type', default='ob', readonly=True, states={'draft': [('readonly', False)], 'refused': [('readonly', False)]})
 	ob_id = fields.Many2one('hr.employee.official.business', string='Official Business', readonly=True, states={'draft': [('readonly', False)], 'refused': [('readonly', False)]})
 
-
 	reimbursement_mode = fields.Selection([
 		('petty_cash', 'Petty Cash'),
 		('reimbursement', 'Reimbursement'),

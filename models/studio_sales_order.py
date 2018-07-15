@@ -54,6 +54,7 @@ class StudioSalesOrder(models.Model):
 
 	state = fields.Selection([
 		('draft', 'Quotation'),
+		('validate', 'Validated'),
 		('sent', 'Quotation Sent'),
 		('confirm', 'Confirmed (Client)'),
 		('sale', 'Sales Order'),
@@ -61,7 +62,7 @@ class StudioSalesOrder(models.Model):
 		('cancel', 'Cancelled'),
 	])
 
-	is_allowed_sale_validate_confirm = fields.Boolean(compute='_compute_group')
+	# is_allowed_sale_validate_confirm = fields.Boolean(compute='_compute_group')
 	is_allowed_sale_validate = fields.Boolean(compute='_compute_group')
 	is_allowed_sale_confirm = fields.Boolean(compute='_compute_group')
 
@@ -77,6 +78,34 @@ class StudioSalesOrder(models.Model):
 	contact_name = fields.Char(compute='_get_customer_details')
 	partner_contact_id = fields.Many2one('res.partner', string='Contact Person')
 
+	
+	# OVERRIDE TO MAKE SURE QUOTE IS VALIDATED BEFORE EMAILING CLIENT
+	@api.multi
+	def action_quotation_send(self):
+		for record in self:
+			if record.state == 'draft':
+				raise UserError('Cannot send quotation to client. Quotation must be validated first.')
+
+		res = super(StudioSalesOrder, self).action_quotation_send()
+
+		# UPDATE QUOTATION STATE 
+		for record in self:
+			record.write({'state': 'sent'})
+
+		return res
+
+	# OVERRIDE TO MAKE SURE QUOTE IS VALIDATED BEFORE EMAILING CLIENT
+	@api.multi
+	def print_quotation(self):
+		for record in self:
+			if record.state == 'draft':
+				raise UserError('Cannot send quotation to client. Quotation must be validated first.')
+
+		# res = super(StudioSalesOrder, self).print_quotation()
+		# return res
+		self.filtered(lambda s: s.state == 'validate').write({'state': 'sent'})
+		return self.env.ref('sale.action_report_saleorder').report_action(self)
+
 	@api.multi
 	def action_confirm(self):
 		for record in self:
@@ -86,26 +115,46 @@ class StudioSalesOrder(models.Model):
 		res = super(StudioSalesOrder, self).action_confirm()
 		return res
 
-	# @api.multi
-	# def action_validate(self):
-	# 	for record in self:
+	@api.multi
+	def action_validate(self):
+		for record in self:
 			# if not record.x_clientpo:
 			# 	raise UserError('Cannot validate sale. Client PO number is required.')
 			# else:
-			# record.write({'state': 'validate'})
+			record.write({'state': 'validate'})
+
+	@api.multi
+	def action_confirm_client(self):
+		for record in self:
+			if not record.x_clientpo:
+				raise UserError('Cannot confirm sale. Client PO number is required.')
+
+			record.write({'state': 'confirm'})
 
 	@api.depends('partner_id')
 	def _compute_group(self):
 		user = self.env['res.users'].browse(self.env.uid)
 		for record in self:
+			record.is_allowed_sale_validate = False
+
 			if user.has_group('sales_team.group_sale_salesman_all_leads') or user.has_group('sales_team.group_sale_salesman') or user.has_group('sales_team.group_sale_manager'):
-				record.is_allowed_sale_validate_confirm = False
+				# record.is_allowed_sale_validate_confirm = False
+				
 				if record.state == 'confirm':
-					record.is_allowed_sale_validate_confirm = True
+					# record.is_allowed_sale_validate_confirm = True
+					record.is_allowed_sale_confirm = True
+
+				if record.x_clientpo and record.state == 'validate':
+					record.is_allowed_sale_confirm = True
+
+				if record.x_clientpo and record.state == 'sent':
+					record.is_allowed_sale_confirm = True
 			
+			# OVERRIDE ALLOWED TO CONFIRM FOR ACCOUNTING MANAGERS
 			if user.has_group('account.group_account_manager'):
 				# record.is_allowed_sale_validate_confirm = True
 				record.is_allowed_sale_validate = True
+				record.is_allowed_sale_confirm = False
 
 	@api.multi
 	def _get_customer_details(self):

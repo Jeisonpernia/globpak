@@ -5,8 +5,18 @@ from odoo.exceptions import UserError
 class HrHolidays(models.Model):
 	_inherit = 'hr.holidays'
 
-	approver_id = fields.Many2one('hr.employee','Approver', compute='_set_employee_details')
+	approver_id = fields.Many2one('hr.employee','Approver', compute='_set_employee_details', store=True)
 	current_user = fields.Many2one('res.users', compute='_get_current_user')
+
+	# @api.onchange('employee_id')
+	# def _set_employee_details(self):
+	# 	for holiday in self:
+	# 		if holiday.holiday_type == 'category':
+	# 			job_id = self.env['hr.job'].search([('name','=','Managing Director')], limit=1)
+	# 			employee_id = self.env['hr.employee'].search([('job_id','=',job_id.id)], limit=1)
+	# 			holiday.approver_id = employee_id
+	# 		if holiday.holiday_type == 'employee' and holiday.type == 'remove':
+	# 			holiday.approver_id = holiday.employee_id.parent_id
 
 	@api.depends('employee_id')
 	def _set_employee_details(self):

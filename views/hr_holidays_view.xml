@@ -6,14 +6,22 @@
             <field name="model">hr.holidays</field>
             <field name="inherit_id" ref="hr_holidays.edit_holiday_new" />
             <field name="arch" type="xml">
-
                 <xpath expr="//field[@name='department_id']" position="after">
-                    <!-- <field name="approver_id" attrs="{'invisible':[('holiday_type', '!=', 'employee')]}" /> -->
                     <field name="approver_id" />
-                    <field name="current_user" invisible="1" />
+                    <field name="current_user" invisible="True" />
                 </xpath>
-
             </field>
         </record> 
+
+        <!-- EXTEND ACTIONS TO MODIFY DOMAIN -->
+        <record id="hr_holidays.open_department_holidays_approve" model="ir.actions.act_window">
+            <field name="context">{'search_default_approve':1}</field>
+            <field name="domain">[('type', '=', 'remove'), ('approver_id.user_id', '=', uid)]</field>
+        </record>
+
+        <record id="hr_holidays.open_department_holidays_allocation_approve" model="ir.actions.act_window">
+            <field name="context">{'search_default_approve':1}</field>
+            <field name="domain">[('type', '=', 'add'), ('approver_id.user_id', '=', uid)]</field>
+        </record>
     </data>
 </odoo>
