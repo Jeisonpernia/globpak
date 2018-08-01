@@ -79,7 +79,7 @@
 		'views/studio_res_partner_view.xml',
 		'views/account_landed_cost_view.xml',
 		'views/product_view.xml',
-		# 'views/product_pricelist_view.xml',
+		'views/product_pricelist_view.xml',
 		'views/hr_holidays_view.xml',
 		'views/crm_lead_view.xml',
 		'views/website_quote_templates.xml',

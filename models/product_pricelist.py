@@ -6,10 +6,13 @@ from odoo.tools import pycompat
 import logging
 _logger = logging.getLogger(__name__)
 
-# class ProductPricelistItem(models.Model):
-# 	_inherit = 'product.pricelist.item'
+class ProductPricelistItem(models.Model):
+	_name = 'product.pricelist.item'
+	_inherit = ['product.pricelist.item','mail.thread']
+	_order = "active, applied_on, min_quantity desc, categ_id desc, id"
 
-# 	location_id = fields.Many2one('res.country.state', string='Location')
+	# location_id = fields.Many2one('res.country.state', string='Location')
+	active = fields.Boolean(default=True)
 
 class ProductPricelist(models.Model):
 	_inherit = 'product.pricelist'
