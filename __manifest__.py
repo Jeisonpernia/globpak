@@ -118,6 +118,7 @@
 		'wizard/account_report_receivable_summary_view.xml',
 		'wizard/account_report_taxes_licenses_summary_view.xml',
 		'wizard/report_trip_ticket_view.xml',
+		'wizard/split_purchase_order_view.xml',
 		'views/custom_report_menu.xml',
 	],
 	'qweb': [

@@ -1,0 +1,40 @@
+<odoo>
+	<data>
+		<record id="split_purchase_order_view" model="ir.ui.view">
+			<field name="name">Split Purchase Order</field>
+			<field name="model">split.purchase.order</field>
+			<field name="arch" type="xml">
+				<form string="Split Purchase Order">
+					<group>
+						<group>
+							<field name="purchase_order" readonly="1"/>
+							<field name="new_vendor"  options="{'no_create': True, 'no_open': True}" required="1"/>
+						</group>
+						<field name="line_ids" nolabel="1">
+							<tree editable="top" create="0">
+								<field name="product_id" options="{'no_create': True, 'no_open': True}" force_save="1" readonly="1"/>
+								<field name="product_qty" force_save="1" readonly="1"/>
+								<field name="new_quantity" required="1"/>
+							</tree>
+						</field>
+					</group>
+					<footer>
+						<button name="split_purchase_order" string="Split" type="object" default_focus="1" class="oe_highlight"/>
+							or 
+						<button string="Cancel" class="oe_link" special="cancel" />
+					</footer>
+				</form>
+			</field>
+		</record>
+
+		<record id="action_split_purchase_order" model="ir.actions.act_window">
+			<field name="name">Split Purchase Order</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">split.purchase.order</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">form</field>
+			<field name="view_id" ref="split_purchase_order_view"/>
+			<field name="target">new</field>
+		</record>
+	</data>
+</odoo>

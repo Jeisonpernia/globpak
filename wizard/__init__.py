@@ -13,3 +13,6 @@ from . import account_report_taxes_licenses_summary
 
 # TRIP TICKET
 from . import report_trip_ticket
+
+# SPLIT PURCHASE ORDER
+from . import split_purchase_order
