@@ -1,20 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
-    	<record id="view_purchase_order_form_extend" model="ir.ui.view">
-            <field name="name">purchase.order.form.extend</field>
-            <field name="model">purchase.order</field>
-            <field name="inherit_id" ref="purchase.purchase_order_form" />
-            <field name="arch" type="xml">
-            	<xpath expr="//header" position="inside">
-            		 <button name="%(globpak.action_split_purchase_order)d" states="draft,sent" string="Split Purchase Order" type="action" />
-            	</xpath>
+	<data>
+		<record id="view_purchase_order_form_extend" model="ir.ui.view">
+			<field name="name">purchase.order.form.extend</field>
+			<field name="model">purchase.order</field>
+			<field name="inherit_id" ref="purchase.purchase_order_form" />
+			<field name="arch" type="xml">
 
-                <xpath expr="//field[@name='partner_ref']" position="after">
-                    <field name="po_type" />
-                    <field name="x_origin" attrs="{'invisible':[('po_type', '!=', 'import')]}" options="{'no_create':True,'no_open':True}" />
-                    <field name="port_discharge" attrs="{'invisible':[('po_type', '!=', 'import')]}" options="{'no_open':True}"/>
-                </xpath>
+				<xpath expr="//field[@name='partner_ref']" position="after">
+					<field name="po_type" />
+					<field name="x_origin" attrs="{'invisible':[('po_type', '!=', 'import')]}" options="{'no_create':True,'no_open':True}" />
+					<field name="port_discharge" attrs="{'invisible':[('po_type', '!=', 'import')]}" options="{'no_open':True}"/>
+				</xpath>
 
 				<xpath expr="//field[@name='company_id']" position="after">
 					<field name="x_client_id"/>
@@ -22,13 +19,6 @@
 					<field name="x_client_delivery_address"/>
 					<field name="x_client_po_no"/>
 				</xpath>
-
-				<!-- <xpath expr="//field[@name='incoterm_id']" position="after">
-					<field name="assessment_date"/>
-					<field name="supplier_invoice_no"/>
-					<field name="bl_awb_no"/>
-					<field name="import_entry_no"/>
-				</xpath> -->
 				
 				<xpath expr="/form[1]/sheet[1]/notebook[1]/page[2]" position="after">
 					<page name="addition_info" string="Additional Info"/>
@@ -37,14 +27,14 @@
 				<xpath expr="//page[@name='addition_info']" position="inside">
 					<group>
 						<group>
-				    		<field name="x_prepared_by"/>
-				    		<field name="x_approved_by"/>
-				    		<field name="current_user"/>
+							<field name="x_prepared_by"/>
+							<field name="x_approved_by"/>
+							<field name="current_user"/>
 						</group>
 					</group>
 				</xpath>
 				  
-            </field>
-        </record> 
-    </data>
+			</field>
+		</record> 
+	</data>
 </odoo>
