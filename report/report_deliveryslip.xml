@@ -6,9 +6,10 @@
 
             <div class="page">
                 <div class="row text-right">
-                    <h3 t-if="'IN' in o.name">Receiving Report:<span t-field="o.name"/></h3>
+                    <h3>Delivery Receipt:<span t-field="o.name"/></h3>
+                    <!-- <h3 t-if="'IN' in o.name">Receiving Report:<span t-field="o.name"/></h3>
                     <h3 t-if="'OUT' in o.name">Delivery Receipt:<span t-field="o.name"/></h3>
-                    <h3 t-if="'DS' in o.name">Delivery Receipt:<span t-field="o.name"/></h3>
+                    <h3 t-if="'DS' in o.name">Delivery Receipt:<span t-field="o.name"/></h3> -->
                     <div class="col-xs-12">
                         <strong>Date Generated: </strong><span t-esc="context_timestamp(datetime.datetime.now()).strftime('%m/%d/%Y')"/>
                     </div>

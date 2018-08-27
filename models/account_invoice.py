@@ -1,5 +1,7 @@
 from odoo import models, fields, api, _
 
+from odoo.exceptions import UserError
+
 class AccountInvoice(models.Model):
 	_inherit = 'account.invoice'
 
@@ -166,7 +168,7 @@ class AccountInvoice(models.Model):
 	# is_allowed_vendor_bill_validate = fields.Boolean(compute='_compute_group')
 
 	# OVERRIDE FIELDS
-	comment = fields.Text(default="All accounts are payable on the terms stated above. Interest of 36% per annum will be charged on all overdue counts. All claims of corrections to invoice must be made within two days of receipt of goods. Parties  expressly submit to the jurisdiction of the courts of Paranaque City on any legal action arrising from this transaction and an additional sum equal to twenty-five 25 percent of the amount due will be charge for attorney's fees and other costs.")
+	comment = fields.Text(default="All accounts are payable on the terms stated above. Interest of 36% per annum will be charged on all overdue counts. All claims of corrections to invoice must be made within two days of receipt of goods. Parties  expressly submit to the jurisdiction of the courts of Paranaque City on any legal action arising from this transaction and an additional sum equal to twenty-five 25 percent of the amount due will be charge for attorney's fees and other costs.")
 
 	# @api.multi
 	# def _compute_group(self):
@@ -181,6 +183,16 @@ class AccountInvoice(models.Model):
 	#                     record.is_allowed_vendor_bill_validate = True
 	#         else:
 	#             record.is_allowed_vendor_bill_validate = True
+
+	@api.model
+	def create(self, values):
+		
+		if values.get('comment'):
+			values['comment'] = "All accounts are payable on the terms stated above. Interest of 36% per annum will be charged on all overdue counts. All claims of corrections to invoice must be made within two days of receipt of goods. Parties  expressly submit to the jurisdiction of the courts of Paranaque City on any legal action arising from this transaction and an additional sum equal to twenty-five 25 percent of the amount due will be charge for attorney's fees and other costs."
+
+		result = super(AccountInvoice, self).create(values)
+		
+		return result
 
 	@api.multi
 	def action_generate_debit_memo(self):
@@ -213,3 +225,70 @@ class AccountInvoiceLine(models.Model):
 
 	related_partner_id = fields.Many2one('res.partner', string='Related Vendor')
 	related_partner_ref = fields.Char(string='Reference')
+
+# class SaleAdvancePaymentInv(models.TransientModel):
+# 	_inherit = "sale.advance.payment.inv"
+
+# 	@api.multi
+# 	def _create_invoice(self, order, so_line, amount):
+# 		inv_obj = self.env['account.invoice']
+# 		ir_property_obj = self.env['ir.property']
+
+# 		account_id = False
+# 		if self.product_id.id:
+# 			account_id = self.product_id.property_account_income_id.id
+# 		if not account_id:
+# 			inc_acc = ir_property_obj.get('property_account_income_categ_id', 'product.category')
+# 			account_id = order.fiscal_position_id.map_account(inc_acc).id if inc_acc else False
+# 		if not account_id:
+# 			raise UserError(
+# 				_('There is no income account defined for this product: "%s". You may have to install a chart of account from Accounting app, settings menu.') %
+# 				(self.product_id.name,))
+
+# 		if self.amount <= 0.00:
+# 			raise UserError(_('The value of the down payment amount must be positive.'))
+# 		if self.advance_payment_method == 'percentage':
+# 			amount = order.amount_untaxed * self.amount / 100
+# 			name = _("Down payment of %s%%") % (self.amount,)
+# 		else:
+# 			amount = self.amount
+# 			name = _('Down Payment')
+# 		taxes = self.product_id.taxes_id.filtered(lambda r: not order.company_id or r.company_id == order.company_id)
+# 		if order.fiscal_position_id and taxes:
+# 			tax_ids = order.fiscal_position_id.map_tax(taxes).ids
+# 		else:
+# 			tax_ids = taxes.ids
+
+# 		invoice = inv_obj.create({
+# 			'name': order.client_order_ref or order.name,
+# 			'origin': order.name,
+# 			'type': 'out_invoice',
+# 			'reference': False,
+# 			'account_id': order.partner_id.property_account_receivable_id.id,
+# 			'partner_id': order.partner_invoice_id.id,
+# 			'partner_shipping_id': order.partner_shipping_id.id,
+# 			'invoice_line_ids': [(0, 0, {
+# 				'name': name,
+# 				'origin': order.name,
+# 				'account_id': account_id,
+# 				'price_unit': amount,
+# 				'quantity': 1.0,
+# 				'discount': 0.0,
+# 				'uom_id': self.product_id.uom_id.id,
+# 				'product_id': self.product_id.id,
+# 				'sale_line_ids': [(6, 0, [so_line.id])],
+# 				'invoice_line_tax_ids': [(6, 0, tax_ids)],
+# 				'account_analytic_id': order.analytic_account_id.id or False,
+# 			})],
+# 			'currency_id': order.pricelist_id.currency_id.id,
+# 			'payment_term_id': order.payment_term_id.id,
+# 			'fiscal_position_id': order.fiscal_position_id.id or order.partner_id.property_account_position_id.id,
+# 			'team_id': order.team_id.id,
+# 			'user_id': order.user_id.id,
+# 			# 'comment': order.note,
+# 		})
+# 		invoice.compute_taxes()
+# 		invoice.message_post_with_view('mail.message_origin_link',
+# 					values={'self': invoice, 'origin': order},
+# 					subtype_id=self.env.ref('mail.mt_note').id)
+# 		return invoice
