@@ -13,7 +13,7 @@
             <div class="row">
                 <div class="text-center">
                     <h3>
-                        <span t-if="o.payment_type == 'inbound' and o.state == 'posted'">Collection Receipt</span>
+                        <b><span t-if="o.payment_type == 'inbound' and o.state == 'posted'">Collection Receipt</span></b>
                     </h3>
                 </div>
             </div>
@@ -73,7 +73,8 @@
                             </tr>
                             <tr>
                                 <td>Check No.:</td>
-                                <td><span t-if="o.check_number" t-field="o.check_number" /></td>
+                                <!-- <td><span t-if="o.check_number" t-field="o.check_number" /></td> -->
+                                <td></td>
                             </tr>
                             <tr>
                                 <td>Check Date:</td>
@@ -81,11 +82,13 @@
                             </tr>
                             <tr>
                                 <td>Bank / Branch:</td>
-                                <td><span t-esc="o.journal_id.bank_id.name"/></td>
+                                <!-- <td><span t-esc="o.journal_id.bank_id.name"/></td> -->
+                                <td></td>
                             </tr>
                             <tr>
                                 <td>Amount:</td>
-                                <td><span t-field="o.amount" /></td>
+                                <!-- <td><span t-field="o.amount" /></td> -->
+                                <td></td>
                             </tr>
                         </tbody>
                     </table>

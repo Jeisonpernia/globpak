@@ -18,6 +18,18 @@
                     <field name="acknowledgement_receipt_id" attrs="{'invisible':['|','|',('state', '!=', 'posted'),('acknowledgement_receipt_id','=',False),('payment_type','!=','inbound')]}" readonly="1"/>
                     <!-- <field name="vendor_bill_description"/> -->
                 </xpath>
+
+                <xpath expr="//form/sheet/group[0]" position="after">
+                    <group string="Customer Payment Details">
+                        <group>
+                            <field name="cp_cash"/>
+                            <field name="cp_check_no"/>
+                            <field name="cp_check_date"/>
+                            <field name="cp_bank_id"/>
+                            <field name="cp_amount"/>
+                        </group>
+                    </group>
+                </xpath>
                 
             </field>
         </record> 

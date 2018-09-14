@@ -36,7 +36,7 @@
                 <xpath expr="//header" position="inside">
                     <button name="action_generate_debit_memo" string="Generate Debit Memo" type="object" groups="account.group_account_invoice" attrs="{'invisible':['|',('type', '!=', 'in_refund'),('debit_memo_id','!=',False)]}" />
                     <button name="action_print_debit_memo" string="Print Debit Memo" type="object" groups="account.group_account_invoice" attrs="{'invisible':['|',('type', '!=', 'in_refund'),('debit_memo_id','=',False)]}" />
-                    <button name="action_print_account_payable_voucher" string="Print Account Payable Voucher" type="object" groups="account.group_account_invoice" attrs="{'invisible':[('type', '!=', 'in_invoice')]}" />
+                    <button name="action_print_account_payable_voucher" string="Print Vendor Bill" type="object" groups="account.group_account_invoice" attrs="{'invisible':[('type', '!=', 'in_invoice')]}" />
                 </xpath>
 
                 <xpath expr="//field[@name='currency_id']" position="after">

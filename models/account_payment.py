@@ -8,6 +8,13 @@ class AccountPayment(models.Model):
     acknowledgement_receipt_id = fields.Many2one('account.acknowledgement.receipt', string='Acknowledgement Receipt')
     # vendor_bill_description = fields.Text(compute='_get_bill_details')
 
+    # CUSTOMER PAYMENT DETAILS
+    cp_cash = fields.Float(string='Cash')
+    cp_check_no = fields.Char(string='Check No.')
+    cp_check_date = fields.Date(string='Check Date')
+    cp_bank_id = fields.Many2one('res.bank', string='Bank / Branch')
+    cp_amount = fields.Monetary(string='Amount')
+
     @api.multi
     def action_generate_collection_receipt(self):
         for record in self:
